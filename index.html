@@ -5124,9 +5124,83 @@
                 }
             }
         }
+
+        // Login function
+        function handleLoginClick() {
+            const email = document.getElementById('loginEmail')?.value || '';
+            const password = document.getElementById('loginPassword')?.value || '';
+
+            if (!email || !password) {
+                showToast('Please fill in all fields', 'warning');
+                return;
+            }
+
+            // Mock login for Netlify
+            if (!window.location.hostname.includes('localhost') && !window.location.hostname.includes('127.0.0.1')) {
+                console.log('🧪 Mock login for:', email);
+                
+                // Store mock user data
+                const mockUser = {
+                    id: Date.now(),
+                    email: email,
+                    first_name: 'Test',
+                    last_name: 'User'
+                };
+                
+                const token = 'mock_token_' + Date.now();
+                
+                localStorage.setItem('authToken', token);
+                localStorage.setItem('userLoggedIn', 'true');
+                localStorage.setItem('userName', `${mockUser.first_name} ${mockUser.last_name}`);
+                localStorage.setItem('userEmail', mockUser.email);
+                localStorage.setItem('userId', mockUser.id);
+                
+                showToast('Login successful!', 'success');
+                
+                // Close modal
+                const loginModal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
+                if (loginModal) {
+                    loginModal.hide();
+                }
+                
+                // Update UI
+                checkLoginState();
+                
+                // Redirect to dashboard
+                setTimeout(() => {
+                    window.location.href = 'homenocourses.html';
+                }, 1000);
+                
+                return;
+            }
+
+            // Real API call for localhost
+            api.login({ email, password })
+                .then(data => {
+                    showToast('Login successful!', 'success');
+                    
+                    // Close modal
+                    const loginModal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
+                    if (loginModal) {
+                        loginModal.hide();
+                    }
+                    
+                    // Update UI
+                    checkLoginState();
+                    
+                    // Redirect to dashboard
+                    setTimeout(() => {
+                        window.location.href = 'homenocourses.html';
+                    }, 1000);
+                })
+                .catch(error => {
+                    console.error('Login error:', error);
+                    showToast('Login failed. Please check your credentials.', 'error');
+                });
+        }
         
         // Cache busting - force reload
-        console.log('🔄 Cache busting - Version: ' + Date.now());
+        console.log('🔄 Cache busting - Version: ' + Date.now() + ' - FORCED UPDATE');
     </script>
 </body>
 </html>
