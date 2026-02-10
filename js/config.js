@@ -1,14 +1,20 @@
 // API Configuration
 // This file determines which backend URL to use based on the environment
 
-// Local development URL only
+// Backend URLs
 const LOCAL_BACKEND_URL = 'http://localhost:3000';
+const PRODUCTION_BACKEND_URL = 'https://your-backend-url.railway.app'; // Replace with your actual Railway URL
 
-// Always use local development
-const ENVIRONMENT = 'development';
+// Environment detection
+// Set to 'production' for live deployment, 'development' for local testing
+const ENVIRONMENT = window.location.hostname.includes('localhost') || window.location.hostname.includes('127.0.0.1') 
+    ? 'development' 
+    : 'production';
 
 // Export the appropriate base URL
-const API_BASE_URL = LOCAL_BACKEND_URL;
+const API_BASE_URL = ENVIRONMENT === 'production' 
+    ? PRODUCTION_BACKEND_URL 
+    : LOCAL_BACKEND_URL;
 
 // Export configuration
 window.API_CONFIG = {
