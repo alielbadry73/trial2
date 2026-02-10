@@ -373,11 +373,11 @@ function resetTodoLists() {
 }
 
 async function handleRegisterClick() {
-    const firstName = document.getElementById('registerFirstName').value;
-    const lastName = document.getElementById('registerLastName').value;
-    const email = document.getElementById('registerEmail').value;
-    const password = document.getElementById('registerPassword').value;
-    const phone = document.getElementById('registerPhone').value;
+    const firstName = document.getElementById('registerFirstName')?.value || '';
+    const lastName = document.getElementById('registerLastName')?.value || '';
+    const email = document.getElementById('registerEmail')?.value || '';
+    const password = document.getElementById('registerPassword')?.value || '';
+    const phone = document.getElementById('registerPhone')?.value || '';
 
     if (!firstName || !lastName || !email || !password) {
         showToast('Please fill in all required fields', 'warning');

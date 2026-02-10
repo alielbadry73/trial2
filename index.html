@@ -2160,6 +2160,43 @@
     <script src="js/script.js?v=4"></script>
     <script src="js/config.js"></script>
     <script>
+        // Define missing functions immediately to prevent reference errors
+        function validateMiddleEastPhone(fieldId) {
+            const phoneInput = document.getElementById(fieldId);
+            const phoneError = document.getElementById('phoneError');
+            const phone = phoneInput.value.trim();
+            
+            // Egyptian phone validation (01xxxxxxxxx)
+            const egyptPhoneRegex = /^01[0-2]\d{8}$/;
+            
+            if (phone && !egyptPhoneRegex.test(phone)) {
+                phoneError.style.display = 'block';
+                phoneInput.classList.add('is-invalid');
+                return false;
+            } else {
+                phoneError.style.display = 'none';
+                phoneInput.classList.remove('is-invalid');
+                return true;
+            }
+        }
+
+        function togglePasswordIconVisibility(fieldId, toggleBtnId) {
+            const passwordInput = document.getElementById(fieldId);
+            const toggleBtn = document.getElementById(toggleBtnId);
+            
+            if (passwordInput && toggleBtn) {
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    toggleBtn.innerHTML = `<iconify-icon icon="material-symbols:visibility-off" style="font-size: 18px; color: #6b7280;"></iconify-icon>`;
+                } else {
+                    passwordInput.type = 'password';
+                    toggleBtn.innerHTML = `<iconify-icon icon="material-symbols:visibility" style="font-size: 18px; color: #6b7280;"></iconify-icon>`;
+                }
+            }
+        }
+
+        console.log('✅ Missing functions defined at startup');
+
         // When served from localhost, use local API to avoid CORS and match the running backend
         (function() {
             var o = window.location.origin || '';
