@@ -64,7 +64,7 @@ class IGWayAPI {
         this.token = localStorage.getItem('authToken');
         
         // Check if we're in production (Netlify) and use mock API
-        this.useMockAPI = !window.location.hostname.includes('localhost') && !window.location.hostname.includes('127.0.0.1');
+        this.useMockAPI = false; // Force real API for Render testing
     }
 
     async request(endpoint, options = {}) {

@@ -2158,8 +2158,17 @@
     <script src="js/jquery-1.11.0.min.js"></script>
     <script src="js/plugins.js"></script>
     <script src="js/script.js?v=4"></script>
-    <script src="js/config.js?v=<?php echo time(); ?>"></script>
     <script>
+        // FORCE PRODUCTION CONFIG - Override everything
+        window.API_CONFIG = {
+            baseURL: 'https://my-project-ebiu.onrender.com',
+            apiURL: 'https://my-project-ebiu.onrender.com/api',
+            healthURL: 'https://my-project-ebiu.onrender.com/health',
+            environment: 'production'
+        };
+        console.log('🚀 FORCED PRODUCTION MODE');
+        console.log('🔗 Backend URL: https://my-project-ebiu.onrender.com');
+        
         // IMMEDIATE FUNCTION DEFINITIONS - Define all functions before any HTML can call them
         console.log('🚀 FORCE LOADING - DEFINING ALL FUNCTIONS IMMEDIATELY');
         
