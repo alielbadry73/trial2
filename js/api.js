@@ -614,8 +614,8 @@ async function toggleFavorite(courseId) {
 // Initialize API integration when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
     // Check if user is logged in via API
-    if (api.token) {
-        // Verify token is still valid
+    if (api.token && window.location.pathname.includes('dashboard')) {
+        // Only verify token on dashboard pages
         api.getUserEnrollments().catch(() => {
             // Token is invalid, logout
             api.logout();
