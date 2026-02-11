@@ -419,6 +419,8 @@ app.get('/api/utils/ip-geolocation', async (req, res) => {
         return res.json(cached.data);
     }
 
+    // IP Geolocation API - Disabled to save credits
+    // const lookupUrl = 'https://ipapi.co/json/';
     const lookupUrl = clientIp && clientIp !== '::1'
         ? `https://ipapi.co/${clientIp}/json/`
         : 'https://ipapi.co/json/';
@@ -3484,7 +3486,7 @@ async function createZoomMeeting(meetingData) {
             };
         }
 
-        // Real Zoom API call (uncomment when you have real credentials)
+        // Zoom API call disabled to save credits
         /*
         const response = await axios.post('https://api.zoom.us/v2/users/me/meetings', {
             topic: meetingData.topic,

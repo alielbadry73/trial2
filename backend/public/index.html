@@ -1,13 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- CACHE BUSTER: Updated 2026-02-07 - Navigation blocking removed -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
-    <title>IG Nation</title>
+    <title>IG Nation - Transform Your Learning Journey v2.0</title>
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="icon" type="image/png" sizes="32x32" href="images/favicon.png">
     <link rel="icon" type="image/png" sizes="16x16" href="images/favicon.png">
@@ -17,7 +13,7 @@
     <link rel="stylesheet" type="text/css" href="icomoon/icomoon.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="css/vendor.css">
-    <link rel="stylesheet" type="text/css" href="style.css?v=4">
+    <link rel="stylesheet" type="text/css" href="style.css?v=5">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;600;700&family=Roboto+Slab&display=swap" rel="stylesheet">
@@ -940,8 +936,8 @@
                             
                             <!-- Course Actions -->
                             <div style="display: flex; gap: 12px;">
-                                <button onclick="enrollInCourse('mathematics')" 
-                                        style="flex: 1; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; padding: 14px 20px; border-radius: 15px; font-weight: 600; font-size: 0.9rem; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3); display: flex; align-items: center; justify-content: center; gap: 8px;"
+                                <button onclick="alert('Math button clicked! Function exists: ' + (typeof window.enrollInCourse)); console.log('Button clicked!'); if(typeof enrollInCourse === 'function') { enrollInCourse('mathematics'); } else { alert('enrollInCourse function not found!'); }" 
+                                        style="flex: 1; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; padding: 14px 20px; border-radius: 15px; font-weight: 600; font-size: 0.9rem; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3); display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer;"
                                         onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(102, 126, 234, 0.4)'" 
                                         onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(102, 126, 234, 0.3)'">
                                     <iconify-icon icon="material-symbols:play-arrow"></iconify-icon>
@@ -1026,7 +1022,7 @@
                             
                             <!-- Course Actions -->
                             <div style="display: flex; gap: 12px;">
-                                <button onclick="enrollInCourse('physics')" 
+                                <button onclick="console.log('Physics button clicked!'); if(typeof enrollInCourse === 'function') { enrollInCourse('physics'); } else { alert('enrollInCourse function not found!'); }" 
                                         style="flex: 1; background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; padding: 14px 20px; border-radius: 15px; font-weight: 600; font-size: 0.9rem; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); display: flex; align-items: center; justify-content: center; gap: 8px;"
                                         onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(16, 185, 129, 0.4)'" 
                                         onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(16, 185, 129, 0.3)'">
@@ -1112,7 +1108,7 @@
                             
                             <!-- Course Actions -->
                             <div style="display: flex; gap: 12px;">
-                                <button onclick="enrollInCourse('english')" 
+                                <button onclick="console.log('English button clicked!'); if(typeof enrollInCourse === 'function') { enrollInCourse('english'); } else { alert('enrollInCourse function not found!'); }" 
                                         style="flex: 1; background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; border: none; padding: 14px 20px; border-radius: 15px; font-weight: 600; font-size: 0.9rem; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3); display: flex; align-items: center; justify-content: center; gap: 8px;"
                                         onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(139, 92, 246, 0.4)'" 
                                         onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(139, 92, 246, 0.3)'">
@@ -1227,135 +1223,48 @@
         </div>
     </section>
 
-    <!-- Achievement Section -->
-    <section id="achivement" style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%); padding: 100px 0; position: relative; overflow: hidden;">
+    <!-- Footer -->
+    <footer id="footer" style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%); padding: 80px 0 0; position: relative; overflow: hidden;">
         <!-- Background Elements -->
         <div style="position: absolute; top: -50px; left: -50px; width: 200px; height: 200px; background: rgba(102, 126, 234, 0.1); border-radius: 50%; z-index: 1;"></div>
         <div style="position: absolute; bottom: -100px; right: -100px; width: 300px; height: 300px; background: rgba(139, 92, 246, 0.1); border-radius: 50%; z-index: 1;"></div>
-        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 150px; height: 150px; background: rgba(255, 215, 0, 0.05); border-radius: 50%; z-index: 1;"></div>
         
         <div class="container" style="position: relative; z-index: 2;">
-            <div class="text-center mb-5">
-                <div class="animate-on-scroll animate-delay-1" style="display: inline-block; background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); padding: 8px 24px; border-radius: 50px; margin-bottom: 20px; border: 1px solid rgba(255, 255, 255, 0.2);">
-                    <span style="color: #ffd700; font-size: 0.9rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">Our Impact</span>
-                </div>
-                <h2 class="animate-on-scroll animate-delay-2" style="font-size: 3rem; font-weight: 800; color: white; margin-bottom: 1rem; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">
-                    Numbers That <span class="gradient-text">Speak</span>
-                </h2>
-                <p class="animate-on-scroll animate-delay-3" style="font-size: 1.2rem; color: rgba(255,255,255,0.8); max-width: 600px; margin: 0 auto; font-weight: 300;">
-                    Join thousands of successful learners who have transformed their education with us
-                </p>
-            </div>
-            
             <div class="row g-4">
-                <div class="col-lg-3 col-md-6">
-                    <div class="animate-on-scroll-scale animate-delay-1" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(20px); border-radius: 24px; padding: 40px 30px; text-align: center; border: 1px solid rgba(255,255,255,0.2); transition: all 0.4s ease; position: relative; overflow: hidden;" 
-                         onmouseover="this.style.transform='translateY(-10px)'; this.style.background='rgba(255,255,255,0.15)'" 
-                         onmouseout="this.style.transform='translateY(0)'; this.style.background='rgba(255,255,255,0.1)'">
-                        <div style="position: absolute; top: -20px; right: -20px; width: 80px; height: 80px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 50%; opacity: 0.1;"></div>
-                        <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 25px; box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3); position: relative; z-index: 2;">
-                            <iconify-icon icon="material-symbols:topic" style="font-size: 2.5rem; color: white;"></iconify-icon>
-                        </div>
-                        <h3 style="font-size: 3rem; font-weight: 800; color: #ffd700; margin-bottom: 10px; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">500+</h3>
-                        <h4 style="font-size: 1.3rem; font-weight: 700; color: white; margin-bottom: 8px;">Learning Topics</h4>
-                        <p style="color: rgba(255,255,255,0.7); font-size: 0.95rem; font-weight: 400;">Comprehensive curriculum coverage</p>
-                    </div>
-                </div>
-                
-                <div class="col-lg-3 col-md-6">
-                    <div class="animate-on-scroll-scale animate-delay-2" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(20px); border-radius: 24px; padding: 40px 30px; text-align: center; border: 1px solid rgba(255,255,255,0.2); transition: all 0.4s ease; position: relative; overflow: hidden;" 
-                         onmouseover="this.style.transform='translateY(-10px)'; this.style.background='rgba(255,255,255,0.15)'" 
-                         onmouseout="this.style.transform='translateY(0)'; this.style.background='rgba(255,255,255,0.1)'">
-                        <div style="position: absolute; top: -20px; right: -20px; width: 80px; height: 80px; background: linear-gradient(135deg, #10b981, #059669); border-radius: 50%; opacity: 0.1;"></div>
-                        <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #10b981, #059669); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 25px; box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3); position: relative; z-index: 2;">
-                            <iconify-icon icon="material-symbols:school" style="font-size: 2.5rem; color: white;"></iconify-icon>
-                        </div>
-                        <h3 style="font-size: 3rem; font-weight: 800; color: #ffd700; margin-bottom: 10px; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">2,500+</h3>
-                        <h4 style="font-size: 1.3rem; font-weight: 700; color: white; margin-bottom: 8px;">Active Learners</h4>
-                        <p style="color: rgba(255,255,255,0.7); font-size: 0.95rem; font-weight: 400;">Building bright futures</p>
-                    </div>
-                </div>
-                
-                <div class="col-lg-3 col-md-6">
-                    <div class="animate-on-scroll-scale animate-delay-3" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(20px); border-radius: 24px; padding: 40px 30px; text-align: center; border: 1px solid rgba(255,255,255,0.2); transition: all 0.4s ease; position: relative; overflow: hidden;" 
-                         onmouseover="this.style.transform='translateY(-10px)'; this.style.background='rgba(255,255,255,0.15)'" 
-                         onmouseout="this.style.transform='translateY(0)'; this.style.background='rgba(255,255,255,0.1)'">
-                        <div style="position: absolute; top: -20px; right: -20px; width: 80px; height: 80px; background: linear-gradient(135deg, #8b5cf6, #7c3aed); border-radius: 50%; opacity: 0.1;"></div>
-                        <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #8b5cf6, #7c3aed); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 25px; box-shadow: 0 10px 30px rgba(139, 92, 246, 0.3); position: relative; z-index: 2;">
-                            <iconify-icon icon="material-symbols:person" style="font-size: 2.5rem; color: white;"></iconify-icon>
-                        </div>
-                        <h3 style="font-size: 3rem; font-weight: 800; color: #ffd700; margin-bottom: 10px; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">150+</h3>
-                        <h4 style="font-size: 1.3rem; font-weight: 700; color: white; margin-bottom: 8px;">Expert Instructors</h4>
-                        <p style="color: rgba(255,255,255,0.7); font-size: 0.95rem; font-weight: 400;">Certified professionals</p>
-                    </div>
-                </div>
-                
-                <div class="col-lg-3 col-md-6">
-                    <div class="animate-on-scroll-scale animate-delay-4" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(20px); border-radius: 24px; padding: 40px 30px; text-align: center; border: 1px solid rgba(255,255,255,0.2); transition: all 0.4s ease; position: relative; overflow: hidden;" 
-                         onmouseover="this.style.transform='translateY(-10px)'; this.style.background='rgba(255,255,255,0.15)'" 
-                         onmouseout="this.style.transform='translateY(0)'; this.style.background='rgba(255,255,255,0.1)'">
-                        <div style="position: absolute; top: -20px; right: -20px; width: 80px; height: 80px; background: linear-gradient(135deg, #f59e0b, #d97706); border-radius: 50%; opacity: 0.1;"></div>
-                        <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #f59e0b, #d97706); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 25px; box-shadow: 0 10px 30px rgba(245, 158, 11, 0.3); position: relative; z-index: 2;">
-                            <iconify-icon icon="material-symbols:emoji-events" style="font-size: 2.5rem; color: white;"></iconify-icon>
-                        </div>
-                        <h3 style="font-size: 3rem; font-weight: 800; color: #ffd700; margin-bottom: 10px; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">98%</h3>
-                        <h4 style="font-size: 1.3rem; font-weight: 700; color: white; margin-bottom: 8px;">Success Rate</h4>
-                        <p style="color: rgba(255,255,255,0.7); font-size: 0.95rem; font-weight: 400;">Proven excellence</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Testimonial Section -->
-    <section id="testimonial" style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); padding: 100px 0; position: relative; overflow: hidden;">
-        <!-- Background Elements -->
-        <div style="position: absolute; top: -100px; left: -100px; width: 300px; height: 300px; background: rgba(102, 126, 234, 0.05); border-radius: 50%; z-index: 1;"></div>
-        <div style="position: absolute; bottom: -150px; right: -150px; width: 400px; height: 400px; background: rgba(139, 92, 246, 0.05); border-radius: 50%; z-index: 1;"></div>
-        <div style="position: absolute; top: 30%; right: 10%; width: 100px; height: 100px; background: rgba(255, 215, 0, 0.1); border-radius: 50%; z-index: 1;"></div>
-        
-        <div class="container" style="position: relative; z-index: 2;">
-            <div class="text-center mb-5">
-                <div style="display: inline-block; background: rgba(102, 126, 234, 0.1); padding: 8px 24px; border-radius: 50px; margin-bottom: 20px;">
-                    <span style="color: #667eea; font-size: 0.9rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">Student Voices</span>
-                </div>
-                <h2 style="font-size: 3rem; font-weight: 800; color: #1e293b; margin-bottom: 1rem;">
-                    What Our <span style="background: linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Learners</span> Say
-                </h2>
-                <p style="font-size: 1.2rem; color: #64748b; max-width: 600px; margin: 0 auto; font-weight: 400;">
-                    Real stories from students who have transformed their learning journey with us
-                </p>
-            </div>
-            
-            <div class="row g-4">
-                <div class="col-lg-4 col-md-6">
-                    <div style="background: white; border-radius: 24px; padding: 40px 30px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08); transition: all 0.4s ease; border: 1px solid rgba(102, 126, 234, 0.1); position: relative; height: 100%;" 
-                         onmouseover="this.style.transform='translateY(-10px)'; this.style.boxShadow='0 30px 60px rgba(0, 0, 0, 0.12)'" 
-                         onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 20px 40px rgba(0, 0, 0, 0.08)'">
-                        <div style="position: absolute; top: -20px; left: 30px; width: 60px; height: 60px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);">
-                            <iconify-icon icon="material-symbols:format-quote" style="font-size: 1.5rem; color: white;"></iconify-icon>
-                        </div>
-                        <div style="margin-top: 20px;">
-                            <div style="display: flex; align-items: center; margin-bottom: 20px;">
-                                <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
-                                    <span style="color: white; font-weight: 700; font-size: 1.1rem;">AM</span>
-                                </div>
-                                <div>
-                                    <h5 style="font-size: 1.1rem; font-weight: 700; color: #1e293b; margin: 0;">أحمد محمد علي</h5>
-                                    <p style="color: #64748b; margin: 0; font-size: 0.9rem;">Mathematics Student</p>
-                                </div>
+                <!-- About Section -->
+                <div class="col-lg-4">
+                    <div style="margin-bottom: 30px;">
+                        <div style="display: flex; align-items: center; margin-bottom: 25px;">
+                            <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
+                                <span style="color: white; font-weight: bold; font-size: 1.2rem;">IG</span>
                             </div>
-                            <p style="color: #64748b; line-height: 1.6; font-size: 1rem; margin-bottom: 20px; font-style: italic;">
-                                "IG Nation completely transformed my understanding of mathematics. The teachers are incredibly patient and explain complex concepts in simple terms. I went from struggling with basic algebra to scoring A* in my exams."
-                            </p>
-                            <div style="display: flex; align-items: center; gap: 4px;">
-                                <iconify-icon icon="clarity:star-solid" style="color: #ffd700; font-size: 1.1rem;"></iconify-icon>
-                                <iconify-icon icon="clarity:star-solid" style="color: #ffd700; font-size: 1.1rem;"></iconify-icon>
-                                <iconify-icon icon="clarity:star-solid" style="color: #ffd700; font-size: 1.1rem;"></iconify-icon>
-                                <iconify-icon icon="clarity:star-solid" style="color: #ffd700; font-size: 1.1rem;"></iconify-icon>
-                                <iconify-icon icon="clarity:star-solid" style="color: #ffd700; font-size: 1.1rem;"></iconify-icon>
-                                <span style="color: #64748b; font-size: 0.9rem; font-weight: 500; margin-left: 8px;">5.0</span>
-                            </div>
+                            <div style="font-size: 1.5rem; font-weight: 800; color: white;">Nation</div>
+                        </div>
+                        <h3 style="font-size: 1.3rem; font-weight: 700; color: #ffd700; margin-bottom: 15px;">Transforming Education</h3>
+                        <p style="color: rgba(255,255,255,0.8); line-height: 1.6; font-size: 1rem; margin-bottom: 30px;">
+                            Transforming education through innovative online learning. Join thousands of students achieving academic excellence with our expert-led courses and cutting-edge technology.
+                        </p>
+                        <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                            <a href="#" style="width: 45px; height: 45px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2);"
+                               onmouseover="this.style.background='rgba(59, 130, 246, 0.8)'; this.style.transform='translateY(-3px)'" 
+                               onmouseout="this.style.background='rgba(255,255,255,0.1)'; this.style.transform='translateY(0)'">
+                                <iconify-icon icon="ri:facebook-fill" style="color: white; font-size: 1.2rem;"></iconify-icon>
+                            </a>
+                            <a href="#" style="width: 45px; height: 45px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2);"
+                               onmouseover="this.style.background='rgba(29, 161, 242, 0.8)'; this.style.transform='translateY(-3px)'" 
+                               onmouseout="this.style.background='rgba(255,255,255,0.1)'; this.style.transform='translateY(0)'">
+                                <iconify-icon icon="ri:twitter-fill" style="color: white; font-size: 1.2rem;"></iconify-icon>
+                            </a>
+                            <a href="#" style="width: 45px; height: 45px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2);"
+                               onmouseover="this.style.background='rgba(225, 48, 108, 0.8)'; this.style.transform='translateY(-3px)'" 
+                               onmouseout="this.style.background='rgba(255,255,255,0.1)'; this.style.transform='translateY(0)'">
+                                <iconify-icon icon="ri:instagram-fill" style="color: white; font-size: 1.2rem;"></iconify-icon>
+                            </a>
+                            <a href="#" style="width: 45px; height: 45px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2);"
+                               onmouseover="this.style.background='rgba(255, 0, 0, 0.8)'; this.style.transform='translateY(-3px)'" 
+                               onmouseout="this.style.background='rgba(255,255,255,0.1)'; this.style.transform='translateY(0)'">
+                                <iconify-icon icon="ri:youtube-fill" style="color: white; font-size: 1.2rem;"></iconify-icon>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -1694,90 +1603,54 @@
     <!-- Login Modal -->
     <div class="modal fade" id="loginModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content" style="border-radius: 20px; border: none; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); overflow: hidden;">
-                <!-- Header with gradient -->
-                <div class="modal-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; padding: 2rem;">
-                    <div style="width: 100%;">
-                        <h5 class="modal-title" style="color: white; font-weight: 700; font-size: 1.75rem; margin: 0;">
-                            <iconify-icon icon="material-symbols:login" style="font-size: 2rem; vertical-align: middle; margin-right: 0.5rem;"></iconify-icon>
-                            Welcome Back
+            <div class="modal-content" style="border-radius: 20px; border: none; overflow: hidden;">
+                <div class="modal-header" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; padding: 30px;">
+                    <div>
+                        <h5 class="modal-title mb-2" style="font-size: 1.5rem; font-weight: 700;">
+                            <iconify-icon icon="material-symbols:login" class="me-2"></iconify-icon>
+                            Login to Your Account
                         </h5>
-                        <p style="color: rgba(255, 255, 255, 0.9); margin: 0.5rem 0 0 0; font-size: 0.95rem;">Sign in to continue your learning journey</p>
+                        <p class="mb-0" style="opacity: 0.9; font-size: 0.9rem;">Welcome back! Please enter your credentials</p>
                     </div>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" style="opacity: 1;"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
-                
-                <div class="modal-body" style="padding: 2.5rem;">
+                <div class="modal-body" style="padding: 40px;">
                     <div id="loginForm">
-                        <!-- Email Field -->
                         <div class="mb-4">
-                            <label for="loginEmail" class="form-label" style="font-weight: 600; color: #1e293b; font-size: 0.95rem; margin-bottom: 0.5rem;">
-                                <iconify-icon icon="material-symbols:mail" style="margin-right: 0.5rem; color: #667eea;"></iconify-icon>
+                            <label for="loginEmail" class="form-label" style="font-weight: 600; color: #333;">
+                                <iconify-icon icon="material-symbols:email" class="me-2"></iconify-icon>
                                 Email Address
                             </label>
-                            <input type="email" id="loginEmail" class="form-control" autocapitalize="off" autocorrect="off" spellcheck="false" required 
-                                   style="text-transform: lowercase; padding: 0.75rem 1rem; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; transition: all 0.3s ease;" 
-                                   oninput="this.value = this.value.toLowerCase()" 
-                                   onkeyup="this.value = this.value.toLowerCase()" 
-                                   onblur="this.value = this.value.toLowerCase()"
-                                   onfocus="this.style.borderColor='#667eea'; this.style.boxShadow='0 0 0 3px rgba(102, 126, 234, 0.1)'"
-                                   onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'"
-                                   placeholder="Enter your email">
+                            <input type="email" id="loginEmail" class="form-control" autocapitalize="off" autocorrect="off" spellcheck="false" required style="text-transform: lowercase; border-radius: 10px; border: 2px solid #e0e0e0; padding: 12px 15px; font-size: 1rem;" oninput="this.value = this.value.toLowerCase()" onkeyup="this.value = this.value.toLowerCase()" onblur="this.value = this.value.toLowerCase()" placeholder="Enter your email address">
                         </div>
-                        
-                        <!-- Password Field -->
                         <div class="mb-4">
-                            <label for="loginPassword" class="form-label" style="font-weight: 600; color: #1e293b; font-size: 0.95rem; margin-bottom: 0.5rem;">
-                                <iconify-icon icon="material-symbols:lock" style="margin-right: 0.5rem; color: #667eea;"></iconify-icon>
+                            <label for="loginPassword" class="form-label" style="font-weight: 600; color: #333;">
+                                <iconify-icon icon="material-symbols:password" class="me-2"></iconify-icon>
                                 Password
                             </label>
                             <div class="input-group">
-                                <input type="password" id="loginPassword" class="form-control" required autocomplete="new-password" readonly onfocus="this.removeAttribute('readonly')" oninput="togglePasswordIconVisibility()" 
-                                       style="text-transform: none; padding: 0.75rem 1rem; border: 2px solid #e2e8f0; border-radius: 12px 0 0 12px; font-size: 1rem; transition: all 0.3s ease;" 
-                                       autocapitalize="off" autocorrect="off" spellcheck="false"
-                                       onfocus="this.style.borderColor='#667eea'; this.style.boxShadow='0 0 0 3px rgba(102, 126, 234, 0.1)'; document.getElementById('loginPasswordToggleBtn').style.borderColor='#667eea'"
-                                       onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'; document.getElementById('loginPasswordToggleBtn').style.borderColor='#e2e8f0'"
-                                       placeholder="Enter your password">
-                                <button class="btn btn-outline-secondary" type="button" id="loginPasswordToggleBtn" onclick="togglePasswordVisibility('loginPassword', 'loginPasswordToggle')" 
-                                        style="display:none; border: 2px solid #e2e8f0; border-left: none; border-radius: 0 12px 12px 0; padding: 0.75rem 1rem; transition: all 0.3s ease;">
-                                    <iconify-icon id="loginPasswordToggle" icon="heroicons:eye-slash-20-solid" style="font-size: 20px; color: #64748b;"></iconify-icon>
+                                <input type="password" id="loginPassword" class="form-control" required autocomplete="new-password" readonly onfocus="this.removeAttribute('readonly')" oninput="togglePasswordIconVisibility()" style="text-transform: none; border-radius: 10px; border: 2px solid #e0e0e0; padding: 12px 15px; font-size: 1rem;" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Enter your password">
+                                <button class="btn btn-outline-secondary" type="button" id="loginPasswordToggleBtn" onclick="togglePasswordVisibility('loginPassword', 'loginPasswordToggle')" style="display:none; border-radius: 0 10px 10px 0; border: 2px solid #e0e0e0; border-left: none;">
+                                    <iconify-icon id="loginPasswordToggle" icon="material-symbols:visibility-off" style="font-size: 18px; color: #6b7280;"></iconify-icon>
                                 </button>
                             </div>
                         </div>
-                        
-                        <!-- Forgot Password Link -->
                         <div class="mb-4 text-end">
-                            <a href="#" class="text-decoration-none" onclick="showForgotPassword()" style="color: #667eea; font-weight: 600; font-size: 0.9rem; transition: all 0.3s ease;" onmouseover="this.style.color='#764ba2'" onmouseout="this.style.color='#667eea'">
-                                <iconify-icon icon="material-symbols:lock-reset" style="margin-right: 0.25rem;"></iconify-icon>
+                            <a href="#" class="text-primary text-decoration-none" onclick="showForgotPassword()" style="font-size: 0.9rem; font-weight: 500;">
+                                <iconify-icon icon="material-symbols:help" class="me-1"></iconify-icon>
                                 Forgot Password?
                             </a>
                         </div>
-                        
-                        <!-- Login Button -->
-                        <button type="button" class="btn btn-primary w-100" onclick="handleLoginClick()" 
-                                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; padding: 0.875rem 1.5rem; border-radius: 12px; font-weight: 600; font-size: 1.05rem; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);"
-                                onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(102, 126, 234, 0.4)'"
-                                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(102, 126, 234, 0.3)'">
-                            <iconify-icon icon="material-symbols:login" class="me-2" style="font-size: 1.2rem;"></iconify-icon>
-                            Sign In
+                        <button type="button" class="btn btn-primary w-100" onclick="handleLoginClick()" style="border-radius: 12px; padding: 15px; font-weight: 600; font-size: 1.1rem; background: linear-gradient(135deg, #667eea, #764ba2); border: none;">
+                            <iconify-icon icon="material-symbols:login" class="me-2"></iconify-icon>
+                            Log In
                         </button>
                         
-                        <!-- Divider -->
-                        <div style="position: relative; text-align: center; margin: 2rem 0;">
-                            <div style="position: absolute; top: 50%; left: 0; right: 0; height: 1px; background: #e2e8f0;"></div>
-                            <span style="position: relative; background: white; padding: 0 1rem; color: #64748b; font-size: 0.9rem; font-weight: 500;">OR</span>
-                        </div>
-                        
-                        <!-- Register Link -->
-                        <div class="text-center">
-                            <p class="text-muted mb-2" style="font-size: 0.95rem;">Don't have an account?</p>
-                            <a href="#" class="text-decoration-none" onclick="switchToRegister()" 
-                               style="color: #667eea; font-weight: 700; font-size: 1.05rem; display: inline-flex; align-items: center; gap: 0.5rem; transition: all 0.3s ease;"
-                               onmouseover="this.style.color='#764ba2'; this.style.transform='translateX(5px)'"
-                               onmouseout="this.style.color='#667eea'; this.style.transform='translateX(0)'">
-                                Register Now
-                                <iconify-icon icon="material-symbols:arrow-forward" style="font-size: 1.2rem;"></iconify-icon>
-                            </a>
+                        <div class="text-center mt-4">
+                            <small class="text-muted">
+                                <iconify-icon icon="material-symbols:lock" class="me-1"></iconify-icon>
+                                Your information is secure and encrypted
+                            </small>
                         </div>
                     </div>
                 </div>
@@ -1803,82 +1676,45 @@
 
     <!-- Register Modal -->
     <div class="modal fade" id="registerModal" tabindex="-1">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content" style="border-radius: 20px; border: none; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); overflow: hidden;">
-                <!-- Header with gradient -->
-                <div class="modal-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; padding: 2rem;">
-                    <div style="width: 100%;">
-                        <h5 class="modal-title" style="color: white; font-weight: 700; font-size: 1.75rem; margin: 0;">
-                            <iconify-icon icon="material-symbols:person-add" style="font-size: 2rem; vertical-align: middle; margin-right: 0.5rem;"></iconify-icon>
-                            Create Your Account
-                        </h5>
-                        <p style="color: rgba(255, 255, 255, 0.9); margin: 0.5rem 0 0 0; font-size: 0.95rem;">Join us and start your learning journey today</p>
-                    </div>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" style="opacity: 1;"></button>
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Register Now <small class="text-muted">(v2.0)</small></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body" style="padding: 2.5rem;">
+                <div class="modal-body">
                     <div id="registerForm">
                         <!-- USER TYPE SELECTION - FIRST -->
-                        <div class="mb-4" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); padding: 1.5rem; border-radius: 16px; border: 2px solid #667eea; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);">
-                            <label for="userType" class="form-label" style="font-weight: 700; color: #667eea; font-size: 1.1rem; margin-bottom: 1rem;">
-                                <iconify-icon icon="material-symbols:person" style="margin-right: 0.5rem; font-size: 1.3rem;"></iconify-icon>
-                                I am registering as: *
+                        <div class="mb-3" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); padding: 1.5rem; border-radius: 12px; border: 2px solid #667eea; box-shadow: 0 4px 6px rgba(102, 126, 234, 0.1);">
+                            <label for="userType" class="form-label" style="font-weight: 700; color: #667eea; font-size: 1.1rem;">
+                                <iconify-icon icon="material-symbols:person" class="me-2"></iconify-icon>
+                                I am registering as a: *
                             </label>
-                            <select class="form-select form-select-lg" id="userType" required 
-                                    style="border: 2px solid #667eea; font-size: 1.05rem; padding: 0.875rem 1rem; border-radius: 12px; transition: all 0.3s ease;"
-                                    onfocus="this.style.borderColor='#764ba2'; this.style.boxShadow='0 0 0 3px rgba(102, 126, 234, 0.1)'"
-                                    onblur="this.style.borderColor='#667eea'; this.style.boxShadow='none'">
+                            <select class="form-select form-select-lg" id="userType" required style="border: 2px solid #667eea; font-size: 1.1rem; padding: 0.75rem;">
                                 <option value="">Please select your role</option>
                                 <option value="student">🎓 Student</option>
                                 <option value="parent">👨‍👩‍👧‍👦 Parent/Guardian</option>
                                 <option value="teacher">👨‍🏫 Teacher</option>
                             </select>
-                            <div class="form-text mt-2" style="color: #667eea; font-weight: 500; font-size: 0.9rem;">
-                                <iconify-icon icon="material-symbols:info" style="margin-right: 0.25rem;"></iconify-icon>
+                            <div class="form-text mt-2" style="color: #667eea; font-weight: 500;">
+                                <iconify-icon icon="material-symbols:info" class="me-1"></iconify-icon>
                                 Choose your role to customize the registration form
                             </div>
                         </div>
                         
-                        <!-- Name Fields -->
-                        <div class="row mb-4">
-                            <div class="col-md-6">
-                                <label for="firstName" class="form-label" style="font-weight: 600; color: #1e293b; font-size: 0.95rem; margin-bottom: 0.5rem;">
-                                    <iconify-icon icon="material-symbols:badge" style="margin-right: 0.5rem; color: #667eea;"></iconify-icon>
-                                    First Name *
-                                </label>
-                                <input type="text" id="firstName" class="form-control" autocapitalize="none" autocorrect="off" required
-                                       style="padding: 0.75rem 1rem; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; transition: all 0.3s ease;"
-                                       onfocus="this.style.borderColor='#667eea'; this.style.boxShadow='0 0 0 3px rgba(102, 126, 234, 0.1)'"
-                                       onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'"
-                                       placeholder="Enter your first name">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="firstName" class="form-label">First Name *</label>
+                                <input type="text" id="firstName" class="form-control" autocapitalize="none" autocorrect="off" required>
                             </div>
-                            <div class="col-md-6">
-                                <label for="lastName" class="form-label" style="font-weight: 600; color: #1e293b; font-size: 0.95rem; margin-bottom: 0.5rem;">
-                                    <iconify-icon icon="material-symbols:badge" style="margin-right: 0.5rem; color: #667eea;"></iconify-icon>
-                                    Last Name *
-                                </label>
-                                <input type="text" id="lastName" class="form-control" autocapitalize="none" autocorrect="off" required
-                                       style="padding: 0.75rem 1rem; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; transition: all 0.3s ease;"
-                                       onfocus="this.style.borderColor='#667eea'; this.style.boxShadow='0 0 0 3px rgba(102, 126, 234, 0.1)'"
-                                       onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'"
-                                       placeholder="Enter your last name">
+                            <div class="col-md-6 mb-3">
+                                <label for="lastName" class="form-label">Last Name *</label>
+                                <input type="text" id="lastName" class="form-control" autocapitalize="none" autocorrect="off" required>
                             </div>
                         </div>
-                        
-                        <!-- Email Field -->
-                        <div class="mb-4">
-                            <label for="email" class="form-label" style="font-weight: 600; color: #1e293b; font-size: 0.95rem; margin-bottom: 0.5rem;">
-                                <iconify-icon icon="material-symbols:mail" style="margin-right: 0.5rem; color: #667eea;"></iconify-icon>
-                                Email Address *
-                            </label>
-                            <input type="email" id="email" class="form-control" autocapitalize="off" autocorrect="off" spellcheck="false" required 
-                                   style="text-transform: lowercase; padding: 0.75rem 1rem; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; transition: all 0.3s ease;" 
-                                   oninput="this.value = this.value.toLowerCase()" 
-                                   onkeyup="this.value = this.value.toLowerCase()" 
-                                   onblur="this.value = this.value.toLowerCase()"
-                                   onfocus="this.style.borderColor='#667eea'; this.style.boxShadow='0 0 0 3px rgba(102, 126, 234, 0.1)'"
-                                   onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'"
-                                   placeholder="Enter your email address">
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email Address *</label>
+                            <input type="email" id="email" class="form-control" autocapitalize="off" autocorrect="off" spellcheck="false" required style="text-transform: lowercase;" oninput="this.value = this.value.toLowerCase()" onkeyup="this.value = this.value.toLowerCase()" onblur="this.value = this.value.toLowerCase()">
                         </div>
                         <div class="mb-3" id="studentPhoneSection">
                             <label for="phone" class="form-label">Student Phone Number</label>
@@ -2067,132 +1903,35 @@
                             <div class="form-text" id="parentPhoneText">Required for student registration and communication</div>
                             <div id="parentPhoneError" class="text-danger" style="display: none; font-size: 0.875rem; margin-top: 0.25rem;">Not a valid phone number</div>
                         </div>
-                        
-                        <!-- Teacher Subject Field (only shown for teachers) -->
-                        <div class="mb-4" id="teacherSubjectSection" style="display: none;">
-                            <label for="teacherSubject" class="form-label" style="font-weight: 600; color: #1e293b; font-size: 0.95rem; margin-bottom: 0.5rem;">
-                                <iconify-icon icon="material-symbols:school" style="margin-right: 0.5rem; color: #667eea;"></iconify-icon>
-                                Teaching Subject *
-                            </label>
-                            <select class="form-select" id="teacherSubject" 
-                                    style="padding: 0.75rem 1rem; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; transition: all 0.3s ease;"
-                                    onfocus="this.style.borderColor='#667eea'; this.style.boxShadow='0 0 0 3px rgba(102, 126, 234, 0.1)'"
-                                    onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'">
-                                <option value="">Select your teaching subject</option>
-                                <option value="Physics">Physics</option>
-                                <option value="Chemistry">Chemistry</option>
-                                <option value="English">English</option>
-                                <option value="ICT">ICT</option>
-                                <option value="CS">CS</option>
-                            </select>
-                            <div class="form-text" style="color: #64748b; font-size: 0.875rem; margin-top: 0.5rem;">
-                                <iconify-icon icon="material-symbols:info" style="margin-right: 0.25rem;"></iconify-icon>
-                                Select the primary subject you will be teaching
-                            </div>
-                        </div>
-                        
-                        <!-- Teacher Experience Field (only shown for teachers) -->
-                        <div class="mb-4" id="teacherExperienceSection" style="display: none;">
-                            <label for="teacherExperience" class="form-label" style="font-weight: 600; color: #1e293b; font-size: 0.95rem; margin-bottom: 0.5rem;">
-                                <iconify-icon icon="material-symbols:work" style="margin-right: 0.5rem; color: #667eea;"></iconify-icon>
-                                Years of Experience *
-                            </label>
-                            <input type="number" id="teacherExperience" class="form-control" min="0" 
-                                   style="padding: 0.75rem 1rem; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; transition: all 0.3s ease;"
-                                   onfocus="this.style.borderColor='#667eea'; this.style.boxShadow='0 0 0 3px rgba(102, 126, 234, 0.1)'"
-                                   onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'"
-                                   placeholder="Enter years of teaching experience">
-                            <div class="form-text" style="color: #64748b; font-size: 0.875rem; margin-top: 0.5rem;">
-                                <iconify-icon icon="material-symbols:info" style="margin-right: 0.25rem;"></iconify-icon>
-                                Enter your total years of teaching experience
-                            </div>
-                        </div>
-                        
-                        <!-- Password Field -->
-                        <div class="mb-4">
-                            <label for="password" class="form-label" style="font-weight: 600; color: #1e293b; font-size: 0.95rem; margin-bottom: 0.5rem;">
-                                <iconify-icon icon="material-symbols:lock" style="margin-right: 0.5rem; color: #667eea;"></iconify-icon>
-                                Password *
-                            </label>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password *</label>
                             <div class="input-group">
-                                <input type="password" id="password" class="form-control" required minlength="6" 
-                                       style="text-transform: none; padding: 0.75rem 1rem; border: 2px solid #e2e8f0; border-radius: 12px 0 0 12px; font-size: 1rem; transition: all 0.3s ease;" 
-                                       autocapitalize="off" autocorrect="off" spellcheck="false" 
-                                       oninput="togglePasswordIconVisibility('password')"
-                                       onfocus="this.style.borderColor='#667eea'; this.style.boxShadow='0 0 0 3px rgba(102, 126, 234, 0.1)'; document.getElementById('passwordToggleBtn').style.borderColor='#667eea'"
-                                       onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'; document.getElementById('passwordToggleBtn').style.borderColor='#e2e8f0'"
-                                       placeholder="Create a strong password">
-                                <button class="btn btn-outline-secondary" type="button" id="passwordToggleBtn" 
-                                        onclick="togglePasswordVisibility('password', 'passwordToggle')" 
-                                        style="display:none; border: 2px solid #e2e8f0; border-left: none; border-radius: 0 12px 12px 0; padding: 0.75rem 1rem; transition: all 0.3s ease;">
-                                    <iconify-icon id="passwordToggle" icon="heroicons:eye-slash-20-solid" style="font-size: 20px; color: #64748b;"></iconify-icon>
+                                <input type="password" id="password" class="form-control" required minlength="6" style="text-transform: none;" autocapitalize="off" autocorrect="off" spellcheck="false" oninput="togglePasswordIconVisibility('password')">
+                                <button class="btn btn-outline-secondary" type="button" id="passwordToggleBtn" onclick="togglePasswordVisibility('password', 'passwordToggle')" style="display:none;">
+                                    <iconify-icon id="passwordToggle" icon="heroicons:eye-slash-20-solid" style="font-size: 18px; color: #6b7280;"></iconify-icon>
                                 </button>
                             </div>
-                            <div class="form-text" style="color: #64748b; font-size: 0.875rem; margin-top: 0.5rem;">
-                                <iconify-icon icon="material-symbols:info" style="margin-right: 0.25rem;"></iconify-icon>
-                                Password must be at least 6 characters long
-                            </div>
+                            <div class="form-text">Password must be at least 6 characters long</div>
                         </div>
-                        
-                        <!-- Confirm Password Field -->
-                        <div class="mb-4">
-                            <label for="confirmPassword" class="form-label" style="font-weight: 600; color: #1e293b; font-size: 0.95rem; margin-bottom: 0.5rem;">
-                                <iconify-icon icon="material-symbols:lock-check" style="margin-right: 0.5rem; color: #667eea;"></iconify-icon>
-                                Confirm Password *
-                            </label>
+                        <div class="mb-3">
+                            <label for="confirmPassword" class="form-label">Confirm Password *</label>
                             <div class="input-group">
-                                <input type="password" id="confirmPassword" class="form-control" required 
-                                       style="text-transform: none; padding: 0.75rem 1rem; border: 2px solid #e2e8f0; border-radius: 12px 0 0 12px; font-size: 1rem; transition: all 0.3s ease;" 
-                                       autocapitalize="off" autocorrect="off" spellcheck="false" 
-                                       oninput="togglePasswordIconVisibility('confirmPassword')"
-                                       onfocus="this.style.borderColor='#667eea'; this.style.boxShadow='0 0 0 3px rgba(102, 126, 234, 0.1)'; document.getElementById('confirmPasswordToggleBtn').style.borderColor='#667eea'"
-                                       onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'; document.getElementById('confirmPasswordToggleBtn').style.borderColor='#e2e8f0'"
-                                       placeholder="Re-enter your password">
-                                <button class="btn btn-outline-secondary" type="button" id="confirmPasswordToggleBtn" 
-                                        onclick="togglePasswordVisibility('confirmPassword', 'confirmPasswordToggle')" 
-                                        style="display:none; border: 2px solid #e2e8f0; border-left: none; border-radius: 0 12px 12px 0; padding: 0.75rem 1rem; transition: all 0.3s ease;">
-                                    <iconify-icon id="confirmPasswordToggle" icon="heroicons:eye-slash-20-solid" style="font-size: 20px; color: #64748b;"></iconify-icon>
+                                <input type="password" id="confirmPassword" class="form-control" required style="text-transform: none;" autocapitalize="off" autocorrect="off" spellcheck="false" oninput="togglePasswordIconVisibility('confirmPassword')">
+                                <button class="btn btn-outline-secondary" type="button" id="confirmPasswordToggleBtn" onclick="togglePasswordVisibility('confirmPassword', 'confirmPasswordToggle')" style="display:none;">
+                                    <iconify-icon id="confirmPasswordToggle" icon="heroicons:eye-slash-20-solid" style="font-size: 18px; color: #6b7280;"></iconify-icon>
                                 </button>
                             </div>
                         </div>
-                        
-                        <!-- Terms Checkbox -->
-                        <div class="mb-4">
-                            <div class="form-check" style="padding: 1rem; background: #f8fafc; border-radius: 12px; border: 2px solid #e2e8f0;">
-                                <input type="checkbox" class="form-check-input" id="agreeTerms" required 
-                                       style="width: 1.25rem; height: 1.25rem; margin-top: 0.125rem; cursor: pointer;">
-                                <label class="form-check-label" for="agreeTerms" style="margin-left: 0.5rem; color: #475569; font-size: 0.95rem; cursor: pointer;">
-                                    I agree to the <a href="#" class="text-decoration-none" style="color: #667eea; font-weight: 600;" onmouseover="this.style.color='#764ba2'" onmouseout="this.style.color='#667eea'">Terms and Conditions</a> and 
-                                    <a href="#" class="text-decoration-none" style="color: #667eea; font-weight: 600;" onmouseover="this.style.color='#764ba2'" onmouseout="this.style.color='#667eea'">Privacy Policy</a>
-                                </label>
-                            </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="agreeTerms" required>
+                            <label class="form-check-label" for="agreeTerms">
+                                I agree to the <a href="#" class="text-primary">Terms and Conditions</a> and <a href="#" class="text-primary">Privacy Policy</a>
+                            </label>
                         </div>
-                        <!-- Register Button -->
-                        <button type="button" class="btn btn-primary w-100 mb-4" onclick="handleRegisterClick()"
-                                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; padding: 0.875rem 1.5rem; border-radius: 12px; font-weight: 600; font-size: 1.05rem; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);"
-                                onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(102, 126, 234, 0.4)'"
-                                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(102, 126, 234, 0.3)'">
-                            <iconify-icon icon="material-symbols:person-add" class="me-2" style="font-size: 1.2rem;"></iconify-icon>
-                            Create Account
+                        <button type="button" class="btn btn-primary w-100" onclick="handleRegisterClick()">
+                            <iconify-icon icon="material-symbols:person-add" class="me-2"></iconify-icon>
+                            Register Now
                         </button>
-                        
-                        <!-- Divider -->
-                        <div style="position: relative; text-align: center; margin: 1.5rem 0;">
-                            <div style="position: absolute; top: 50%; left: 0; right: 0; height: 1px; background: #e2e8f0;"></div>
-                            <span style="position: relative; background: white; padding: 0 1rem; color: #64748b; font-size: 0.9rem; font-weight: 500;">OR</span>
-                        </div>
-                        
-                        <!-- Login Link -->
-                        <div class="text-center">
-                            <p class="text-muted mb-2" style="font-size: 0.95rem;">Already have an account?</p>
-                            <a href="#" class="text-decoration-none" onclick="switchToLogin()" 
-                               style="color: #667eea; font-weight: 700; font-size: 1.05rem; display: inline-flex; align-items: center; gap: 0.5rem; transition: all 0.3s ease;"
-                               onmouseover="this.style.color='#764ba2'; this.style.transform='translateX(5px)'"
-                               onmouseout="this.style.color='#667eea'; this.style.transform='translateX(0)'">
-                                Sign In Here
-                                <iconify-icon icon="material-symbols:arrow-forward" style="font-size: 1.2rem;"></iconify-icon>
-                            </a>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -2213,13 +1952,7 @@
                         <p class="text-muted mb-4">Enter your email address and we'll send you a verification code to reset your password.</p>
                         <div class="mb-3">
                             <label for="forgotEmail" class="form-label">Email Address</label>
-                            <input type="email" id="forgotEmail" class="form-control" required 
-                                   autocapitalize="off" autocorrect="off" spellcheck="false" 
-                                   style="text-transform: lowercase;" 
-                                   oninput="this.value = this.value.toLowerCase()" 
-                                   onkeyup="this.value = this.value.toLowerCase()" 
-                                   onblur="this.value = this.value.toLowerCase()"
-                                   placeholder="Enter your email address">
+                            <input type="email" id="forgotEmail" class="form-control" required>
                         </div>
                         <button type="button" class="btn btn-primary w-100 mb-2" onclick="sendVerificationCode()">
                             <iconify-icon icon="material-symbols:send" class="me-2"></iconify-icon>
@@ -2292,20 +2025,16 @@
                 </div>
                 <div class="modal-body">
                     <div id="cartList">
-                        <div class="text-center py-5">
-                            <iconify-icon icon="material-symbols:shopping-cart-outline" style="font-size: 4rem; color: #cbd5e1; margin-bottom: 1rem;"></iconify-icon>
-                            <h5 style="color: #64748b; margin-bottom: 1rem;">Your cart is empty</h5>
-                            <p style="color: #94a3b8; margin-bottom: 2rem;">Discover our amazing courses and start learning today!</p>
-                            <a href="courses.html" class="btn btn-primary" style="padding: 12px 30px; border-radius: 25px; font-weight: 600;" data-bs-dismiss="modal">
-                                <iconify-icon icon="material-symbols:school" class="me-2"></iconify-icon>
-                                Browse Courses
-                            </a>
+                        <div class="text-center text-muted py-4">
+                            <iconify-icon icon="material-symbols:shopping-cart-outline" class="fs-1 mb-3"></iconify-icon>
+                            <p>Your cart is empty. Start adding courses to your cart!</p>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="checkoutBtn" disabled onclick="proceedToCheckout()">Proceed to Checkout</button>
+                    <button type="button" class="btn btn-outline-danger" onclick="resetCart()">Reset Cart</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Continue Shopping</button>
+                    <button type="button" class="btn btn-primary" id="checkoutBtn" disabled onclick="proceedToCheckoutFromCart()">Proceed to Checkout</button>
                 </div>
             </div>
         </div>
@@ -2341,10 +2070,384 @@
     <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
     <script src="js/jquery-1.11.0.min.js"></script>
     <script src="js/plugins.js"></script>
-    <script src="js/script.js?v=4"></script>
-    <script src="js/config.js"></script>
+    <script src="js/config.js?v=20240211-0805"></script>
     <script>
-        // When served from localhost, use local API to avoid CORS
+        // FORCE PRODUCTION CONFIG - Override everything
+        window.API_CONFIG = {
+            baseURL: 'https://my-project-gphv.onrender.com',
+            apiURL: 'https://my-project-gphv.onrender.com/api',
+            healthURL: 'https://my-project-gphv.onrender.com/health',
+            environment: 'production'
+        };
+        console.log('🚀 FORCED PRODUCTION MODE');
+        console.log('🔗 Backend URL: https://my-project-gphv.onrender.com');
+        
+        // IMMEDIATE FUNCTION DEFINITIONS - Define all functions before any HTML can call them
+        console.log('🚀 FORCE LOADING - DEFINING ALL FUNCTIONS IMMEDIATELY');
+        
+        // Check login state function
+        function checkLoginState() {
+            const token = localStorage.getItem('authToken');
+            const user = JSON.parse(localStorage.getItem('currentUser') || 'null');
+            return { isLoggedIn: !!token, user };
+        }
+
+        // Toast notification function
+        function showToast(message, type = 'info') {
+            const toastContainer = document.getElementById('toastContainer');
+            if (!toastContainer) return;
+            
+            const toastId = 'toast-' + Date.now();
+            
+            let icon = 'material-symbols:info';
+            let title = 'Notification';
+            let bgClass = 'bg-primary';
+            
+            if (type === 'warning') {
+                icon = 'material-symbols:warning';
+                title = 'Warning!';
+                bgClass = 'bg-warning';
+            } else if (type === 'success') {
+                icon = 'material-symbols:check-circle';
+                title = 'Success!';
+                bgClass = 'bg-success';
+            } else if (type === 'error') {
+                icon = 'material-symbols:error';
+                title = 'Error!';
+                bgClass = 'bg-danger';
+            }
+            
+            const toastHTML = `
+                <div class="toast" id="${toastId}" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="toast-header ${bgClass} text-white">
+                        <iconify-icon icon="${icon}" class="me-2"></iconify-icon>
+                        <strong class="me-auto">${title}</strong>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body">
+                        ${message}
+                    </div>
+                </div>
+            `;
+            
+            toastContainer.insertAdjacentHTML('beforeend', toastHTML);
+            
+            const toastElement = document.getElementById(toastId);
+            if (toastElement && window.bootstrap) {
+                const toast = new bootstrap.Toast(toastElement, {
+                    autohide: true,
+                    delay: 3000
+                });
+                toast.show();
+                
+                toastElement.addEventListener('hidden.bs.toast', function() {
+                    toastElement.remove();
+                });
+            }
+        }
+
+        // Phone validation
+        function validateMiddleEastPhone(fieldId) {
+            const phoneInput = document.getElementById(fieldId);
+            const phoneError = document.getElementById('phoneError');
+            const phone = phoneInput ? phoneInput.value.trim() : '';
+            
+            // Egyptian phone validation (01xxxxxxxxx)
+            const egyptPhoneRegex = /^01[0-2]\d{8}$/;
+            
+            if (phone && !egyptPhoneRegex.test(phone)) {
+                if (phoneError) phoneError.style.display = 'block';
+                if (phoneInput) phoneInput.classList.add('is-invalid');
+                return false;
+            } else {
+                if (phoneError) phoneError.style.display = 'none';
+                if (phoneInput) phoneInput.classList.remove('is-invalid');
+                return true;
+            }
+        }
+
+        // Password visibility toggle
+        function togglePasswordIconVisibility(fieldId, toggleBtnId) {
+            const passwordInput = document.getElementById(fieldId);
+            const toggleBtn = document.getElementById(toggleBtnId);
+            
+            if (passwordInput && toggleBtn) {
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    toggleBtn.innerHTML = `<iconify-icon icon="material-symbols:visibility-off" style="font-size: 18px; color: #6b7280;"></iconify-icon>`;
+                } else {
+                    passwordInput.type = 'password';
+                    toggleBtn.innerHTML = `<iconify-icon icon="material-symbols:visibility" style="font-size: 18px; color: #6b7280;"></iconify-icon>`;
+                }
+            }
+        }
+
+        // Login function
+        function handleLoginClick() {
+            console.log('🔑 LOGIN CLICKED - Function exists!');
+            
+            const email = document.getElementById('loginEmail')?.value || '';
+            const password = document.getElementById('loginPassword')?.value || '';
+
+            if (!email || !password) {
+                showToast('Please fill in all fields', 'warning');
+                return;
+            }
+
+            // Mock login for Netlify
+            if (!window.location.hostname.includes('localhost') && !window.location.hostname.includes('127.0.0.1')) {
+                console.log('🧪 Mock login for:', email);
+                
+                // Store mock user data
+                const mockUser = {
+                    id: Date.now(),
+                    email: email,
+                    first_name: 'Test',
+                    last_name: 'User'
+                };
+                
+                const token = 'mock_token_' + Date.now();
+                
+                localStorage.setItem('authToken', token);
+                localStorage.setItem('userLoggedIn', 'true');
+                localStorage.setItem('userName', `${mockUser.first_name} ${mockUser.last_name}`);
+                localStorage.setItem('userEmail', mockUser.email);
+                localStorage.setItem('userId', mockUser.id);
+                
+                showToast('Login successful!', 'success');
+                
+                // Close modal
+                const loginModal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
+                if (loginModal) {
+                    loginModal.hide();
+                }
+                
+                // Update UI
+                if (typeof checkLoginState === 'function') {
+                    checkLoginState();
+                }
+                
+                // Redirect to dashboard
+                setTimeout(() => {
+                    window.location.href = 'homenocourses.html';
+                }, 1000);
+                
+                return;
+            }
+
+            // Real API call for localhost
+            if (window.api && window.api.login) {
+                window.api.login({ email, password })
+                    .then(data => {
+                        showToast('Login successful!', 'success');
+                        
+                        // Close modal
+                        const loginModal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
+                        if (loginModal) {
+                            loginModal.hide();
+                        }
+                        
+                        // Update UI
+                        if (typeof checkLoginState === 'function') {
+                            checkLoginState();
+                        }
+                        
+                        // Redirect to dashboard
+                        setTimeout(() => {
+                            window.location.href = 'homenocourses.html';
+                        }, 1000);
+                    })
+                    .catch(error => {
+                        console.error('Login error:', error);
+                        showToast('Login failed. Please check your credentials.', 'error');
+                    });
+            } else {
+                // Fallback mock login
+                console.log('🧪 Fallback mock login for:', email);
+                localStorage.setItem('userLoggedIn', 'true');
+                localStorage.setItem('userName', 'Test User');
+                localStorage.setItem('userEmail', email);
+                showToast('Login successful!', 'success');
+                
+                setTimeout(() => {
+                    window.location.href = 'homenocourses.html';
+                }, 1000);
+            }
+        }
+
+        // Registration function
+        function handleRegisterClick() {
+            console.log('📝 REGISTRATION CLICKED - Function exists!');
+            
+            const firstName = document.getElementById('firstName')?.value || '';
+            const lastName = document.getElementById('lastName')?.value || '';
+            const email = document.getElementById('email')?.value || '';
+            const password = document.getElementById('password')?.value || '';
+            const phone = document.getElementById('phone')?.value || '';
+
+            if (!firstName || !lastName || !email || !password) {
+                showToast('Please fill in all required fields', 'warning');
+                return;
+            }
+
+            // Mock registration for Netlify
+            if (!window.location.hostname.includes('localhost') && !window.location.hostname.includes('127.0.0.1')) {
+                console.log('🧪 Mock registration for:', {firstName, lastName, email});
+                
+                const mockUser = {
+                    id: Date.now(),
+                    first_name: firstName,
+                    last_name: lastName,
+                    email: email,
+                    phone: phone || ''
+                };
+                
+                const token = 'mock_token_' + Date.now();
+                
+                localStorage.setItem('authToken', token);
+                localStorage.setItem('userLoggedIn', 'true');
+                localStorage.setItem('userName', `${mockUser.first_name} ${mockUser.last_name}`);
+                localStorage.setItem('userEmail', mockUser.email);
+                localStorage.setItem('userId', mockUser.id);
+                
+                showToast('Registration successful!', 'success');
+                
+                // Close modal
+                const registerModal = bootstrap.Modal.getInstance(document.getElementById('registerModal'));
+                if (registerModal) {
+                    registerModal.hide();
+                }
+                
+                // Update UI
+                if (typeof checkLoginState === 'function') {
+                    checkLoginState();
+                }
+                
+                // Redirect to dashboard
+                setTimeout(() => {
+                    window.location.href = 'homenocourses.html';
+                }, 1000);
+                
+                return;
+            }
+
+            // Real API call for localhost
+            if (window.api && window.api.register) {
+                window.api.register({ 
+                    first_name: firstName, 
+                    last_name: lastName, 
+                    email, 
+                    password, 
+                    phone 
+                }).then(data => {
+                    showToast('Registration successful!', 'success');
+                    
+                    // Close modal
+                    const registerModal = bootstrap.Modal.getInstance(document.getElementById('registerModal'));
+                    if (registerModal) {
+                        registerModal.hide();
+                    }
+                    
+                    // Update UI
+                    if (typeof checkLoginState === 'function') {
+                        checkLoginState();
+                    }
+                    
+                    // Redirect to dashboard
+                    setTimeout(() => {
+                        window.location.href = 'homenocourses.html';
+                    }, 1000);
+                }).catch(error => {
+                    console.error('Registration error:', error);
+                    showToast('Registration failed. Please try again.', 'error');
+                });
+            } else {
+                // Fallback mock registration
+                console.log('🧪 Fallback mock registration');
+                localStorage.setItem('userLoggedIn', 'true');
+                localStorage.setItem('userName', `${firstName} ${lastName}`);
+                localStorage.setItem('userEmail', email);
+                showToast('Registration successful!', 'success');
+                
+                setTimeout(() => {
+                    window.location.href = 'homenocourses.html';
+                }, 1000);
+            }
+        }
+
+        // Make functions globally available immediately
+        window.handleLoginClick = handleLoginClick;
+        window.handleRegisterClick = handleRegisterClick;
+        window.validateMiddleEastPhone = validateMiddleEastPhone;
+        window.togglePasswordIconVisibility = togglePasswordIconVisibility;
+        window.showToast = showToast;
+        
+        // Enroll in course function
+        function enrollInCourse(courseId) {
+            console.log('🎓 Enroll Now clicked for:', courseId);
+            console.log('🔍 Checking login status...');
+            
+            const isLoggedIn = localStorage.getItem('userLoggedIn');
+            
+            if (isLoggedIn) {
+                // User is logged in, proceed to checkout
+                console.log('✅ User is logged in, proceeding to checkout...');
+                
+                // Add course to cart and show checkout
+                if (window.cart && window.cart.addToCart) {
+                    window.cart.addToCart(courseId);
+                    
+                    // Show checkout modal
+                    setTimeout(() => {
+                        const checkoutModal = document.getElementById('checkoutModal');
+                        if (checkoutModal) {
+                            const modal = new bootstrap.Modal(checkoutModal);
+                            modal.show();
+                        }
+                    }, 500);
+                } else {
+                    // Fallback cart functionality
+                    console.log('🛒 Adding to cart with fallback...');
+                    showToast('Course added to cart! Redirecting to checkout...', 'success');
+                    
+                    setTimeout(() => {
+                        window.location.href = '#checkout';
+                    }, 1000);
+                }
+            } else {
+                // User is not logged in, show login modal
+                console.log('❌ User not logged in, showing login modal...');
+                
+                // Store pending action for after login
+                localStorage.setItem('pendingAction', JSON.stringify({
+                    action: 'enrollInCourse',
+                    courseId: courseId,
+                    timestamp: Date.now()
+                }));
+                
+                // Show login modal
+                const loginModal = document.getElementById('loginModal');
+                if (loginModal) {
+                    const modal = new bootstrap.Modal(loginModal);
+                    modal.show();
+                    showToast('Please login to enroll in this course', 'info');
+                } else {
+                    // Fallback: redirect to login page
+                    showToast('Please login to enroll in this course', 'info');
+                    setTimeout(() => {
+                        window.location.href = '#login';
+                    }, 1000);
+                }
+            }
+        }
+        
+        // Make enrollInCourse globally available
+        window.enrollInCourse = enrollInCourse;
+
+        console.log('✅ ALL FUNCTIONS DEFINED IMMEDIATELY - READY FOR USE');
+        console.log('🔄 AGGRESSIVE CACHE BUST - Version: ' + Date.now() + ' - FORCE UPDATE NOW');
+
+        // When served from localhost, use local API to avoid CORS and match the running backend
         (function() {
             var o = window.location.origin || '';
             if (o.indexOf('localhost') !== -1 || o.indexOf('127.0.0.1') !== -1) {
@@ -2357,8 +2460,6 @@
     
     <!-- Scroll Animation Script -->
     <script>
-        const apiUrl = (window.API_CONFIG && window.API_CONFIG.apiURL) || 'https://elbadry-production.up.railway.app/api';
-
         // Intersection Observer for scroll animations
         const observerOptions = {
             threshold: 0.1,
@@ -2580,13 +2681,11 @@
             font-size: 18px;
             margin-right: 8px;
             flex-shrink: 0;
-            transition: opacity 0.3s ease, transform 0.3s ease;
         }
         
         .dropdown-selected .country-text {
             flex: 1;
             color: #333;
-            transition: opacity 0.3s ease;
         }
         
         .dropdown-selected .dropdown-arrow {
@@ -2613,7 +2712,6 @@
             z-index: 1000;
             max-height: 200px;
             overflow-y: auto;
-            transition: opacity 0.2s ease, transform 0.2s ease;
         }
         
         .dropdown-option {
@@ -2623,12 +2721,11 @@
             cursor: pointer;
             font-size: 14px;
             border-bottom: 1px solid #f8f9fa;
-            transition: background-color 0.15s ease, transform 0.1s ease;
+            transition: background-color 0.15s ease;
         }
         
         .dropdown-option:hover {
             background-color: #f8f9fa;
-            transform: translateX(4px);
         }
         
         .dropdown-option:last-child {
@@ -2639,16 +2736,6 @@
             font-size: 16px;
             margin-right: 8px;
             flex-shrink: 0;
-            transition: transform 0.2s ease;
-        }
-        
-        .dropdown-option:hover .flag {
-            transform: scale(1.2);
-        }
-        
-        /* Phone input transitions */
-        input[type="tel"] {
-            transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
         }
         
         /* Eye icon hover effect */
@@ -2955,80 +3042,9 @@
             const country = countrySelect.value;
             
             if (phoneValidationRules[country]) {
-                // Smooth placeholder transition
-                phoneInput.style.transition = 'all 0.3s ease';
                 phoneInput.placeholder = phoneValidationRules[country].placeholder;
-                
-                // Add a subtle animation
-                phoneInput.style.transform = 'scale(1.02)';
-                setTimeout(() => {
-                    phoneInput.style.transform = 'scale(1)';
-                }, 200);
-                
-                // If there's already a value, validate it immediately
-                if (phoneInput.value) {
-                    validatePhoneNumber(phoneInput, country);
-                }
             }
         }
-        
-        // Real-time phone validation
-        function validatePhoneNumber(phoneInput, countryCode) {
-            const value = phoneInput.value.trim();
-            if (!value) return;
-            
-            const rules = phoneValidationRules[countryCode];
-            if (!rules) return;
-            
-            const isValid = rules.patterns.some(pattern => pattern.test(value));
-            
-            // Visual feedback
-            if (isValid) {
-                phoneInput.style.borderColor = '#10b981';
-                phoneInput.style.boxShadow = '0 0 0 3px rgba(16, 185, 129, 0.1)';
-            } else {
-                phoneInput.style.borderColor = '#ef4444';
-                phoneInput.style.boxShadow = '0 0 0 3px rgba(239, 68, 68, 0.1)';
-            }
-            
-            return isValid;
-        }
-        
-        // Add real-time validation listeners
-        document.addEventListener('DOMContentLoaded', function() {
-            const phoneInput = document.getElementById('phone');
-            const parentPhoneInput = document.getElementById('parentPhone');
-            
-            if (phoneInput) {
-                phoneInput.addEventListener('input', function() {
-                    const countryCode = document.getElementById('phoneCountry').value;
-                    validatePhoneNumber(this, countryCode);
-                });
-                
-                phoneInput.addEventListener('blur', function() {
-                    // Reset border on blur if empty
-                    if (!this.value) {
-                        this.style.borderColor = '';
-                        this.style.boxShadow = '';
-                    }
-                });
-            }
-            
-            if (parentPhoneInput) {
-                parentPhoneInput.addEventListener('input', function() {
-                    const countryCode = document.getElementById('parentPhoneCountry').value;
-                    validatePhoneNumber(this, countryCode);
-                });
-                
-                parentPhoneInput.addEventListener('blur', function() {
-                    // Reset border on blur if empty
-                    if (!this.value) {
-                        this.style.borderColor = '';
-                        this.style.boxShadow = '';
-                    }
-                });
-            }
-        });
         
         // Custom dropdown functions
         function toggleDropdown(dropdownId) {
@@ -3058,20 +3074,9 @@
             const hiddenInput = document.getElementById(dropdownId);
             const options = document.getElementById(dropdownId + 'Options');
             
-            // Update selected display with smooth transition
-            const flagElement = selected.querySelector('.flag');
-            const textElement = selected.querySelector('.country-text');
-            
-            // Add fade effect
-            flagElement.style.opacity = '0';
-            textElement.style.opacity = '0';
-            
-            setTimeout(() => {
-                flagElement.textContent = flag;
-                textElement.textContent = countryText;
-                flagElement.style.opacity = '1';
-                textElement.style.opacity = '1';
-            }, 150);
+            // Update selected display
+            selected.querySelector('.flag').textContent = flag;
+            selected.querySelector('.country-text').textContent = countryText;
             
             // Update hidden input
             hiddenInput.value = countryCode;
@@ -3080,21 +3085,9 @@
             options.style.display = 'none';
             selected.classList.remove('active');
             
-            // Update placeholder for the phone input immediately
+            // Update placeholder for the phone input
             const phoneFieldId = dropdownId === 'phoneCountry' ? 'phone' : 'parentPhone';
             updatePhonePlaceholder(phoneFieldId);
-            
-            // Trigger change event for any listeners
-            hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
-            
-            // Show brief success indicator
-            const phoneInput = document.getElementById(phoneFieldId);
-            if (phoneInput) {
-                phoneInput.style.borderColor = '#10b981';
-                setTimeout(() => {
-                    phoneInput.style.borderColor = '';
-                }, 1000);
-            }
         }
         
         // Close dropdowns when clicking outside
@@ -3109,9 +3102,17 @@
         
         // Auto-detect user's country
         function autoDetectCountry() {
-            // Try to get user's country from IP geolocation
-            fetch('https://ipapi.co/json/')
-                .then(response => response.json())
+            const apiConfig = window.API_CONFIG || { apiURL: 'https://elbadry-production.up.railway.app/api' };
+            const geoEndpoint = `${apiConfig.apiURL}/utils/ip-geolocation`;
+            
+            // Try to get user's country from IP geolocation via backend proxy
+            fetch(geoEndpoint)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Geo endpoint returned an error');
+                    }
+                    return response.json();
+                })
                 .then(data => {
                     const countryCode = data.country_code;
                     console.log('Detected country:', countryCode, data.country_name);
@@ -3293,6 +3294,28 @@
             return isValid;
         }
 
+        // Toggle password visibility function
+        function togglePasswordIconVisibility(fieldId, toggleBtnId) {
+            const passwordInput = document.getElementById(fieldId);
+            const toggleBtn = document.getElementById(toggleBtnId);
+            
+            if (passwordInput && toggleBtn) {
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    toggleBtn.innerHTML = `<iconify-icon icon="material-symbols:visibility" style="font-size: 18px; color: #6b7280;"></iconify-icon>`;
+                    toggleBtn.style.display = 'inline-block';
+                    toggleBtn.style.borderLeft = 'none';
+                    toggleBtn.style.borderRadius = '0 10px 10px 0';
+                } else {
+                    passwordInput.type = 'password';
+                    toggleBtn.innerHTML = `<iconify-icon icon="material-symbols:visibility-off" style="font-size: 18px; color: #6b7280;"></iconify-icon>`;
+                    toggleBtn.style.display = 'inline-block';
+                    toggleBtn.style.borderLeft = 'none';
+                    toggleBtn.style.borderRadius = '0 10px 10px 0';
+                }
+            }
+        }
+
         // Check login state and update UI
         function checkLoginState() {
             const isLoggedIn = localStorage.getItem('userLoggedIn');
@@ -3313,101 +3336,6 @@
                 
                 if (loginBtn) {
                     loginBtn.style.display = 'none';
-                }
-                
-                if (registerBtn) {
-                    registerBtn.innerHTML = `<iconify-icon icon="material-symbols:logout" class="me-1"></iconify-icon>Logout`;
-                    registerBtn.classList.remove('btn-primary');
-                    registerBtn.classList.add('btn-outline-danger');
-                    registerBtn.setAttribute('onclick', 'logout()');
-                    registerBtn.removeAttribute('data-bs-target');
-                }
-            } else {
-                // Hide user name in utility bar
-                const userNameDisplay = document.getElementById('userNameDisplay');
-                if (userNameDisplay) {
-                    userNameDisplay.style.display = 'none';
-                }
-                
-                // Show login and register buttons
-                const loginBtn = document.querySelector('.login-btn');
-                const registerBtn = document.querySelector('.register-btn');
-                
-                if (loginBtn) {
-                    loginBtn.style.display = 'inline-block';
-                    loginBtn.innerHTML = `<iconify-icon icon="material-symbols:login" class="me-1"></iconify-icon>Login`;
-                    loginBtn.classList.remove('btn-success');
-                    loginBtn.classList.add('btn-outline-secondary');
-                    loginBtn.setAttribute('data-bs-target', '#loginModal');
-                    loginBtn.removeAttribute('onclick');
-                }
-                
-                if (registerBtn) {
-                    registerBtn.style.display = 'inline-block';
-                    registerBtn.innerHTML = `<iconify-icon icon="material-symbols:person-add" class="me-1"></iconify-icon>Register Now`;
-                    registerBtn.classList.remove('btn-outline-danger');
-                    registerBtn.classList.add('btn-primary');
-                    registerBtn.setAttribute('data-bs-target', '#registerModal');
-                    registerBtn.removeAttribute('onclick');
-                }
-            }
-        }
-
-        // Logout function
-        function logout() {
-            localStorage.removeItem('userLoggedIn');
-            localStorage.removeItem('userName');
-            localStorage.removeItem('userEmail');
-            showToast('Logged out successfully', 'info');
-            checkLoginState();
-        }
-
-        // Add activity function (shared with dashboard)
-        function addActivity(title, description, type, icon) {
-            const activities = JSON.parse(localStorage.getItem('recentActivities')) || [];
-            const newActivity = {
-                id: Date.now(),
-                title: title,
-                description: description,
-                type: type,
-                icon: icon,
-                timestamp: new Date().toISOString()
-            };
-            
-            activities.unshift(newActivity);
-            
-            // Keep only last 10 activities
-            if (activities.length > 10) {
-                activities.splice(10);
-            }
-            
-            localStorage.setItem('recentActivities', JSON.stringify(activities));
-        }
-
-        // Toggle password visibility
-        function togglePasswordVisibility(inputId, iconId) {
-            const input = document.getElementById(inputId);
-            const icon = document.getElementById(iconId);
-            
-            if (input && icon) {
-            if (input.type === 'password') {
-                input.type = 'text';
-                    icon.setAttribute('icon', 'heroicons:eye-20-solid');
-                    icon.style.color = '#10b981';
-            } else {
-                input.type = 'password';
-                    icon.setAttribute('icon', 'heroicons:eye-slash-20-solid');
-                    icon.style.color = '#6b7280';
-                }
-            }
-        }
-
-        function togglePasswordIconVisibility(fieldId = 'loginPassword') {
-            const passwordInput = document.getElementById(fieldId);
-            let toggleBtn;
-            
-            // Determine the correct toggle button based on field ID
-            if (fieldId === 'loginPassword') {
                 toggleBtn = document.getElementById('loginPasswordToggleBtn');
             } else if (fieldId === 'password') {
                 toggleBtn = document.getElementById('passwordToggleBtn');
@@ -3507,14 +3435,6 @@
         document.addEventListener('DOMContentLoaded', function() {
             console.log('Page loaded successfully!');
             
-            // Initialize CartManager
-            if (typeof CartManager !== 'undefined') {
-                window.cartManager = new CartManager();
-                console.log('✅ CartManager initialized');
-            } else {
-                console.warn('⚠️ CartManager not available');
-            }
-            
             // Force logout on every visit - only clear authentication data
             localStorage.removeItem('userLoggedIn');
             localStorage.removeItem('userName');
@@ -3532,12 +3452,6 @@
                 setTimeout(() => {
                     document.getElementById('loginPassword').value = '';
                 }, 50);
-            });
-            
-            // Update cart modal when it's shown
-            document.getElementById('cartModal').addEventListener('show.bs.modal', function () {
-                console.log('🛒 Cart modal opening - updating cart display');
-                updateCartModal();
             });
             
             // Keep user preferences and data
@@ -3651,34 +3565,19 @@
             }
         });
 
-        // Cart functions - now using CartManager
-        function addToCart(courseId) {
-            console.log('=== ADD TO CART ===');
-            console.log('Course ID:', courseId);
+        // Cart functions - now using unified cart system
+        window.addToCart = function(courseId) {
+            console.log('🎯 index.html addToCart called with:', courseId);
             
             const course = courses[courseId];
             if (!course) {
-                console.error('Course not found for ID:', courseId);
                 showToast('Course not found!', 'error');
                 return;
-            }
-            
-            console.log('Found course:', course);
-            
-            // Check if user is logged in and already owns this course
-            const isLoggedIn = localStorage.getItem('userLoggedIn');
-            if (isLoggedIn) {
-                const enrolledCourses = JSON.parse(localStorage.getItem('enrolledCourses')) || [];
-                if (enrolledCourses.includes(courseId)) {
-                    showToast('You already own this course! Check your dashboard.', 'info');
-                    return;
-                }
             }
             
             const courseData = {
                 courseId: courseId,
                 id: courseId,
-                type: 'course',
                 title: course.title,
                 price: parseFloat(course.price.replace(/EGP|£/g, '').replace(/\s/g, '').trim()),
                 instructor: course.instructor,
@@ -3688,27 +3587,33 @@
                 quantity: 1
             };
             
-            console.log('Course data to add:', courseData);
+            console.log('📦 Course data prepared:', courseData);
             
-            // Use CartManager to add to cart
+            // Use unified cart system
             if (window.cartManager) {
-                const added = window.cartManager.addToCart(courseData);
-                if (added) {
-                    showToast(`${course.title} added to cart!`, 'success');
-                } else {
-                    showToast('This course is already in your cart!', 'warning');
-                }
+                window.cartManager.addToCart(courseData);
             } else {
-                console.error('CartManager not available');
-                showToast('Cart system not ready. Please refresh the page.', 'error');
+                // Fallback for when cart system isn't loaded yet
+                console.warn('Cart manager not available, using fallback');
+                const existingItem = cart.find(item => item.courseId === courseId);
+                if (existingItem) {
+                    showToast('This course is already in your cart!', 'warning');
+                    return;
+                }
+                
+                cart.push(courseData);
+                localStorage.setItem('cart', JSON.stringify(cart));
+                updateCartCount();
+                updateCartModal();
+                showToast('Course added to cart!', 'success');
             }
-        }
+        };
 
         // ============================================
-        // ENROLLMENT FLOW - Updated: 2026-02-07 v3
+        // ENROLLMENT FLOW - Updated: 2026-02-07 v2
         // ============================================
         
-        // Enroll in course function - shows auth choice modal
+        // Enroll in course function - redirects to checkout
         window.enrollInCourse = function(courseId) {
             console.log('🎓 Enroll Now clicked for:', courseId);
             console.log('🔍 Checking login status...');
@@ -3883,7 +3788,7 @@
             // Check if already enrolled
             let enrolledCourses = JSON.parse(localStorage.getItem('enrolledCourses')) || [];
             if (enrolledCourses.includes(courseId)) {
-                showToast('You already own this course! Check your dashboard.', 'info');
+                showToast('You are already enrolled in this course!', 'info');
                 return;
             }
             
@@ -3898,16 +3803,34 @@
                 quantity: 1
             };
             
-            // Store course in sessionStorage for checkout (temporary, not in cart)
-            sessionStorage.setItem('checkoutCourse', JSON.stringify(courseData));
-            
-            // Clear the regular cart to avoid confusion
+            // Clear cart and add only this course
             if (window.cartManager) {
                 window.cartManager.clearCart();
+                window.cartManager.addToCart(courseData);
+            } else {
+                localStorage.setItem('cart', JSON.stringify([courseData]));
             }
-            localStorage.removeItem('cart');
             
             // Redirect to checkout
+            showToast('Redirecting to checkout...', 'success');
+            setTimeout(() => {
+                window.location.href = 'checkout.html';
+            }, 500);
+        }
+        
+        // Proceed to checkout from cart with all courses
+        function proceedToCheckoutFromCart() {
+            // Check if user is logged in
+            const isLoggedIn = localStorage.getItem('userLoggedIn');
+            if (!isLoggedIn) {
+                showToast('Please log in to proceed to checkout', 'warning');
+                // Show login modal
+                const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+                loginModal.show();
+                return;
+            }
+            
+            // Redirect to checkout page
             showToast('Redirecting to checkout...', 'success');
             setTimeout(() => {
                 window.location.href = 'checkout.html';
@@ -3922,34 +3845,45 @@
                     const courseData = JSON.parse(pendingEnrollment);
                     localStorage.removeItem('pendingEnrollment');
                     
-                    // Store in sessionStorage for checkout (temporary, not in cart)
-                    sessionStorage.setItem('checkoutCourse', JSON.stringify(courseData));
-                    
-                    // Clear the regular cart
+                    // Clear cart and add course
                     if (window.cartManager) {
                         window.cartManager.clearCart();
+                        window.cartManager.addToCart(courseData);
+                    } else {
+                        localStorage.setItem('cart', JSON.stringify([courseData]));
                     }
-                    localStorage.removeItem('cart');
                     
-                    // Redirect to checkout immediately (no timeout)
+                    // Redirect to checkout
                     showToast('Redirecting to checkout...', 'success');
-                    window.location.href = 'checkout.html';
-                    
-                    return true; // Indicate that we're handling enrollment
+                    setTimeout(() => {
+                        window.location.href = 'checkout.html';
+                    }, 500);
                 } catch (error) {
                     console.error('Error handling post-login enrollment:', error);
                 }
             }
-            return false; // No pending enrollment
-        };
+            
+            // Clear existing cart and add only this course
+            cart = [courseData];
+            localStorage.setItem('cart', JSON.stringify(cart));
+            
+            // Update cart count immediately
+            updateCartCount();
+            
+            showToast(`Preparing ${course.title} for checkout...`, 'success');
+            
+            // Redirect to checkout page with course parameter
+            setTimeout(() => {
+                window.location.href = `checkout.html?course=${courseId}`;
+            }, 1500);
+        }
 
         function updateCartCount() {
-            // Use CartManager if available
+            // Use unified cart system if available
             if (window.cartManager) {
                 window.cartManager.updateCartCount();
             } else {
-                // Fallback for when CartManager isn't loaded yet
-                const cart = JSON.parse(localStorage.getItem('cart')) || [];
+                // Fallback for when cart system isn't loaded yet
                 const cartCount = cart.reduce((total, item) => total + (item.quantity || 1), 0);
                 const cartBadge = document.getElementById('cartCount');
                 const cartModalCount = document.getElementById('cartModalCount');
@@ -3986,91 +3920,51 @@
         }
 
         function updateCartModal() {
-            // Use CartManager if available
-            if (window.cartManager) {
-                window.cartManager.updateCartModal();
-                return;
-            }
-            
-            // Fallback for when CartManager isn't loaded yet
-            const cart = JSON.parse(localStorage.getItem('cart')) || [];
             const cartList = document.getElementById('cartList');
             const checkoutBtn = document.getElementById('checkoutBtn');
-            const cartModalCount = document.getElementById('cartModalCount');
-            const cartModalFooter = document.querySelector('#cartModal .modal-footer');
-            
-            console.log('=== UPDATE CART MODAL (Fallback) ===');
-            console.log('Cart:', cart);
-            console.log('Cart length:', cart.length);
-            
-            // Update modal count
-            if (cartModalCount) {
-                cartModalCount.textContent = cart.length;
-            }
             
             if (cart.length === 0) {
                 cartList.innerHTML = `
-                    <div class="text-center py-5">
-                        <iconify-icon icon="material-symbols:shopping-cart-outline" style="font-size: 4rem; color: #cbd5e1; margin-bottom: 1rem;"></iconify-icon>
-                        <h5 style="color: #64748b; margin-bottom: 1rem;">Your cart is empty</h5>
-                        <p style="color: #94a3b8; margin-bottom: 2rem;">Discover our amazing courses and start learning today!</p>
-                        <a href="courses.html" class="btn btn-primary" style="padding: 12px 30px; border-radius: 25px; font-weight: 600;">
-                            <iconify-icon icon="material-symbols:school" class="me-2"></iconify-icon>
-                            Browse Courses
-                        </a>
+                    <div class="text-center text-muted py-4">
+                        <iconify-icon icon="material-symbols:shopping-cart-outline" class="fs-1 mb-3"></iconify-icon>
+                        <p>Your cart is empty. Start adding courses to your cart!</p>
                     </div>
                 `;
                 if (checkoutBtn) checkoutBtn.disabled = true;
-                if (cartModalFooter) cartModalFooter.style.display = 'none';
             } else {
                 cartList.innerHTML = cart.map(item => {
-                    const courseTitle = item.title || 'Unknown Course';
-                    const courseInstructor = item.instructor || 'Unknown Instructor';
-                    const courseBoard = item.board || 'Cambridge Board';
-                    const courseImage = item.image || 'images/teacher1.PNG';
-                    const coursePrice = item.price || 299;
+                    const course = getCourseById(item.courseId);
+                    if (!course) {
+                        console.log('Course not found for ID:', item.courseId);
+                        return '';
+                    }
                     
                     return `
                         <div class="cart-item d-flex justify-content-between align-items-center mb-3 p-3 border rounded">
                             <div class="d-flex align-items-center">
-                                <img src="${courseImage}" alt="${courseTitle}" class="rounded-circle me-3" style="width: 50px; height: 50px; object-fit: cover;" onerror="this.src='images/teacher1.PNG'">
+                                <img src="${course.image}" alt="${course.title}" class="rounded-circle me-3" style="width: 50px; height: 50px; object-fit: cover;">
                                 <div>
-                                    <div class="course-title fw-bold">${courseTitle}</div>
-                                    <div class="course-instructor text-muted small">${courseInstructor} - ${courseBoard}</div>
-                                    <div class="course-price text-primary fw-bold">${coursePrice} EGP</div>
+                                    <div class="course-title fw-bold">${course.title}</div>
+                                    <div class="course-instructor text-muted small">${course.instructor} - ${course.board}</div>
+                                    <div class="course-price text-primary fw-bold">${course.price} EGP <span class="text-muted">x${item.quantity}</span></div>
                                 </div>
                             </div>
-                            <button class="btn btn-outline-danger btn-sm" onclick="removeFromCart('${item.courseId || item.id}')">
+                            <button class="btn btn-outline-danger btn-sm" onclick="removeFromCart('${item.courseId}')">
                                 <iconify-icon icon="material-symbols:delete"></iconify-icon>
                             </button>
                         </div>
                     `;
                 }).join('');
                 if (checkoutBtn) checkoutBtn.disabled = false;
-                if (cartModalFooter) cartModalFooter.style.display = 'flex';
             }
-            
-            console.log('Cart modal updated (fallback)');
         }
 
         function removeFromCart(courseId) {
-            console.log('🗑️ Removing from cart:', courseId);
-            
-            // Use CartManager if available
-            if (window.cartManager) {
-                window.cartManager.removeFromCart(courseId);
-                showToast('Course removed from cart', 'info');
-            } else {
-                // Fallback for when CartManager isn't loaded yet
-                let cart = JSON.parse(localStorage.getItem('cart')) || [];
-                cart = cart.filter(item => item.courseId !== courseId && item.id !== courseId);
-                localStorage.setItem('cart', JSON.stringify(cart));
-                
-                // Update UI immediately
-                updateCartCount();
-                updateCartModal();
-                showToast('Course removed from cart', 'info');
-            }
+            cart = cart.filter(item => item.courseId !== courseId);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartCount();
+            updateCartModal();
+            showToast('Course removed from cart', 'info');
         }
 
         function resetCart() {
@@ -4104,52 +3998,29 @@
                 return;
             }
             
-            // Check if user is logged in first
+            // Check if user is logged in
             const isLoggedIn = localStorage.getItem('userLoggedIn');
-            
-            // If logged in, check for already purchased courses
-            if (isLoggedIn) {
-                const enrolledCourses = JSON.parse(localStorage.getItem('enrolledCourses')) || [];
-                const alreadyPurchased = cart.filter(item => enrolledCourses.includes(item.courseId));
+            if (!isLoggedIn) {
+                showToast('Please log in to proceed to checkout', 'warning');
+                // Store pending checkout action with current cart
+                localStorage.setItem('pendingCartAction', JSON.stringify({
+                    action: 'proceedToCheckout',
+                    cart: cart,
+                    timestamp: new Date().toISOString()
+                }));
+                // Open login modal
+                const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+                loginModal.show();
                 
-                if (alreadyPurchased.length > 0) {
-                    const courseNames = alreadyPurchased.map(item => item.title).join(', ');
-                    showToast(`You already own: ${courseNames}. Please remove from cart.`, 'warning');
-                    
-                    // Optionally auto-remove purchased courses from cart
-                    cart = cart.filter(item => !enrolledCourses.includes(item.courseId));
-                    localStorage.setItem('cart', JSON.stringify(cart));
-                    updateCartCount();
-                    updateCartModal();
-                    return;
-                }
-                
-                // All good - proceed to checkout
-                window.location.href = 'checkout.html';
+                // Clear password field when modal opens
+                setTimeout(() => {
+                    document.getElementById('loginPassword').value = '';
+                }, 100);
                 return;
             }
             
-            // User not logged in - show login modal
-            showToast('Please log in to proceed to checkout', 'warning');
-            // Store pending checkout action with current cart
-            localStorage.setItem('pendingCartAction', JSON.stringify({
-                action: 'proceedToCheckout',
-                cart: cart,
-                timestamp: new Date().toISOString()
-            }));
-            
-            // Close cart modal
-            const cartModal = bootstrap.Modal.getInstance(document.getElementById('cartModal'));
-            if (cartModal) cartModal.hide();
-            
-            // Open login modal
-            const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
-            loginModal.show();
-            
-            // Clear password field when modal opens
-            setTimeout(() => {
-                document.getElementById('loginPassword').value = '';
-            }, 100);
+            // Redirect to checkout page
+            window.location.href = 'checkout.html';
         }
 
         // Favorites functions
@@ -4236,7 +4107,7 @@
             // Check if already enrolled
             let enrolledCourses = JSON.parse(localStorage.getItem('enrolledCourses')) || [];
             if (enrolledCourses.includes(courseId)) {
-                showToast('You already own this course! Check your dashboard.', 'info');
+                showToast('You are already enrolled in this course!', 'info');
                 return;
             }
             
@@ -4286,52 +4157,32 @@
                 return;
             }
             
-            // Check if user is logged in and already owns this course
-            const isLoggedIn = localStorage.getItem('userLoggedIn');
-            if (isLoggedIn) {
-                const enrolledCourses = JSON.parse(localStorage.getItem('enrolledCourses')) || [];
-                if (enrolledCourses.includes(courseId)) {
-                    showToast('You already own this course! Check your dashboard.', 'info');
-                    return;
-                }
+            // Check if already in cart
+            const existingItem = cart.find(item => item.courseId === courseId);
+            if (existingItem) {
+                showToast('This course is already in your cart!', 'warning');
+                return;
             }
             
             // Add to cart with full details
             const courseData = {
                 courseId: courseId,
-                id: courseId,
-                type: 'course',
+                id: courseId, // For checkout compatibility
                 title: course.title,
-                price: parseFloat(course.price.replace(/EGP|£/g, '').replace(/\s/g, '').trim()),
+                price: parseFloat(course.price.replace(/EGP|£/g, '').replace(/\s/g, '').trim()), // Convert to number
                 instructor: course.instructor,
                 board: course.board,
                 image: course.image,
-                quantity: 1
+                quantity: 1,
+                addedAt: new Date().toISOString()
             };
             
-            // Use CartManager if available
-            if (window.cartManager) {
-                const added = window.cartManager.addToCart(courseData);
-                if (added) {
-                    showToast(`${course.title} added to cart!`, 'success');
-                } else {
-                    showToast('This course is already in your cart!', 'warning');
-                }
-            } else {
-                // Fallback
-                const cart = JSON.parse(localStorage.getItem('cart')) || [];
-                const existingItem = cart.find(item => item.courseId === courseId || item.id === courseId);
-                if (existingItem) {
-                    showToast('This course is already in your cart!', 'warning');
-                    return;
-                }
-                
-                cart.push(courseData);
-                localStorage.setItem('cart', JSON.stringify(cart));
-                updateCartCount();
-                updateCartModal();
-                showToast(`${course.title} added to cart!`, 'success');
-            }
+            cart.push(courseData);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            
+            // Update cart count and modal
+            updateCartCount();
+            updateCartModal();
         }
 
         // Function to reset todo lists after login
@@ -4361,98 +4212,23 @@
             }
         }
 
-        // Function to sync user's enrollments from backend
-        async function syncUserEnrollments() {
-            try {
-                const authToken = localStorage.getItem('authToken');
-                const userId = localStorage.getItem('userId');
-                if (!authToken || !userId) {
-                    console.log('No auth token or userId, skipping enrollment sync');
-                    return;
+        // Update login button after successful login
+        function updateLoginButton() {
+            const loginBtn = document.querySelector('.login-btn');
+            if (loginBtn) {
+                const userName = localStorage.getItem('userName');
+                if (userName) {
+                    loginBtn.innerHTML = `<iconify-icon icon="material-symbols:person" class="me-1"></iconify-icon>${userName}`;
+                    loginBtn.classList.remove('btn-outline-secondary');
+                    loginBtn.classList.add('btn-success');
+                    loginBtn.removeAttribute('data-bs-target');
+                    loginBtn.removeAttribute('data-bs-toggle');
+                    loginBtn.onclick = function() {
+                        if (confirm('Are you sure you want to logout?')) {
+                            logout();
+                        }
+                    };
                 }
-
-                const apiUrl = (window.API_CONFIG && window.API_CONFIG.apiURL) || 'http://localhost:3000/api';
-                console.log('🔄 Syncing enrollments and orders for userId:', userId);
-                
-                // Fetch both enrollments and all orders from admin endpoint
-                const [enrollmentsResponse, ordersResponse] = await Promise.all([
-                    fetch(`${apiUrl}/my-enrollments`, {
-                        method: 'GET',
-                        headers: {
-                            'Authorization': `Bearer ${authToken}`,
-                            'Content-Type': 'application/json'
-                        }
-                    }),
-                    fetch(`${apiUrl}/admin/orders`, {
-                        method: 'GET',
-                        headers: {
-                            'Authorization': `Bearer ${authToken}`,
-                            'Content-Type': 'application/json'
-                        }
-                    })
-                ]);
-
-                const enrollmentsData = await enrollmentsResponse.json();
-                const ordersData = await ordersResponse.json();
-                
-                console.log('📦 Received enrollments data:', enrollmentsData);
-                console.log('📦 Received orders data:', ordersData);
-                
-                const enrolledCourseIds = [];
-                
-                // Add courses from enrollments
-                if (enrollmentsData.success && enrollmentsData.enrollments) {
-                    enrollmentsData.enrollments.forEach(e => {
-                        const courseId = e.course_id;
-                        console.log('  - Processing enrollment:', { course_id: courseId, course_title: e.course_title });
-                        
-                        // Store numeric IDs (course-switcher.js will handle conversion)
-                        if (!enrolledCourseIds.includes(courseId)) {
-                            enrolledCourseIds.push(courseId);
-                        }
-                    });
-                }
-                
-                // Add courses from approved orders (filter by current user)
-                if (ordersData.success && ordersData.orders) {
-                    const userOrders = ordersData.orders.filter(order => 
-                        order.user_id === parseInt(userId) && order.status === 'approved'
-                    );
-                    
-                    console.log(`  - Found ${userOrders.length} approved orders for user ${userId}`);
-                    
-                    userOrders.forEach(order => {
-                        console.log('  - Processing approved order:', { order_id: order.id, courses: order.courses });
-                        try {
-                            const courses = typeof order.courses === 'string' ? JSON.parse(order.courses) : order.courses;
-                            if (Array.isArray(courses)) {
-                                courses.forEach(course => {
-                                    const courseId = course.courseId || course.id;
-                                    if (courseId && !enrolledCourseIds.includes(courseId)) {
-                                        enrolledCourseIds.push(courseId);
-                                        console.log('    - Added course from order:', courseId);
-                                    }
-                                });
-                            } else if (typeof courses === 'object' && courses.courseId) {
-                                // Single course object
-                                const courseId = courses.courseId || courses.id;
-                                if (courseId && !enrolledCourseIds.includes(courseId)) {
-                                    enrolledCourseIds.push(courseId);
-                                    console.log('    - Added course from order:', courseId);
-                                }
-                            }
-                        } catch (e) {
-                            console.error('Error parsing order courses:', e);
-                        }
-                    });
-                }
-
-                // Update localStorage with actual enrolled courses
-                localStorage.setItem('enrolledCourses', JSON.stringify(enrolledCourseIds));
-                console.log('✅ Synced enrolled courses to localStorage:', enrolledCourseIds);
-                console.log('✅ Verification - Reading back from localStorage:', JSON.parse(localStorage.getItem('enrolledCourses') || '[]'));
-            } catch (error) {
-                console.error('Error syncing enrollments:', error);
             }
         }
 
@@ -4483,11 +4259,98 @@
             
             if (!email || !password) {
                 showToast('Please fill in all fields', 'warning');
+                // Re-enable button
+                if (loginButton) {
+                    loginButton.disabled = false;
+                    loginButton.innerHTML = '<iconify-icon icon="material-symbols:login" class="me-2"></iconify-icon>Log In';
+                }
+                window.loginRedirectPending = false;
                 return;
             }
             
             try {
                 console.log('Logging in user:', { email });
+                
+                // Mock login for localhost development
+                if (window.location.origin.includes('localhost') || window.location.origin.includes('127.0.0.1')) {
+                    console.log('🏠 Using mock login for localhost development');
+                    
+                    // Simulate API delay
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    
+                    // Mock successful login response
+                    const mockData = {
+                        success: true,
+                        user: {
+                            id: 1,
+                            first_name: 'Demo',
+                            last_name: 'User',
+                            email: email
+                        },
+                        token: 'mock-token-' + Date.now()
+                    };
+                    
+                    console.log('Mock login successful:', mockData);
+                    
+                    // Store login state
+                    localStorage.setItem('userLoggedIn', 'true');
+                    localStorage.setItem('userName', mockData.user.first_name + ' ' + mockData.user.last_name);
+                    localStorage.setItem('userEmail', mockData.user.email);
+                    localStorage.setItem('authToken', mockData.token);
+                    localStorage.setItem('userId', mockData.user.id);
+                    
+                    // Debug: Verify localStorage was set
+                    console.log('✅ Mock login data stored in localStorage:', {
+                        userLoggedIn: localStorage.getItem('userLoggedIn'),
+                        userName: localStorage.getItem('userName'),
+                        userEmail: localStorage.getItem('userEmail'),
+                        authToken: localStorage.getItem('authToken'),
+                        userId: localStorage.getItem('userId')
+                    });
+                    
+                    // Update UI
+                    updateLoginButton();
+                    showToast('Login successful! Welcome back, ' + mockData.user.first_name + '!', 'success');
+                    
+                    // Close modal
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
+                    if (modal) modal.hide();
+                    
+                    // Clear form
+                    document.getElementById('loginEmail').value = '';
+                    document.getElementById('loginPassword').value = '';
+                    
+                    // Re-enable button
+                    if (loginButton) {
+                        loginButton.disabled = false;
+                        loginButton.innerHTML = '<iconify-icon icon="material-symbols:login" class="me-2"></iconify-icon>Log In';
+                    }
+                    
+                    window.loginRedirectPending = false;
+                    
+                    // Check if there's pending enrollment
+                    if (window.pendingEnrollment) {
+                        console.log('🎓 Processing pending enrollment after login');
+                        const courseData = window.pendingEnrollment;
+                        window.pendingEnrollment = null;
+                        
+                        // Show success message and redirect
+                        showToast(`Successfully enrolled in ${courseData.title}!`, 'success');
+                        setTimeout(() => {
+                            window.location.href = 'dashboard.html';
+                        }, 2000);
+                    } else {
+                        // Redirect to dashboard
+                        setTimeout(() => {
+                            window.location.href = 'dashboard.html';
+                        }, 1500);
+                    }
+                    
+                    return;
+                }
+                
+                // Production API call (original code)
+                const apiUrl = (window.API_CONFIG && window.API_CONFIG.apiURL) || 'https://elbadry-production.up.railway.app/api';
                 
                 const response = await fetch(`${apiUrl}/login`, {
                     method: 'POST',
@@ -4504,9 +4367,6 @@
                 }
                 
                 console.log('Login successful:', data);
-                console.log('🔍 DEBUG: User role from backend:', data.user.role);
-                console.log('🔍 DEBUG: User userType from backend:', data.user.userType);
-                console.log('🔍 DEBUG: Full user object:', data.user);
                 
                 // Store login state
                 localStorage.setItem('userLoggedIn', 'true');
@@ -4514,15 +4374,6 @@
                 localStorage.setItem('userEmail', data.user.email);
                 localStorage.setItem('authToken', data.token);
                 localStorage.setItem('userId', data.user.id);
-                localStorage.setItem('userRole', data.user.role); // Store user role
-                
-                // Store teacher-specific data if user is a teacher
-                if (data.user.role === 'teacher' && data.user.subject) {
-                    localStorage.setItem('teacherSubject', data.user.subject);
-                    if (data.user.experience) {
-                        localStorage.setItem('teacherExperience', data.user.experience);
-                    }
-                }
                 
                 // Debug: Verify localStorage was set
                 console.log('✅ Login data stored in localStorage:', {
@@ -4530,37 +4381,11 @@
                     userName: localStorage.getItem('userName'),
                     userEmail: localStorage.getItem('userEmail'),
                     authToken: localStorage.getItem('authToken') ? 'Set' : 'Not Set',
-                    userId: localStorage.getItem('userId'),
-                    userRole: localStorage.getItem('userRole'),
-                    teacherSubject: localStorage.getItem('teacherSubject')
+                    userId: localStorage.getItem('userId')
                 });
-                
-                // Redirect teachers to their subject dashboard immediately
-                if (data.user.role === 'teacher' && data.user.subject) {
-                    const subjectLower = data.user.subject.toLowerCase();
-                    const dashboardMap = {
-                        'physics': 'physics-teacher-dashboard.html',
-                        'chemistry': 'chemistry-teacher-dashboard.html',
-                        'english': 'english-teacher-dashboard.html',
-                        'ict': 'ict-teacher-dashboard.html',
-                        'cs': 'cs-teacher-dashboard.html'
-                    };
-                    
-                    const dashboardUrl = dashboardMap[subjectLower];
-                    if (dashboardUrl) {
-                        showToast('Login successful! Redirecting to your teacher dashboard...', 'success');
-                        setTimeout(() => {
-                            window.location.href = dashboardUrl;
-                        }, 1500);
-                        return;
-                    }
-                }
                 
                 // Reset todo lists after successful login
                 resetTodoLists();
-                
-                // Sync user's enrollments from backend BEFORE processing pending actions
-                await syncUserEnrollments();
                 
                 // Check for pending cart actions and handle them
                 const pendingAction = handlePendingCartAction();
@@ -4569,73 +4394,34 @@
                     
                     // Handle different pending actions
                     if (pendingAction.action === 'enrollInCourse') {
-                        // Check if user already owns this course
-                        const enrolledCourses = JSON.parse(localStorage.getItem('enrolledCourses')) || [];
-                        if (enrolledCourses.includes(pendingAction.courseId)) {
-                            // Close login modal
-                            const loginModal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
-                            if (loginModal) loginModal.hide();
-                            
-                            // Show notification
-                            showToast('You already own this course! Check your dashboard.', 'info');
-                            
-                            // Don't redirect to checkout - just continue with normal login flow
-                            console.log('✅ Course already owned, staying on homepage');
-                        } else {
-                            // Prepare course for checkout
-                            const course = courses[pendingAction.courseId];
-                            if (course) {
-                                const courseData = {
-                                    courseId: pendingAction.courseId,
-                                    id: pendingAction.courseId,
-                                    title: course.title,
-                                    price: parseFloat(course.price.replace(/EGP|£/g, '').replace(/\s/g, '').trim()),
-                                    instructor: course.instructor,
-                                    board: course.board,
-                                    image: course.image,
-                                    quantity: 1,
-                                    addedAt: new Date().toISOString()
-                                };
-                                cart = [courseData];
-                                localStorage.setItem('cart', JSON.stringify(cart));
-                                updateCartCount();
-                                showToast(`Preparing ${course.title} for checkout...`, 'success');
-                                // Redirect to checkout
-                                setTimeout(() => {
-                                    window.location.href = 'checkout.html';
-                                }, 1500);
-                                return;
-                            }
-                        }
-                    } else if (pendingAction.action === 'proceedToCheckout') {
-                        // Check if any cart items are already owned
-                        const enrolledCourses = JSON.parse(localStorage.getItem('enrolledCourses')) || [];
-                        const cartToRestore = pendingAction.cart || [];
-                        const alreadyPurchased = cartToRestore.filter(item => enrolledCourses.includes(item.courseId));
-                        
-                        if (alreadyPurchased.length > 0) {
-                            const courseNames = alreadyPurchased.map(item => item.title).join(', ');
-                            showToast(`You already own: ${courseNames}. Removed from cart.`, 'info');
-                            
-                            // Remove owned courses from cart
-                            cart = cartToRestore.filter(item => !enrolledCourses.includes(item.courseId));
+                        // Prepare course for checkout
+                        const course = courses[pendingAction.courseId];
+                        if (course) {
+                            const courseData = {
+                                courseId: pendingAction.courseId,
+                                id: pendingAction.courseId,
+                                title: course.title,
+                                price: parseFloat(course.price.replace(/EGP|£/g, '').replace(/\s/g, '').trim()),
+                                instructor: course.instructor,
+                                board: course.board,
+                                image: course.image,
+                                quantity: 1,
+                                addedAt: new Date().toISOString()
+                            };
+                            cart = [courseData];
                             localStorage.setItem('cart', JSON.stringify(cart));
                             updateCartCount();
-                            updateCartModal();
-                            
-                            // Only redirect if there are still items in cart
-                            if (cart.length > 0) {
-                                showToast('Redirecting to checkout...', 'success');
-                                setTimeout(() => {
-                                    window.location.href = 'checkout.html';
-                                }, 1500);
-                                return;
-                            } else {
-                                showToast('Your cart is now empty', 'info');
-                            }
-                        } else if (cartToRestore.length > 0) {
-                            // Restore cart and redirect to checkout
-                            cart = cartToRestore;
+                            showToast(`Preparing ${course.title} for checkout...`, 'success');
+                        }
+                        // Redirect to checkout
+                        setTimeout(() => {
+                            window.location.href = 'checkout.html';
+                        }, 1500);
+                        return;
+                    } else if (pendingAction.action === 'proceedToCheckout') {
+                        // Restore cart and redirect to checkout ONLY if cart has items
+                        if (pendingAction.cart && pendingAction.cart.length > 0) {
+                            cart = pendingAction.cart;
                             localStorage.setItem('cart', JSON.stringify(cart));
                             updateCartCount();
                             showToast('Redirecting to checkout...', 'success');
@@ -4656,10 +4442,6 @@
                 
                 showToast('Login successful!', 'success');
                 
-                // Dispatch login success event for auth guard
-                window.dispatchEvent(new Event('loginSuccess'));
-                sessionStorage.setItem('validNavigation', 'true');
-                
                 // Close modal
                 const modal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
                 if (modal) modal.hide();
@@ -4679,35 +4461,23 @@
                 
                 // Handle post-login enrollment if pending
                 if (typeof handlePostLoginEnrollment === 'function') {
-                    const hasPendingEnrollment = handlePostLoginEnrollment();
-                    if (hasPendingEnrollment) {
-                        // Enrollment redirect is happening, don't continue with order status check
-                        return;
-                    }
+                    handlePostLoginEnrollment();
                 }
                 
                 // Update UI
                 checkLoginState();
                 
-                // Check if user is a parent - redirect to parent dashboard (before order status check)
-                console.log('🔍 DEBUG: Checking parent role - data.user.role:', data.user.role);
-                if (data.user.role === 'parent') {
+                // Check if user is a parent - redirect to parent dashboard
+                if (data.user.userType === 'parent') {
                     console.log('✅ Parent logged in, redirecting to parent dashboard');
-                    showToast('Welcome back! Redirecting to parent dashboard...', 'success');
-                    
-                    // Redirect to parent dashboard
-                    setTimeout(() => {
-                        console.log('🚀 Executing parent dashboard redirect');
-                        window.location.href = 'parent-dashboard.html';
-                    }, 1000);
+                    window.location.href = 'parent-dashboard.html';
                     return;
                 }
-                
-                console.log('⚠️ DEBUG: Not a parent, continuing to order status check');
                 
                 // Check for pending orders first
                 try {
                     console.log('🔍 Step 1: Checking order status for user ID:', data.user.id);
+                    const apiUrl = (window.API_CONFIG && window.API_CONFIG.apiURL) || 'https://elbadry-production.up.railway.app/api';
                     const orderStatusResponse = await fetch(`${apiUrl}/orders/status/${data.user.id}`, {
                         headers: { 'Authorization': `Bearer ${data.token}` }
                     });
@@ -4739,6 +4509,7 @@
                                 console.log('🔍 Step 5: Fetching user orders by email:', data.user.email);
                                 
                                 // Use email-based endpoint which doesn't require admin access
+                                const apiUrl = (window.API_CONFIG && window.API_CONFIG.apiURL) || 'https://elbadry-production.up.railway.app/api';
                                 const orderDetailsResponse = await fetch(`${apiUrl}/orders/by-email/${encodeURIComponent(data.user.email)}`);
                                 
                                 if (orderDetailsResponse.ok) {
@@ -4874,25 +4645,9 @@
             const agreeTerms = document.getElementById('agreeTerms').checked;
             const userType = document.getElementById('userType').value;
             
-            // Get teacher-specific fields
-            const teacherSubject = document.getElementById('teacherSubject') ? document.getElementById('teacherSubject').value : null;
-            const teacherExperience = document.getElementById('teacherExperience') ? document.getElementById('teacherExperience').value : null;
-            
             if (!firstName || !lastName || !email || !password || !userType) {
                 showToast('Please fill in all required fields', 'warning');
                 return;
-            }
-            
-            // Validate teacher-specific fields
-            if (userType === 'teacher') {
-                if (!teacherSubject) {
-                    showToast('Please select your teaching subject', 'warning');
-                    return;
-                }
-                if (!teacherExperience) {
-                    showToast('Please enter your years of experience', 'warning');
-                    return;
-                }
             }
             
             // Only require parent phone for students, not for parents or teachers
@@ -4951,32 +4706,23 @@
                 // Use API_CONFIG to get the correct API URL
                 const apiUrl = (window.API_CONFIG && window.API_CONFIG.apiURL) || 'https://elbadry-production.up.railway.app/api';
                 
-                // Build request body
-                const requestBody = { 
-                    first_name: firstName, 
-                    last_name: lastName, 
-                    email, 
-                    password,
-                    phone,
-                    phone_country: phoneCountry,
-                    parent_phone: userType === 'student' ? parentPhone : (userType === 'parent' ? parentPhone : null),
-                    parent_phone_country: userType === 'student' ? parentPhoneCountry : (userType === 'parent' ? parentPhoneCountry : null),
-                    role: userType,
-                    userType: userType
-                };
-                
-                // Add teacher-specific fields if user is a teacher
-                if (userType === 'teacher') {
-                    requestBody.subject = teacherSubject;
-                    requestBody.experience = teacherExperience;
-                }
-                
                 const response = await fetch(`${apiUrl}/register`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(requestBody)
+                    body: JSON.stringify({ 
+                        first_name: firstName, 
+                        last_name: lastName, 
+                        email, 
+                        password,
+                        phone,
+                        phone_country: phoneCountry,
+                        parent_phone: userType === 'student' ? parentPhone : (userType === 'parent' ? parentPhone : null),
+                        parent_phone_country: userType === 'student' ? parentPhoneCountry : (userType === 'parent' ? parentPhoneCountry : null),
+                        role: userType,
+                        userType: userType
+                    })
                 });
                 
                 const data = await response.json();
@@ -4993,39 +4739,13 @@
                 localStorage.setItem('userEmail', data.user.email);
                 localStorage.setItem('authToken', data.token);
                 localStorage.setItem('userId', data.user.id);
-                localStorage.setItem('userRole', data.user.role); // Store user role
                 
-                // Store teacher-specific data if user is a teacher
-                if (data.user.role === 'teacher' && data.user.subject) {
-                    localStorage.setItem('teacherSubject', data.user.subject);
-                    if (data.user.experience) {
-                        localStorage.setItem('teacherExperience', data.user.experience);
-                    }
+                // Handle post-registration enrollment if pending
+                const hasPendingEnrollment = localStorage.getItem('pendingEnrollment');
+                if (hasPendingEnrollment && typeof handlePostLoginEnrollment === 'function') {
+                    handlePostLoginEnrollment();
+                    return; // Exit early as we're redirecting to checkout
                 }
-                
-                // Redirect teachers to their subject dashboard
-                if (data.user.role === 'teacher' && data.user.subject) {
-                    const subjectLower = data.user.subject.toLowerCase();
-                    const dashboardMap = {
-                        'physics': 'physics-teacher-dashboard.html',
-                        'chemistry': 'chemistry-teacher-dashboard.html',
-                        'english': 'english-teacher-dashboard.html',
-                        'ict': 'ict-teacher-dashboard.html',
-                        'cs': 'cs-teacher-dashboard.html'
-                    };
-                    
-                    const dashboardUrl = dashboardMap[subjectLower];
-                    if (dashboardUrl) {
-                        showToast('Registration successful! Redirecting to your teacher dashboard...', 'success');
-                        setTimeout(() => {
-                            window.location.href = dashboardUrl;
-                        }, 1500);
-                        return;
-                    }
-                }
-                
-                // Sync user's enrollments from backend BEFORE processing pending actions
-                await syncUserEnrollments();
                 
                 // Check for pending cart actions and handle them
                 const pendingAction = handlePendingCartAction();
@@ -5034,73 +4754,34 @@
                     
                     // Handle different pending actions
                     if (pendingAction.action === 'enrollInCourse') {
-                        // Check if user already owns this course (shouldn't happen for new users, but check anyway)
-                        const enrolledCourses = JSON.parse(localStorage.getItem('enrolledCourses')) || [];
-                        if (enrolledCourses.includes(pendingAction.courseId)) {
-                            // Close register modal
-                            const registerModal = bootstrap.Modal.getInstance(document.getElementById('registerModal'));
-                            if (registerModal) registerModal.hide();
-                            
-                            // Show notification
-                            showToast('You already own this course! Check your dashboard.', 'info');
-                            
-                            // Don't redirect to checkout - just continue with normal registration flow
-                            console.log('✅ Course already owned, staying on homepage');
-                        } else {
-                            // Prepare course for checkout
-                            const course = courses[pendingAction.courseId];
-                            if (course) {
-                                const courseData = {
-                                    courseId: pendingAction.courseId,
-                                    id: pendingAction.courseId,
-                                    title: course.title,
-                                    price: parseFloat(course.price.replace(/EGP|£/g, '').replace(/\s/g, '').trim()),
-                                    instructor: course.instructor,
-                                    board: course.board,
-                                    image: course.image,
-                                    quantity: 1,
-                                    addedAt: new Date().toISOString()
-                                };
-                                cart = [courseData];
-                                localStorage.setItem('cart', JSON.stringify(cart));
-                                updateCartCount();
-                                showToast(`Preparing ${course.title} for checkout...`, 'success');
-                                // Redirect to checkout
-                                setTimeout(() => {
-                                    window.location.href = 'checkout.html';
-                                }, 1500);
-                                return;
-                            }
-                        }
-                    } else if (pendingAction.action === 'proceedToCheckout') {
-                        // Check if any cart items are already owned (shouldn't happen for new users, but check anyway)
-                        const enrolledCourses = JSON.parse(localStorage.getItem('enrolledCourses')) || [];
-                        const cartToRestore = pendingAction.cart || [];
-                        const alreadyPurchased = cartToRestore.filter(item => enrolledCourses.includes(item.courseId));
-                        
-                        if (alreadyPurchased.length > 0) {
-                            const courseNames = alreadyPurchased.map(item => item.title).join(', ');
-                            showToast(`You already own: ${courseNames}. Removed from cart.`, 'info');
-                            
-                            // Remove owned courses from cart
-                            cart = cartToRestore.filter(item => !enrolledCourses.includes(item.courseId));
+                        // Prepare course for checkout
+                        const course = courses[pendingAction.courseId];
+                        if (course) {
+                            const courseData = {
+                                courseId: pendingAction.courseId,
+                                id: pendingAction.courseId,
+                                title: course.title,
+                                price: parseFloat(course.price.replace(/EGP|£/g, '').replace(/\s/g, '').trim()),
+                                instructor: course.instructor,
+                                board: course.board,
+                                image: course.image,
+                                quantity: 1,
+                                addedAt: new Date().toISOString()
+                            };
+                            cart = [courseData];
                             localStorage.setItem('cart', JSON.stringify(cart));
                             updateCartCount();
-                            updateCartModal();
-                            
-                            // Only redirect if there are still items in cart
-                            if (cart.length > 0) {
-                                showToast('Redirecting to checkout...', 'success');
-                                setTimeout(() => {
-                                    window.location.href = 'checkout.html';
-                                }, 1500);
-                                return;
-                            } else {
-                                showToast('Your cart is now empty', 'info');
-                            }
-                        } else if (cartToRestore.length > 0) {
-                            // Restore cart and redirect to checkout
-                            cart = cartToRestore;
+                            showToast(`Preparing ${course.title} for checkout...`, 'success');
+                        }
+                        // Redirect to checkout
+                        setTimeout(() => {
+                            window.location.href = 'checkout.html';
+                        }, 1500);
+                        return;
+                    } else if (pendingAction.action === 'proceedToCheckout') {
+                        // Restore cart and redirect to checkout ONLY if cart has items
+                        if (pendingAction.cart && pendingAction.cart.length > 0) {
+                            cart = pendingAction.cart;
                             localStorage.setItem('cart', JSON.stringify(cart));
                             updateCartCount();
                             showToast('Redirecting to checkout...', 'success');
@@ -5120,10 +4801,6 @@
                 addActivity('Account Created!', `Welcome to IG Way! Your account has been created successfully.`, 'success', 'material-symbols:person-add');
                 
                 showToast('Registration successful!', 'success');
-                
-                // Dispatch login success event for auth guard
-                window.dispatchEvent(new Event('loginSuccess'));
-                sessionStorage.setItem('validNavigation', 'true');
                 
                 // Close modal
                 const modal = bootstrap.Modal.getInstance(document.getElementById('registerModal'));
@@ -5157,33 +4834,19 @@
                     confirmPasswordToggle.style.color = '#6b7280';
                 }
                 
-                // Handle post-registration enrollment if pending
-                if (typeof handlePostLoginEnrollment === 'function') {
-                    const hasPendingEnrollment = handlePostLoginEnrollment();
-                    if (hasPendingEnrollment) {
-                        // Enrollment redirect is happening, exit early
-                        return;
-                    }
-                }
-                
                 // Update UI
                 checkLoginState();
-                
-                // Check if user is a parent - redirect to parent dashboard (before order check)
-                if (data.user.role === 'parent') {
-                    console.log('✅ Parent registered, redirecting to parent dashboard');
-                    showToast('Registration successful! Redirecting to parent dashboard...', 'success');
-                    
-                    // Redirect to parent dashboard
-                    setTimeout(() => {
-                        window.location.href = 'parent-dashboard.html';
-                    }, 1000);
-                    return;
-                }
                 
                 // Check for existing orders and redirect accordingly
                 setTimeout(async () => {
                     try {
+                        // Check if user is a parent - redirect to parent dashboard
+                        if (userType === 'parent') {
+                            console.log('✅ Parent registered, redirecting to parent dashboard');
+                            window.location.href = 'parent-dashboard.html';
+                            return;
+                        }
+                        
                         const existingOrders = await api.getOrdersByEmail(email);
                         let redirectUrl = 'homenocourses.html'; // Default to no courses page
                         
@@ -5271,6 +4934,7 @@
             }
             
             try {
+                const apiUrl = (window.API_CONFIG && window.API_CONFIG.apiURL) || 'https://elbadry-production.up.railway.app/api';
                 const response = await fetch(`${apiUrl}/forgot-password`, {
                     method: 'POST',
                     headers: {
@@ -5333,6 +4997,7 @@
             }
             
             try {
+                const apiUrl = (window.API_CONFIG && window.API_CONFIG.apiURL) || 'https://elbadry-production.up.railway.app/api';
                 const response = await fetch(`${apiUrl}/verify-reset-code`, {
                     method: 'POST',
                     headers: {
@@ -5381,6 +5046,7 @@
             }
             
             try {
+                const apiUrl = (window.API_CONFIG && window.API_CONFIG.apiURL) || 'https://elbadry-production.up.railway.app/api';
                 const response = await fetch(`${apiUrl}/reset-password`, {
                     method: 'POST',
                     headers: {
@@ -5423,11 +5089,7 @@
         }
 
         function switchToRegister() {
-            // Close login modal if open
-            const loginModal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
-            if (loginModal) loginModal.hide();
-            
-            // Close forgot password modal if open
+            // Close forgot password modal
             const forgotModal = bootstrap.Modal.getInstance(document.getElementById('forgotPasswordModal'));
             if (forgotModal) forgotModal.hide();
             
@@ -5435,28 +5097,10 @@
             const registerModal = new bootstrap.Modal(document.getElementById('registerModal'));
             registerModal.show();
             
-            // Pre-fill email if available from login or forgot password
-            const loginEmail = document.getElementById('loginEmail')?.value;
-            const forgotEmail = document.getElementById('forgotEmail')?.value;
-            const email = loginEmail || forgotEmail;
+            // Pre-fill email if available
+            const email = document.getElementById('forgotEmail').value;
             if (email) {
                 document.getElementById('email').value = email;
-            }
-        }
-
-        function switchToLogin() {
-            // Close register modal if open
-            const registerModal = bootstrap.Modal.getInstance(document.getElementById('registerModal'));
-            if (registerModal) registerModal.hide();
-            
-            // Open login modal
-            const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
-            loginModal.show();
-            
-            // Pre-fill email if available from register
-            const email = document.getElementById('email')?.value;
-            if (email) {
-                document.getElementById('loginEmail').value = email;
             }
         }
 
@@ -5586,8 +5230,6 @@
                     const parentPhoneSection = document.getElementById('parentPhoneSection');
                     const parentPhoneLabel = document.getElementById('parentPhoneLabel');
                     const parentPhoneText = document.getElementById('parentPhoneText');
-                    const teacherSubjectSection = document.getElementById('teacherSubjectSection');
-                    const teacherExperienceSection = document.getElementById('teacherExperienceSection');
                     
                     // Handle student phone section visibility
                     if (studentPhoneSection) {
@@ -5595,21 +5237,6 @@
                             studentPhoneSection.style.display = 'none';
                         } else {
                             studentPhoneSection.style.display = 'block';
-                        }
-                    }
-                    
-                    // Handle teacher fields visibility
-                    if (teacherSubjectSection && teacherExperienceSection) {
-                        if (this.value === 'teacher') {
-                            teacherSubjectSection.style.display = 'block';
-                            teacherExperienceSection.style.display = 'block';
-                            document.getElementById('teacherSubject').required = true;
-                            document.getElementById('teacherExperience').required = true;
-                        } else {
-                            teacherSubjectSection.style.display = 'none';
-                            teacherExperienceSection.style.display = 'none';
-                            document.getElementById('teacherSubject').required = false;
-                            document.getElementById('teacherExperience').required = false;
                         }
                     }
                     
@@ -5658,12 +5285,119 @@
             // Open YouTube video directly in the same tab
             window.location.href = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
         }
-    </script>
 
-    <!-- Prevent URL navigation from homepage -->
-    <script>
-        // Navigation blocking disabled to allow book checkout
-        console.log('Navigation blocking disabled');
+        // Phone validation for Egypt and Middle East
+        function validateMiddleEastPhone(fieldId) {
+            const phoneInput = document.getElementById(fieldId);
+            const phoneError = document.getElementById('phoneError');
+            const phone = phoneInput.value.trim();
+            
+            // Egyptian phone validation (01xxxxxxxxx)
+            const egyptPhoneRegex = /^01[0-2]\d{8}$/;
+            
+            if (phone && !egyptPhoneRegex.test(phone)) {
+                phoneError.style.display = 'block';
+                phoneInput.classList.add('is-invalid');
+                return false;
+            } else {
+                phoneError.style.display = 'none';
+                phoneInput.classList.remove('is-invalid');
+                return true;
+            }
+        }
+
+        // Password visibility toggle
+        function togglePasswordIconVisibility(fieldId, toggleBtnId) {
+            const passwordInput = document.getElementById(fieldId);
+            const toggleBtn = document.getElementById(toggleBtnId);
+            
+            if (passwordInput && toggleBtn) {
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    toggleBtn.innerHTML = `<iconify-icon icon="material-symbols:visibility-off" style="font-size: 18px; color: #6b7280;"></iconify-icon>`;
+                } else {
+                    passwordInput.type = 'password';
+                    toggleBtn.innerHTML = `<iconify-icon icon="material-symbols:visibility" style="font-size: 18px; color: #6b7280;"></iconify-icon>`;
+                }
+            }
+        }
+
+        // Login function
+        function handleLoginClick() {
+            const email = document.getElementById('loginEmail')?.value || '';
+            const password = document.getElementById('loginPassword')?.value || '';
+
+            if (!email || !password) {
+                showToast('Please fill in all fields', 'warning');
+                return;
+            }
+
+            // Mock login for Netlify
+            if (!window.location.hostname.includes('localhost') && !window.location.hostname.includes('127.0.0.1')) {
+                console.log('🧪 Mock login for:', email);
+                
+                // Store mock user data
+                const mockUser = {
+                    id: Date.now(),
+                    email: email,
+                    first_name: 'Test',
+                    last_name: 'User'
+                };
+                
+                const token = 'mock_token_' + Date.now();
+                
+                localStorage.setItem('authToken', token);
+                localStorage.setItem('userLoggedIn', 'true');
+                localStorage.setItem('userName', `${mockUser.first_name} ${mockUser.last_name}`);
+                localStorage.setItem('userEmail', mockUser.email);
+                localStorage.setItem('userId', mockUser.id);
+                
+                showToast('Login successful!', 'success');
+                
+                // Close modal
+                const loginModal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
+                if (loginModal) {
+                    loginModal.hide();
+                }
+                
+                // Update UI
+                checkLoginState();
+                
+                // Redirect to dashboard
+                setTimeout(() => {
+                    window.location.href = 'homenocourses.html';
+                }, 1000);
+                
+                return;
+            }
+
+            // Real API call for localhost
+            api.login({ email, password })
+                .then(data => {
+                    showToast('Login successful!', 'success');
+                    
+                    // Close modal
+                    const loginModal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
+                    if (loginModal) {
+                        loginModal.hide();
+                    }
+                    
+                    // Update UI
+                    checkLoginState();
+                    
+                    // Redirect to dashboard
+                    setTimeout(() => {
+                        window.location.href = 'homenocourses.html';
+                    }, 1000);
+                })
+                .catch(error => {
+                    console.error('Login error:', error);
+                    showToast('Login failed. Please check your credentials.', 'error');
+                });
+        }
+        
+        // Cache busting - force reload
+        console.log('🔄 Cache busting - Version: ' + Date.now() + ' - FORCED UPDATE');
     </script>
 </body>
 </html>

@@ -1,0 +1,1990 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>IG Nation Admin Panel v2.1 - Fixed & Deployed</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        .sidebar {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1e3d6f 0%, #2c5aa0 100%);
+        }
+        .sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+            margin: 2px 0;
+        }
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        .main-content {
+            background: #f8f9fa;
+            min-height: 100vh;
+        }
+        .card {
+            border: none;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        }
+        .stats-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        /* Mathematics Statistics Cards Styling */
+        .math-stats-card {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .math-stats-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .math-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #3b82f6;
+            margin-bottom: 0.5rem;
+            line-height: 1;
+        }
+
+        .math-label {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 1rem;
+            line-height: 1.3;
+        }
+
+        .math-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .math-action-link {
+            font-size: 0.875rem;
+            color: #6b7280;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.25rem;
+        }
+
+        .math-action-link:hover {
+            color: #3b82f6;
+            text-decoration: none;
+        }
+
+        .math-action-link i {
+            font-size: 0.75rem;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .math-number {
+                font-size: 2.5rem;
+            }
+
+            .math-label {
+                font-size: 0.875rem;
+            }
+
+            .math-actions {
+                flex-direction: column;
+                gap: 0.25rem;
+            }
+        }
+        .table-responsive {
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .btn-grant {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            border: none;
+        }
+        .btn-revoke {
+            background: linear-gradient(135deg, #dc3545, #fd7e14);
+            border: none;
+        }
+        .search-box {
+            border-radius: 25px;
+            border: 2px solid #e9ecef;
+            padding: 10px 20px;
+        }
+        .search-box:focus {
+            border-color: #1e3d6f;
+            box-shadow: 0 0 0 0.2rem rgba(30, 61, 111, 0.25);
+        }
+        
+        /* Prevent auto-capitalization on all inputs */
+        input[type="text"], 
+        input[type="email"], 
+        input[type="password"], 
+        input[type="tel"], 
+        input[type="search"] {
+            text-transform: none !important;
+            -webkit-text-transform: none !important;
+            -moz-text-transform: none !important;
+            -ms-text-transform: none !important;
+            -o-text-transform: none !important;
+        }
+        
+        /* Loading states */
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+        
+        .spinner-border-sm {
+            width: 1rem;
+            height: 1rem;
+        }
+        
+        /* Toast notifications */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1055;
+        }
+        
+        /* Improved table styling */
+        .table-hover tbody tr:hover {
+            background-color: rgba(30, 61, 111, 0.05);
+        }
+        
+        /* Status badges */
+        .badge {
+            font-size: 0.75em;
+        }
+        
+        /* Action buttons */
+        .btn-action {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+            border-radius: 0.375rem;
+        }
+        
+        /* Card improvements */
+        .card-header {
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        /* Responsive improvements */
+        @media (max-width: 768px) {
+            .sidebar {
+                min-height: auto;
+            }
+            
+            .table-responsive {
+                font-size: 0.875rem;
+            }
+            
+            .btn-action {
+                padding: 0.125rem 0.25rem;
+                font-size: 0.75rem;
+            }
+        }
+        
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+            .main-content {
+                background: #1a1a1a;
+                color: #ffffff;
+            }
+            
+            .card {
+                background: #2d2d2d;
+                color: #ffffff;
+            }
+            
+            .table {
+                color: #ffffff;
+            }
+            
+            .table-hover tbody tr:hover {
+                background-color: rgba(255, 255, 255, 0.05);
+            }
+        }
+    </style>
+</head>
+<body>
+    
+
+    <div class="container-fluid" id="mainContent" style="display: block;">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 sidebar p-0">
+                <div class="p-3">
+                    <h4 class="text-white mb-4">
+                        <i class="bi bi-mortarboard me-2"></i>
+                        IG Nation Admin
+                    </h4>
+                    <nav class="nav flex-column">
+                        <a class="nav-link active" href="#" onclick="showSection('dashboard', this)">
+                            <i class="bi bi-speedometer2 me-2"></i>
+                            Dashboard
+                        </a>
+                        <a class="nav-link" href="#" onclick="showSection('students', this)">
+                            <i class="bi bi-people me-2"></i>
+                            Students
+                        </a>
+                        <a class="nav-link" href="#" onclick="showSection('teachers', this)">
+                            <i class="bi bi-person-badge me-2"></i>
+                            Teachers
+                        </a>
+                        <a class="nav-link" href="#" onclick="showSection('parents', this)">
+                            <i class="bi bi-people-fill me-2"></i>
+                            Parents
+                        </a>
+                        <a class="nav-link" href="#" onclick="showSection('courses', this)">
+                            <i class="bi bi-book me-2"></i>
+                            Courses
+                        </a>
+                        <a class="nav-link" href="#" onclick="showSection('enrollments', this)">
+                            <i class="bi bi-person-check me-2"></i>
+                            Enrollments
+                        </a>
+                        <a class="nav-link" href="#" onclick="showSection('orders', this)">
+                            <i class="bi bi-cart-check me-2"></i>
+                            Orders
+                        </a>
+                        <a class="nav-link" href="#" onclick="showSection('questions', this)">
+                            <i class="bi bi-question-circle me-2"></i>
+                            Questions Management
+                        </a>
+                        <a class="nav-link" href="#" onclick="showSection('course-analytics', this)">
+                            <i class="bi bi-graph-up me-2"></i>
+                            Course Analytics
+                        </a>
+                        <a class="nav-link" href="analytics.html" target="_blank">
+                            <i class="bi bi-bar-chart me-2"></i>
+                            Website Analytics
+                        </a>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10 main-content">
+                <div class="p-4">
+                    <!-- Header -->
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2 id="pageTitle">Dashboard</h2>
+                        <div class="d-flex align-items-center">
+                            <span class="me-3">Welcome, Admin</span>
+                            <button class="btn btn-outline-danger btn-sm" onclick="logout()">
+                                <i class="bi bi-box-arrow-right me-1"></i>
+                                Logout
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Dashboard Section -->
+                    <div id="dashboard-section">
+                        <div class="row mb-4">
+                            <div class="col-md-3">
+                                <div class="card stats-card">
+                                    <div class="card-body text-center">
+                                        <i class="bi bi-people fs-1 mb-2"></i>
+                                        <h3 id="totalStudents">0</h3>
+                                        <p class="mb-0">Total Students</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card stats-card">
+                                    <div class="card-body text-center">
+                                        <i class="bi bi-book fs-1 mb-2"></i>
+                                        <h3 id="totalCourses">0</h3>
+                                        <p class="mb-0">Active Courses</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card stats-card">
+                                    <div class="card-body text-center">
+                                        <i class="bi bi-person-check fs-1 mb-2"></i>
+                                        <h3 id="totalEnrollments">0</h3>
+                                        <p class="mb-0">Active Enrollments</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card stats-card">
+                                    <div class="card-body text-center">
+                                        <i class="bi bi-currency-pound fs-1 mb-2"></i>
+                                        <h3 id="totalRevenue">0 EGP</h3>
+                                        <p class="mb-0">Total Revenue</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                                                </div>
+
+
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="mb-0">Recent Activity</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="recentActivity">
+                                            <p class="text-muted">Loading recent activity...</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Students Section -->
+                    <div id="students-section" style="display: none;">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Student Management</h5>
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-outline-success btn-sm" onclick="exportStudents()" title="Export to CSV (Ctrl+E)">
+                                        <i class="bi bi-download"></i> Export
+                                    </button>
+                                    <button class="btn btn-outline-primary btn-sm" onclick="loadStudents()" title="Refresh (Ctrl+R)">
+                                        <i class="bi bi-arrow-clockwise"></i> Refresh
+                                    </button>
+                                    <div class="input-group" style="width: 300px;">
+                                        <input type="text" class="form-control search-box" id="studentSearch" placeholder="Search by email or name...">
+                                        <button class="btn btn-outline-secondary" type="button" onclick="searchStudents()">
+                                            <i class="bi bi-search"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead class="table-dark">
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Name</th>
+                                                <th>Email</th>
+                                                <th>Phone</th>
+                                                <th>Parent Phone</th>
+                                                <th>Joined</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="studentsTable">
+                                            <tr>
+                                                <td colspan="6" class="text-center">Loading students...</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Student Details Modal -->
+                    <div class="modal fade" id="studentDetailsModal" tabindex="-1">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Student Details</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <h6 class="mb-3 text-primary">Personal Information</h6>
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <strong>ID:</strong> <span id="studentId"></span>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <strong>Role:</strong> <span id="studentRole"></span>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <strong>First Name:</strong> <span id="studentFirstName"></span>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <strong>Last Name:</strong> <span id="studentLastName"></span>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-md-12">
+                                            <strong>Email:</strong> <span id="studentEmail"></span>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <strong>Phone:</strong> <span id="studentPhone"></span>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <strong>Parent Phone:</strong> <span id="studentParentPhone"></span>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <strong>Joined:</strong> <span id="studentJoined"></span>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <strong>Last Login:</strong> <span id="studentLastLogin"></span>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <strong>Points:</strong> <span id="studentPoints" class="badge bg-success fs-6"></span>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <strong>Status:</strong> <span id="studentStatus"></span>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-md-12">
+                                            <strong>Password:</strong> <span id="studentPassword" class="text-muted">(hashed)</span>
+                                            <button class="btn btn-sm btn-outline-secondary ms-2" onclick="copyPassword()">
+                                                <i class="bi bi-clipboard"></i> Copy Hash
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <strong>Last Updated:</strong> <span id="studentUpdated"></span>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <strong>Account Status:</strong> <span id="studentAccountStatus"></span>
+                                        </div>
+                                    </div>
+                                    
+                                                                        
+                                    <h6 class="mt-4 mb-3 text-primary">Student Activity & Progress</h6>
+                                    <div class="row mb-3">
+                                        <div class="col-md-4">
+                                            <div class="card bg-light">
+                                                <div class="card-body text-center">
+                                                    <h5 class="card-title text-primary" id="studentTotalPoints">0</h5>
+                                                    <p class="card-text">Total Points</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="card bg-light">
+                                                <div class="card-body text-center">
+                                                    <h5 class="card-title text-success" id="studentEnrolledCourses">0</h5>
+                                                    <p class="card-text">Enrolled Courses</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="card bg-light">
+                                                <div class="card-body text-center">
+                                                    <h5 class="card-title text-info" id="studentDaysActive">0</h5>
+                                                    <p class="card-text">Days Active</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <h6 class="mt-4 mb-3 text-primary">Enrolled Courses</h6>
+                                    <div class="table-responsive">
+                                        <table class="table table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th>Course</th>
+                                                    <th>Instructor</th>
+                                                    <th>Price</th>
+                                                    <th>Enrolled</th>
+                                                    <th>Status</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="studentEnrollments">
+                                                <tr>
+                                                    <td colspan="6" class="text-center">Loading enrollments...</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                                                    </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Courses Section -->
+                    <div id="courses-section" style="display: none;">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Course Management</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead class="table-dark">
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Title</th>
+                                                <th>Instructor</th>
+                                                <th>Price</th>
+                                                <th>Level</th>
+                                                <th>Status</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="coursesTable">
+                                            <tr>
+                                                <td colspan="7" class="text-center">Loading courses...</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Teachers Section -->
+                    <div id="teachers-section" style="display: none;">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Teacher Management</h5>
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-outline-primary btn-sm" onclick="loadTeachers()">
+                                        <i class="bi bi-arrow-clockwise"></i> Refresh
+                                    </button>
+                                    <button class="btn btn-primary btn-sm" onclick="showAddTeacherModal()">
+                                        <i class="bi bi-plus-circle"></i> Add Teacher
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Email</th>
+                                                <th>Subject</th>
+                                                <th>Experience</th>
+                                                <th>Assistants</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="teachersTable">
+                                            <tr>
+                                                <td colspan="6" class="text-center">Loading teachers...</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Parents Section -->
+                    <div id="parents-section" style="display: none;">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Parent Management</h5>
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-outline-primary btn-sm" onclick="loadParents()">
+                                        <i class="bi bi-arrow-clockwise"></i> Refresh
+                                    </button>
+                                    <button class="btn btn-success btn-sm" onclick="exportParents()">
+                                        <i class="bi bi-download"></i> Export
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <!-- Search and Filter -->
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="bi bi-search"></i></span>
+                                            <input type="text" class="form-control" id="parentSearchInput" placeholder="Search parents by name, email, or phone..." onkeyup="filterParents()">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <select class="form-select" id="parentStatusFilter" onchange="filterParents()">
+                                            <option value="">All Status</option>
+                                            <option value="active">Active</option>
+                                            <option value="inactive">Inactive</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <select class="form-select" id="parentSortBy" onchange="sortParents()">
+                                            <option value="name">Sort by Name</option>
+                                            <option value="email">Sort by Email</option>
+                                            <option value="created_at">Sort by Registration Date</option>
+                                            <option value="last_login">Sort by Last Login</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- Parents Table -->
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Name</th>
+                                                <th>Email</th>
+                                                <th>Phone</th>
+                                                <th>Son/Daughter</th>
+                                                <th>Registration Date</th>
+                                                <th>Last Login</th>
+                                                <th>Status</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="parentsTableBody">
+                                            <tr>
+                                                <td colspan="9" class="text-center text-muted py-4">
+                                                    <i class="bi bi-people-fill fs-1"></i>
+                                                    <p class="mt-2">Loading parents...</p>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <!-- Pagination -->
+                                <nav aria-label="Parents pagination">
+                                    <ul class="pagination justify-content-center" id="parentsPagination">
+                                        <!-- Pagination will be generated here -->
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- Enrollments Section -->
+                    <div id="enrollments-section" style="display: none;">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Enrollment Management</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead class="table-dark">
+                                            <tr>
+                                                <th>Student</th>
+                                                <th>Course</th>
+                                                <th>Enrolled Date</th>
+                                                <th>Status</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="enrollmentsTable">
+                                            <tr>
+                                                <td colspan="5" class="text-center">Loading enrollments...</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Orders Section -->
+                    <div id="orders-section" style="display: none;">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Order Management</h5>
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-outline-success btn-sm" onclick="exportOrders()" title="Export to CSV (Ctrl+E)">
+                                        <i class="bi bi-download"></i> Export
+                                    </button>
+                                    <button class="btn btn-outline-primary btn-sm" onclick="loadOrders()" title="Refresh (Ctrl+R)">
+                                        <i class="bi bi-arrow-clockwise"></i> Refresh
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead class="table-dark">
+                                            <tr>
+                                                <th>Order ID</th>
+                                                <th>Student</th>
+                                                <th>Courses</th>
+                                                <th>Amount</th>
+                                                <th>Payment Method</th>
+                                                <th>Status</th>
+                                                <th>Date</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="ordersTable">
+                                            <tr>
+                                                <td colspan="7" class="text-center">Loading orders...</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Questions Management Section -->
+                    <div id="questions-section" style="display: none;">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">
+                                    <i class="bi bi-question-circle me-2"></i>
+                                    Questions Management
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <!-- Course Selection -->
+                                <div class="mb-4">
+                                    <label for="questionCourseSelect" class="form-label fw-bold">Select Course:</label>
+                                    <select class="form-select" id="questionCourseSelect" onchange="loadQuestions(this.value)">
+                                        <option value="">Choose a course...</option>
+                                        <option value="mathematics">Mathematics IGCSE</option>
+                                        <option value="physics">Physics IGCSE</option>
+                                        <option value="english">English IGCSE</option>
+                                    </select>
+                                </div>
+
+                                <!-- Add Question Button -->
+                                <div class="mb-4">
+                                    <button class="btn btn-primary" onclick="showAddQuestionModal()">
+                                        <i class="bi bi-plus-circle me-2"></i>
+                                        Add New Question
+                                    </button>
+                                </div>
+
+                                <!-- Questions List -->
+                                <div id="questionsListContainer">
+                                    <p class="text-muted text-center">Please select a course to view questions</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Course Analytics Section -->
+                    <div id="course-analytics-section" style="display: none;">
+                        <!-- Course Overview Cards -->
+                        <div class="row mb-4">
+                            <div class="col-md-3">
+                                <div class="card stats-card">
+                                    <div class="card-body text-center">
+                                        <i class="bi bi-book me-2" style="font-size: 2rem;"></i>
+                                        <h4 id="analyticsTotalCourses">0</h4>
+                                        <p class="mb-0">Total Courses</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card stats-card" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
+                                    <div class="card-body text-center">
+                                        <i class="bi bi-people me-2" style="font-size: 2rem;"></i>
+                                        <h4 id="analyticsTotalEnrollments">0</h4>
+                                        <p class="mb-0">Total Enrollments</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card stats-card" style="background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);">
+                                    <div class="card-body text-center">
+                                        <i class="bi bi-trophy me-2" style="font-size: 2rem;"></i>
+                                        <h4 id="analyticsTopPerformer">-</h4>
+                                        <p class="mb-0">Top Performer</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card stats-card" style="background: linear-gradient(135deg, #dc3545 0%, #e83e8c 100%);">
+                                    <div class="card-body text-center">
+                                        <i class="bi bi-graph-up me-2" style="font-size: 2rem;"></i>
+                                        <h4 id="analyticsAvgPoints">0</h4>
+                                        <p class="mb-0">Avg Points</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Students Per Course Section -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-header bg-primary text-white">
+                                        <h5 class="mb-0"><i class="bi bi-people me-2"></i>Students Registered Per Course</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row" id="studentsPerCourseCards">
+                                            <div class="col-12 text-center text-muted">
+                                                <p>Loading course enrollment data...</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Course Selection and Analytics -->
+                        <div class="row">
+                            <!-- Course Selection -->
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="mb-0">Select Course</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="mb-3">
+                                            <label for="courseSelect" class="form-label">Choose Course</label>
+                                            <select class="form-select" id="courseSelect" onchange="loadCourseLeaderboard(this.value)">
+                                                <option value="">Select a course...</option>
+                                            </select>
+                                        </div>
+                                        <div id="courseInfo" style="display: none;">
+                                            <div class="alert alert-info">
+                                                <h6 id="selectedCourseName">Course Name</h6>
+                                                <p class="mb-1"><strong>Students:</strong> <span id="courseStudentCount">0</span></p>
+                                                <p class="mb-1"><strong>Duration:</strong> <span id="courseDuration">-</span></p>
+                                                <p class="mb-0"><strong>Level:</strong> <span id="courseLevel">-</span></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Student Leaderboard -->
+                            <div class="col-md-8">
+                                <div class="card">
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                        <h5 class="mb-0">Student Leaderboard</h5>
+                                        <div class="d-flex gap-2">
+                                            <button class="btn btn-sm btn-outline-primary" onclick="refreshLeaderboard()">
+                                                <i class="bi bi-arrow-clockwise me-1"></i>Refresh
+                                            </button>
+                                            <button class="btn btn-sm btn-success" onclick="exportLeaderboard()">
+                                                <i class="bi bi-download me-1"></i>Export
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover">
+                                                <thead class="table-dark">
+                                                    <tr>
+                                                        <th>ID</th>
+                                                        <th>Name</th>
+                                                        <th>Email</th>
+                                                        <th>Phone</th>
+                                                        <th>Parent Phone</th>
+                                                        <th>Joined</th>
+                                                        <th>Actions</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="leaderboardTable">
+                                                    <tr>
+                                                        <td colspan="6" class="text-center">Select a course to view leaderboard</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Course Performance Charts -->
+                        <div class="row mt-4">
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="mb-0">Course Performance</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <canvas id="coursePerformanceChart" width="400" height="200"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="mb-0">Points Distribution</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <canvas id="pointsDistributionChart" width="400" height="200"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Teacher Modal -->
+    <div class="modal fade" id="addTeacherModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New Teacher</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addTeacherForm">
+                        <div class="mb-3">
+                            <label for="teacherName" class="form-label">Full Name</label>
+                            <input type="text" class="form-control" id="teacherName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="teacherEmail" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="teacherEmail" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="teacherSubject" class="form-label">Subject</label>
+                            <select class="form-select" id="teacherSubject" required>
+                                <option value="">Select Subject</option>
+                                <option value="Mathematics">Mathematics</option>
+                                <option value="English">English</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="teacherExperience" class="form-label">Years of Experience</label>
+                            <input type="number" class="form-control" id="teacherExperience" min="0" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="teacherPhone" class="form-label">Phone Number</label>
+                            <input type="tel" class="form-control" id="teacherPhone">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="addTeacher()">Add Teacher</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Teacher Details Modal -->
+    <div class="modal fade" id="teacherDetailsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Teacher Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Teacher Information</h6>
+                            <p><strong>Name:</strong> <span id="teacherDetailName"></span></p>
+                            <p><strong>Email:</strong> <span id="teacherDetailEmail"></span></p>
+                            <p><strong>Subject:</strong> <span id="teacherDetailSubject"></span></p>
+                            <p><strong>Experience:</strong> <span id="teacherDetailExperience"></span> years</p>
+                            <p><strong>Phone:</strong> <span id="teacherDetailPhone"></span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Assistants</h6>
+                            <div id="assistantsList">
+                                <p class="text-muted">Loading assistants...</p>
+                            </div>
+                            <button class="btn btn-sm btn-outline-primary" onclick="showAddAssistantModal()">
+                                <i class="bi bi-plus"></i> Add Assistant
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" onclick="deleteTeacher()">Delete Teacher</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Assistant Modal -->
+    <div class="modal fade" id="addAssistantModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Assistant</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addAssistantForm">
+                        <div class="mb-3">
+                            <label for="assistantName" class="form-label">Full Name</label>
+                            <input type="text" class="form-control" id="assistantName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="assistantEmail" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="assistantEmail" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="assistantPhone" class="form-label">Phone Number</label>
+                            <input type="tel" class="form-control" id="assistantPhone">
+                        </div>
+                        <div class="mb-3">
+                            <label for="assistantRole" class="form-label">Role</label>
+                            <select class="form-select" id="assistantRole" required>
+                                <option value="">Select Role</option>
+                                <option value="Teaching Assistant">Teaching Assistant</option>
+                                <option value="Grading Assistant">Grading Assistant</option>
+                                <option value="Content Creator">Content Creator</option>
+                                <option value="Student Support">Student Support</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="addAssistant()">Add Assistant</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container">
+        <div id="toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <strong class="me-auto">Admin Panel</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body" id="toastBody">
+                <!-- Toast message will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let authToken = null;
+        let currentStudentId = null;
+        
+        // Helper function to get API URL â€” always use same origin when on localhost so token from this server works
+        function getApiUrl() {
+            const origin = window.location.origin || '';
+            if (origin.startsWith('http://localhost') || origin.startsWith('http://127.0.0.1')) {
+                return origin + '/api';
+            }
+            if (window.API_CONFIG && window.API_CONFIG.apiURL) return window.API_CONFIG.apiURL;
+            return origin + '/api';
+        }
+
+        function redirectToAdminLogin() {
+            try {
+                localStorage.removeItem('adminLoggedIn');
+                localStorage.removeItem('adminEmail');
+                localStorage.removeItem('adminToken');
+            } catch (error) {
+                console.warn('localStorage access blocked:', error);
+            }
+            authToken = null;
+            window.location.replace('admin-login.html');
+        }
+
+        // Toast notification function
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast');
+            const toastBody = document.getElementById('toastBody');
+            
+            // Set message
+            toastBody.textContent = message;
+            
+            // Set type-specific styling
+            toast.className = 'toast ' + (type === 'error' ? 'bg-danger text-white' : type === 'success' ? 'bg-success text-white' : 'bg-info text-white');
+            
+            // Show toast
+            const bsToast = new bootstrap.Toast(toast);
+            bsToast.show();
+        }
+        
+        // Loading state management
+        function setLoading(elementId, isLoading) {
+            const element = document.getElementById(elementId);
+            if (isLoading) {
+                element.classList.add('loading');
+            } else {
+                element.classList.remove('loading');
+            }
+        }
+        
+        // Initialize admin panel â€” require valid admin session or redirect to login
+        document.addEventListener('DOMContentLoaded', function() {
+            var qa = document.getElementById('quick-actions-section');
+            if (qa) qa.remove();
+            let savedToken;
+            try {
+                savedToken = localStorage.getItem('adminToken');
+            } catch (error) {
+                console.warn('localStorage access blocked:', error);
+                savedToken = null;
+            }
+            if (!savedToken) {
+                redirectToAdminLogin();
+                return;
+            }
+            authToken = savedToken;
+            testAdminToken(savedToken);
+            setInterval(() => {
+                if (document.getElementById('students-section') && document.getElementById('students-section').style.display !== 'none') {
+                    loadStudents();
+                }
+                if (document.getElementById('dashboard-section') && document.getElementById('dashboard-section').style.display !== 'none') {
+                    loadDashboard();
+                }
+            }, 30000);
+        });
+
+        function showLoginModal() {}
+
+        async function login(email, password) {
+            try {
+                // Use API_CONFIG if available, otherwise use Railway URL
+                const apiUrl = (window.API_CONFIG && window.API_CONFIG.apiURL) || 'https://elbadry-production.up.railway.app/api';
+                
+                const response = await fetch(apiUrl + '/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    authToken = data.token;
+                    try {
+                        localStorage.setItem('adminToken', authToken);
+                    } catch (error) {
+                        console.warn('localStorage access blocked:', error);
+                    }
+                    
+                    // Hide login modal and show main content
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
+                    if (modal) modal.hide();
+                    
+                    document.getElementById('mainContent').style.display = 'block';
+                    loadDashboard();
+                } else {
+                    showToast('Login failed: ' + (data.error || 'Invalid credentials'), 'error');
+                }
+            } catch (error) {
+                showToast('Login error: ' + error.message, 'error');
+            }
+        }
+
+        // Login form removed
+
+        function logout() {
+            authToken = null;
+            try {
+                localStorage.removeItem('adminToken');
+            } catch (error) {
+                console.warn('localStorage access blocked:', error);
+            }
+            document.getElementById('mainContent').style.display = 'block';
+            loadDashboard();
+        }
+
+        async function apiCall(endpoint, options = {}) {
+            // Build full URL when a relative path is provided
+            const baseUrl = 'https://my-project-gphv.onrender.com';
+            const url = endpoint.startsWith('http') ? endpoint : baseUrl + (endpoint.startsWith('/') ? '' : '/') + endpoint;
+
+            // Merge headers: preserve any custom headers, but always include Content-Type and Authorization when available
+            const headers = Object.assign({}, {
+                'Content-Type': 'application/json'
+            }, options.headers || {});
+
+            if (authToken) {
+                headers['Authorization'] = 'Bearer ' + authToken;
+            }
+
+            console.log('API Call:', url, 'Token:', authToken ? 'Present' : 'Missing');
+
+            const response = await fetch(url, Object.assign({}, options, { headers }));
+
+            if (!response.ok) {
+                const text = await response.text().catch(() => '');
+                let errorData = { error: text || response.statusText };
+                try {
+                    errorData = JSON.parse(text || '{}');
+                } catch (e) {
+                    // ignore JSON parse error
+                }
+                console.error('API Error:', response.status, errorData);
+                throw new Error(errorData.error || 'HTTP ' + response.status + ': ' + response.statusText);
+            }
+
+            const contentType = response.headers.get('content-type') || '';
+            if (contentType.includes('application/json')) {
+                return await response.json();
+            }
+
+            return await response.text();
+        }
+
+        function showSection(sectionName, clickedElement = null) {
+            // Hide all sections
+            document.querySelectorAll('[id$="-section"]').forEach(section => {
+                section.style.display = 'none';
+            });
+            
+            // Remove active class from all nav links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionName + '-section').style.display = 'block';
+            
+            // Add active class to clicked nav link (if provided)
+            if (clickedElement) {
+                clickedElement.classList.add('active');
+            } else {
+                // Find the nav link for this section and make it active
+                const navLink = document.querySelector('[onclick*="showSection(\'' + sectionName + '\')"]');
+                if (navLink) {
+                    navLink.classList.add('active');
+                }
+            }
+            
+            // Update page title
+            document.getElementById('pageTitle').textContent = sectionName.charAt(0).toUpperCase() + sectionName.slice(1);
+            
+            // Load section data
+            switch(sectionName) {
+                case 'dashboard':
+                    loadDashboard();
+                    break;
+                case 'students':
+                    loadStudents();
+                    break;
+                case 'teachers':
+                    loadTeachers();
+                    break;
+                case 'parents':
+                    loadParents();
+                    break;
+                case 'courses':
+                    loadCourses();
+                    break;
+                case 'enrollments':
+                    loadEnrollments();
+                    break;
+                case 'orders':
+                    loadOrders();
+                    break;
+                case 'course-analytics':
+                    loadCourseAnalytics();
+                    break;
+            }
+        }
+
+        async function loadDashboard() {
+            try {
+                console.log('Loading dashboard with token:', authToken ? 'Present' : 'Missing');
+                
+                // Load stats: /api/admin/students returns users with role 'student' (registered on site)
+                const [studentsRes, courses, enrollmentsData, ordersData] = await Promise.all([
+                    apiCall('/api/admin/students'),
+                    apiCall('/api/courses'),
+                    apiCall('/api/admin/enrollments').catch(() => ({ enrollments: [] })),
+                    apiCall('/api/admin/orders').catch(() => ({ orders: [] }))
+                ]);
+
+                const students = Array.isArray(studentsRes) ? studentsRes : [];
+                const studentCount = students.length;
+                
+                // Extract arrays from response objects
+                const enrollments = Array.isArray(enrollmentsData) ? enrollmentsData : (enrollmentsData.enrollments || []);
+                const orders = Array.isArray(ordersData) ? ordersData : (ordersData.orders || []);
+
+                console.log('Dashboard data:', { students: studentCount, courses: (courses && courses.length) || 0, enrollments: enrollments.length, orders: orders.length });
+
+                document.getElementById('totalStudents').textContent = studentCount;
+                document.getElementById('totalCourses').textContent = Array.isArray(courses) ? courses.length : 0;
+                document.getElementById('totalEnrollments').textContent = enrollments.length;
+                
+                // Calculate revenue
+                const revenue = orders.reduce((sum, order) => sum + (order.total_amount || 0), 0);
+                document.getElementById('totalRevenue').textContent = revenue.toFixed(2) + ' EGP';
+
+
+                // Load recent activity
+                loadRecentActivity();
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+                showToast('Error loading dashboard data', 'error');
+                // Set default values if API fails
+                document.getElementById('totalStudents').textContent = '0';
+                document.getElementById('totalCourses').textContent = '0';
+                document.getElementById('totalEnrollments').textContent = '0';
+                document.getElementById('totalRevenue').textContent = '0.00 EGP';
+            }
+        }
+
+
+
+
+        async function loadRecentActivity() {
+            try {
+                const [enrollmentsData, ordersData] = await Promise.all([
+                    apiCall('/api/admin/enrollments').catch(() => ({ enrollments: [] })),
+                    apiCall('/api/admin/orders').catch(() => ({ orders: [] }))
+                ]);
+                
+                // Extract arrays from response objects
+                const enrollments = Array.isArray(enrollmentsData) ? enrollmentsData : (enrollmentsData.enrollments || []);
+                const orders = Array.isArray(ordersData) ? ordersData : (ordersData.orders || []);
+                
+                const recentActivity = [
+                    ...enrollments.slice(0, 3).map(e => ({
+                        type: 'enrollment',
+                        text: e.first_name + ' ' + e.last_name + ' enrolled in ' + e.course_title,
+                        date: e.enrolled_at
+                    })),
+                    ...orders.slice(0, 3).map(o => {
+                        // Get customer name from joined user data
+                        const customerName = o.first_name && o.last_name 
+                            ? e.first_name + ' ' + e.last_name 
+                            : (o.customer_name || 'A student');
+                        
+                        // Parse courses to get course names
+                        let courseNames = 'a course';
+                        try {
+                            const courses = typeof o.courses === 'string' ? JSON.parse(o.courses) : o.courses;
+                            if (Array.isArray(courses)) {
+                                courseNames = courses.map(c => typeof c === 'string' ? c : (c.title || c.name || 'Unknown')).join(', ');
+                            } else if (typeof courses === 'object' && courses.title) {
+                                courseNames = courses.title;
+                            }
+                        } catch (e) {
+                            console.error('Error parsing courses:', e);
+                        }
+                        
+                        return {
+                            type: 'order',
+                            text: customerName + ' placed an order for ' + courseNames + ' (' + o.total_amount + ' EGP)',
+                            date: o.created_at
+                        };
+                    })
+                ].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
+                
+                if (recentActivity.length === 0) {
+                    document.getElementById('recentActivity').innerHTML = '<p class="text-muted">No recent activity yet. Students will appear here when they register and enroll in courses.</p>';
+                } else {
+                    const activityHtml = recentActivity.map(activity => 
+                        '<div class="d-flex justify-content-between align-items-center py-2 border-bottom">' +
+                        '<div>' +
+                        '<strong>' + activity.text + '</strong>' +
+                        '</div>' +
+                        '<small class="text-muted">' + new Date(activity.date).toLocaleString() + '</small>' +
+                        '</div>'
+                    ).join('');
+                    document.getElementById('recentActivity').innerHTML = activityHtml;
+                }
+            } catch (error) {
+                document.getElementById('recentActivity').innerHTML = '<p class="text-muted">No recent activity</p>';
+            }
+        }
+
+        async function loadStudents() {
+            try {
+                console.log('Loading students from database...');
+                const response = await fetch(getApiUrl() + '/admin/students', {
+                    headers: { 'Authorization': 'Bearer ' + authToken }
+                });
+                
+                if (response.status === 401) {
+                    redirectToAdminLogin();
+                    return;
+                }
+                
+                if (!response.ok) {
+                    throw new Error('Failed to load students');
+                }
+                
+                const students = await response.json();
+                console.log('Loaded students:', students);
+                displayStudents(students);
+            } catch (error) {
+                console.error('Error loading students:', error);
+                showToast('Error loading students data', 'error');
+                document.getElementById('studentsTable').innerHTML = '<tr><td colspan="6" class="text-center text-danger">Error loading students. Please try again later.</td></tr>';
+            }
+        }
+
+        function displayStudents(students) {
+            const tableBody = document.getElementById('studentsTable');
+            if (students.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="7" class="text-center">No students found</td></tr>';
+                return;
+            }
+
+            tableBody.innerHTML = students.map(student => 
+                    '<tr>' +
+                    '<td>' + student.id + '</td>' +
+                    '<td>' + student.first_name + ' ' + student.last_name + '</td>' +
+                    '<td>' + student.email + '</td>' +
+                    '<td>' + (student.phone || 'N/A') + '</td>' +
+                    '<td>' + (student.parent_phone || 'N/A') + '</td>' +
+                    '<td>' + new Date(student.created_at).toLocaleDateString() + '</td>' +
+                    '<td>' +
+                    '<button class="btn btn-sm btn-info btn-action me-1" onclick="viewStudentDetails(' + student.id + ')" title="View Details">' +
+                    '<i class="bi bi-eye"></i>' +
+                    '</button>' +
+                    '<button class="btn btn-sm btn-warning btn-action me-1" onclick="editStudent(' + student.id + ')" title="Edit">' +
+                    '<i class="bi bi-pencil"></i>' +
+                    '</button>' +
+                    '<button class="btn btn-sm btn-danger btn-action" onclick="removeStudent(' + student.id + ', \'' + (student.first_name + ' ' + student.last_name) + '\')" title="Remove">' +
+                    '<i class="bi bi-trash"></i>' +
+                    '</button>' +
+                    '</td>' +
+                    '</tr>'
+                ).join('');
+        }
+
+        let currentStudentPassword = '';
+        
+        async function viewStudentDetails(studentId) {
+            try {
+                // Fetch student details from database
+                const response = await fetch(getApiUrl() + '/admin/students', {
+                    headers: { 'Authorization': 'Bearer ' + authToken }
+                });
+                
+                const students = await response.json();
+                const student = students.find(s => s.id === studentId);
+                
+                if (!student) {
+                    alert('Student not found');
+                    return;
+                }
+                
+                // Populate student information
+                document.getElementById('studentId').textContent = student.id;
+                document.getElementById('studentFirstName').textContent = student.first_name || 'N/A';
+                document.getElementById('studentLastName').textContent = student.last_name || 'N/A';
+                document.getElementById('studentEmail').textContent = student.email || 'N/A';
+                document.getElementById('studentPhone').textContent = student.phone || 'N/A';
+                document.getElementById('studentParentPhone').textContent = student.parent_phone || 'N/A';
+                document.getElementById('studentRole').textContent = student.role || 'student';
+                document.getElementById('studentJoined').textContent = student.created_at ? new Date(student.created_at).toLocaleDateString() : 'N/A';
+                document.getElementById('studentLastLogin').textContent = student.last_login ? new Date(student.last_login).toLocaleDateString() : 'Never';
+                document.getElementById('studentUpdated').textContent = student.updated_at ? new Date(student.updated_at).toLocaleDateString() : 'N/A';
+                document.getElementById('studentPoints').textContent = student.points || 0;
+                
+                const isActive = student.is_active !== undefined ? student.is_active : true;
+                document.getElementById('studentStatus').innerHTML = isActive 
+                    ? '<span class="badge bg-success">Active</span>' 
+                    : '<span class="badge bg-danger">Inactive</span>';
+                    
+                document.getElementById('studentAccountStatus').innerHTML = isActive 
+                    ? '<span class="badge bg-success">Active Account</span>' 
+                    : '<span class="badge bg-danger">Inactive Account</span>';
+                
+                // Store password hash for copying
+                currentStudentPassword = student.password || '';
+                document.getElementById('studentPassword').textContent = student.password ? student.password.substring(0, 20) + '...' : 'N/A';
+                
+                // Populate activity and progress data
+                document.getElementById('studentTotalPoints').textContent = student.points || 0;
+                
+                // Calculate days active (days since account creation)
+                if (student.created_at) {
+                    const createdDate = new Date(student.created_at);
+                    const now = new Date();
+                    const daysActive = Math.floor((now - createdDate) / (1000 * 60 * 60 * 24));
+                    document.getElementById('studentDaysActive').textContent = daysActive;
+                } else {
+                    document.getElementById('studentDaysActive').textContent = 'N/A';
+                }
+                
+                // Load enrollments
+                loadStudentEnrollments(studentId);
+                
+                // Show modal
+                new bootstrap.Modal(document.getElementById('studentDetailsModal')).show();
+            } catch (error) {
+                console.error('Error loading student details:', error);
+                showToast('Failed to load student details', 'error');
+            }
+        }
+        
+                
+        async function loadStudentEnrollments(studentId) {
+            try {
+                const response = await fetch(getApiUrl() + '/admin/enrollments', {
+                    headers: { 'Authorization': 'Bearer ' + authToken }
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to load enrollments');
+                }
+                
+                const allEnrollments = await response.json();
+                // Only show ACTIVE enrollments (filter out revoked/inactive ones)
+                const studentEnrollments = allEnrollments.filter(e => e.user_id === studentId && e.status === 'active');
+                
+                // Update enrolled courses count
+                document.getElementById('studentEnrolledCourses').textContent = studentEnrollments.length;
+                
+                const tbody = document.getElementById('studentEnrollments');
+                
+                if (studentEnrollments.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" class="text-center">No enrollments found</td></tr>';
+                    return;
+                }
+                
+                tbody.innerHTML = studentEnrollments.map(enrollment => 
+                    '<tr>' +
+                    '<td>' + (enrollment.course_title || '') + '</td>' +
+                    '<td>' + (enrollment.instructor || 'N/A') + '</td>' +
+                    '<td>' + (enrollment.price ? enrollment.price + ' EGP' : 'N/A') + '</td>' +
+                    '<td>' + new Date(enrollment.enrolled_at).toLocaleDateString() + '</td>' +
+                    '<td><span class="badge bg-' + (enrollment.status === 'active' ? 'success' : 'secondary') + '">' + enrollment.status + '</span></td>' +
+                    '<td>' +
+                    '<button class="btn btn-sm btn-danger" onclick="revokeAccess(' + enrollment.user_id + ', ' + enrollment.course_id + ')">' +
+                    '<i class="bi bi-x-circle"></i> Revoke' +
+                    '</button>' +
+                    '</td>' +
+                    '</tr>'
+                ).join('');
+            } catch (error) {
+                console.error('Error loading enrollments:', error);
+                document.getElementById('studentEnrollments').innerHTML = '<tr><td colspan="6" class="text-center text-danger">Error loading enrollments</td></tr>';
+            }
+        }
+        
+        async function revokeAccess(userId, courseId) {
+            try {
+                const response = await apiCall(`/api/admin/revoke-access`, {
+                    method: 'POST',
+                    body: JSON.stringify({ user_id: userId, course_id: courseId })
+                });
+                
+                if (response.success) {
+                    showToast('Access revoked successfully', 'success');
+                    loadStudentEnrollments(currentStudentId);
+                } else {
+                    showToast('Error revoking access', 'error');
+                }
+            } catch (error) {
+                console.error('Error granting access:', error);
+                showToast('Error granting access: ' + error.message, 'error');
+            }
+        }
+        
+                
+        function copyPassword() {
+            if (currentStudentPassword) {
+                navigator.clipboard.writeText(currentStudentPassword);
+                alert('Password hash copied to clipboard!');
+            } else {
+                alert('No password to copy');
+            }
+        }
+
+        async function editStudent(studentId) {
+            try {
+                // Fetch student details
+                const students = await apiCall('/api/admin/students');
+                const student = students.find(s => s.id === studentId);
+                
+                if (!student) {
+                    alert('Student not found!');
+                    return;
+                }
+
+                // Create modal HTML
+                const modalHtml = 
+                    '<div class="modal fade" id="editStudentModal" tabindex="-1">' +
+                    '<div class="modal-dialog modal-lg">' +
+                    '<div class="modal-content">' +
+                    '<div class="modal-header">' +
+                    '<h5 class="modal-title">Edit Student: ' + student.first_name + ' ' + student.last_name + '</h5>' +
+                    '<button type="button" class="btn-close" data-bs-dismiss="modal"></button>' +
+                    '</div>' +
+                    '<div class="modal-body">' +
+                    '<form id="editStudentForm">' +
+                    '<div class="row">' +
+                    '<div class="col-md-6">' +
+                    '<div class="mb-3">' +
+                    '<label for="editFirstName" class="form-label">First Name</label>' +
+                    '<input type="text" class="form-control" id="editFirstName" value="' + student.first_name + '" required>' +
+                    '</div>' +
+                    '</div>' +
+                    '<div class="col-md-6">' +
+                    '<div class="mb-3">' +
+                    '<label for="editLastName" class="form-label">Last Name</label>' +
+                    '<input type="text" class="form-control" id="editLastName" value="' + student.last_name + '" required>' +
+                    '</div>' +
+                    '</div>' +
+                    '</div>' +
+                    '<div class="mb-3">' +
+                    '<label for="editEmail" class="form-label">Email</label>' +
+                    '<input type="email" class="form-control" id="editEmail" value="' + student.email + '" required>' +
+                    '</div>' +
+                    '<div class="mb-3">' +
+                    '<label for="editPhone" class="form-label">Phone Number</label>' +
+                    '<input type="tel" class="form-control" id="editPhone" value="' + (student.phone || '') + '">' +
+                    '</div>' +
+                    '<div class="mb-3">' +
+                    '<label for="editRole" class="form-label">Role</label>' +
+                    '<select class="form-select" id="editRole" required>' +
+                    '<option value="student" ' + (student.role === 'student' ? 'selected' : '') + '>Student</option>' +
+                    '<option value="teacher" ' + (student.role === 'teacher' ? 'selected' : '') + '>Teacher</option>' +
+                    '<option value="admin" ' + (student.role === 'admin' ? 'selected' : '') + '>Admin</option>' +
+                    '</select>' +
+                    '</div>' +
+                    '<div class="mb-3">' +
+                    '<label for="editStatus" class="form-label">Status</label>' +
+                    '<select class="form-select" id="editStatus" required>' +
+                    '<option value="1" ' + (student.is_active ? 'selected' : '') + '>Active</option>' +
+                    '<option value="0" ' + (!student.is_active ? 'selected' : '') + '>Inactive</option>' +
+                    '</select>' +
+                    '</div>' +
+                    '<div class="alert alert-info">' +
+                    '<strong>Note:</strong> Student ID: ' + student.id + ' | Created: ' + new Date(student.created_at).toLocaleDateString() +
+                    '</div>' +
+                    '</form>' +
+                    '</div>' +
+                    '<div class="modal-footer">' +
+                    '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>' +
+                    '<button type="button" class="btn btn-primary" onclick="saveStudentChanges(' + studentId + ')">Save Changes</button>' +
+                    '</div>' +
+                    '</div>' +
+                    '</div>' +
+                    '</div>';
+
+                // Remove existing modal if any
+                const existingModal = document.getElementById('editStudentModal');
+                if (existingModal) {
+                    existingModal.remove();
+                }
+
+                // Add modal to body
+                document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+                // Show modal
+                const modal = new bootstrap.Modal(document.getElementById('editStudentModal'));
+                modal.show();
+                
+            } catch (error) {
+                console.error('Error loading student details:', error);
+                alert('Error loading student details: ' + error.message);
+            }
+        }
+
+        async function saveStudentChanges(studentId) {
+            try {
+                const formData = {
+                    first_name: document.getElementById('editFirstName').value,
+                    last_name: document.getElementById('editLastName').value,
+                    email: document.getElementById('editEmail').value,
+                    phone: document.getElementById('editPhone').value,
+                    role: document.getElementById('editRole').value,
+                    is_active: document.getElementById('editStatus').value === '1'
+                };
+
+                const response = await fetch(getApiUrl() + '/admin/update-student', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + authToken
+                    },
+                    body: JSON.stringify({ 
+                        studentId: studentId,
+                        ...formData
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(errorText || 'Failed to update student');
+                }
+
+                const result = await response.json();
+                
+                // Close modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('editStudentModal'));
+                modal.hide();
+                
+                // Show success message
+                showToast('Student updated successfully!', 'success');
+                
+                // Refresh students table
+                loadStudents();
+                
+            } catch (error) {
+                console.error('Error updating student:', error);
+                showToast('Error updating student: ' + error.message, 'error');
+            }
+        }
+
+        async function removeStudent(studentId, studentName) {
+            // Show confirmation dialog
+            const confirmed = confirm('Are you sure you want to remove student "' + studentName + '"?\n\nThis action cannot be undone and will:\n- Delete the student\'s account\n- Remove all their progress data\n- Cancel any active enrollments\n\nType "DELETE" to confirm:');
+            
+            if (!confirmed) {
+                return;
+            }
+            
+            // Additional confirmation with typing requirement
+            const userInput = prompt('To confirm deletion of student "' + studentName + '", please type "DELETE" (case sensitive):');
+            
+            if (userInput !== "DELETE") {
+                showToast('Student removal cancelled. You must type "DELETE" to confirm.', 'warning');
+                return;
+            }
+            
+            try {
+                console.log('Removing student ' + studentId + ' (' + studentName + ')...');
+                console.log('Auth token:', authToken ? 'Present' : 'Missing');
+                
+                const response = await fetch(getApiUrl() + '/admin/remove-student', {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + authToken
+                    },
+                    body: JSON.stringify({ studentId })
+                });
+
+                console.log('Response status:', response.status);
+                console.log('Response headers:', response.headers);
+                
+                // Check if response is JSON
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    const text = await response.text();
+                    console.error('Non-JSON response:', text);
+                    throw new Error('Server returned non-JSON response: ' + text.substring(0, 100) + '...');
+                }
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Failed to remove student');
+                }
+
+                const result = await response.json();
+                
+                // Show success message
+                showToast('Student "' + studentName + '" has been successfully removed!', 'success');
+                
+                // Refresh students table
+                loadStudents();
+                
+                // Refresh dashboard stats
+                loadDashboard();
+                
+            } catch (error) {
+                console.error('Error removing student:', error);
+                showToast('Error removing student: ' + error.message, 'error');
+            }
+        }
+
+        async function viewOrderDetails(orderId) {
+            try {
+                // Fetch detailed order information
+                const order = await apiCall('/api/admin/orders/' + orderId);
+                
+                if (!order) {
+                    alert('Order not found!');
+                    return;
+                }
+
+                // Create modal HTML
+                const modalHtml = 
+                    '<div class="modal fade" id="orderDetailsModal" tabindex="-1">' +
+                    '<div class="modal-dialog modal-lg">' +
+                    '<div class="modal-content">' +
+                    '<div class="modal-header">' +
+                    '<h5 class="modal-title">Order #' + order.id + ' Details</h5>' +
+                    '<button type="button" class="btn-close" data-bs-dismiss="modal"></button>' +
+                    '</div>' +
+                    '<div class="modal-body">' +
+                    '<div class="row mb-3">' +
+                    '<div class="col-md-6">' +
+                    '<h6>Student Information:</h6>' +
+                    '<p><strong>Name:</strong> ' + order.first_name + ' ' + order.last_name + '</p>' +
+                    '<p><strong>User ID:</strong> ' + order.user_id + '</p>' +
+                    '</div>' +
+                    '<div class="col-md-6">' +
+                    '<h6>Order Information:</h6>' +
+                    '<p><strong>Date:</strong> ' + new Date(order.created_at).toLocaleString() + '</p>' +
+                    '<p><strong>Status:</strong> <span class="badge ' + (order.status === 'completed' ? 'bg-success' : 'bg-warning') + '">' + (order.status || 'pending') + '</span></p>' +
+                    '<p><strong>Payment Method:</strong> ' + (order.payment_method || 'N/A') + '</p>' +
+                    '</div>' +
+                    '</div>' +
+                    '<hr>' +
+                    '<div class="mb-3">' +
+                    '<h6>Courses Purchased:</h6>' +
+                    '<div id="orderCoursesList">' +
+                    (order.items && order.items.length > 0 ? 
+                        order.items.map(item => 
+                            '<div class="alert alert-info mb-2">' +
+                            '<div class="d-flex justify-content-between align-items-center">' +
+                            '<div>' +
+                            '<i class="bi bi-book me-2"></i>' +
+                            '<strong>' + (item.title || 'Unknown Course') + '</strong>' +
+                            (item.instructor ? '<br><small class="text-muted">Instructor: ' + item.instructor + '</small>' : '') +
+                            '</div>' +
+                            '<div class="text-end">' +
+                            '<span class="badge bg-primary">Qty: ' + (item.quantity || 1) + '</span>' +
+                            '<br><strong>' + item.price + ' EGP</strong>' +
+                            '</div>' +
+                            '</div>' +
+                            '</div>'
+                        ).join('') : 
+                        '<div class="alert alert-warning">No courses found</div>'
+                    ) +
+                    '</div>' +
+                    '</div>' +
+                    '<hr>' +
+                    '<div>' +
+                    '<h5>Total Amount: ' + order.total_amount + ' EGP</h5>' +
+                    '</div>' +
+                    '</div>' +
+                    '<div class="modal-footer">' +
+                    '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>' +
+                    (order.status !== 'completed' ? 
+                    '<button type="button" class="btn btn-success" onclick="approveOrder(' + order.id + ')">' +
+                    '<i class="bi bi-check-circle"></i> Approve & Grant Access' +
+                    '</button>' : 
+                    '<span class="badge bg-success">Order Already Approved</span>'
+                    ) +
+                    '</div>' +
+                    '</div>' +
+                    '</div>' +
+                    '</div>';
+
+                // Remove existing modal if any
+                const existingModal = document.getElementById('orderDetailsModal');
+                if (existingModal) existingModal.remove();
+
+                // Add modal to body
+                document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+                // Show modal
+                const modal = new bootstrap.Modal(document.getElementById('orderDetailsModal'));
+                modal.show();
+
+            } catch (error) {
+                console.error('Error loading order details:', error);
+                alert('Failed to load order details');
+            }
+        }
+
+    // NOTE: the authoritative loadDashboard implementation is declared earlier (server-driven).
+    // The duplicate sample-data-driven implementation was removed to avoid conflicts and "undefined" values.
+
+        async function loadDashboard() {
+            try {
+                const [studentsRes, courses, enrollmentsData, ordersData] = await Promise.all([
+                    apiCall('/api/admin/students'),
+                    apiCall('/api/courses'),
+                    apiCall('/api/admin/enrollments').catch(() => ({ enrollments: [] })),
+                    apiCall('/api/admin/orders').catch(() => ({ orders: [] }))
+                ]);
+                
+                // Extract arrays from response objects
+                const enrollments = Array.isArray(enrollmentsData) ? enrollmentsData : (enrollmentsData.enrollments || []);
+                const orders = Array.isArray(ordersData) ? ordersData : (ordersData.orders || []);
+                
+                const studentCount = Array.isArray(studentsRes) ? studentsRes.length : 0;
+                document.getElementById('totalStudents').textContent = studentCount;
+                document.getElementById('totalCourses').textContent = Array.isArray(courses) ? courses.length : 0;
+                document.getElementById('totalEnrollments').textContent = enrollments.length;
+                const revenue = orders.reduce((sum, order) => sum + (order.total_amount || 0), 0);
+                document.getElementById('totalRevenue').textContent = revenue.toFixed(2) + ' EGP';
+                loadRecentActivity();
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+                document.getElementById('totalStudents').textContent = '0';
+                document.getElementById('totalCourses').textContent = '0';
+                document.getElementById('totalEnrollments').textContent = '0';
+                document.getElementById('totalRevenue').textContent = '0.00 EGP';
+            }
+        }
+
+
+        async function loadCourses() {
+            try {
+                const courses = await apiCall('/api/courses');
+                
+                const tableHtml = courses.map(course => 
+                    '<tr>' +
+                    '<td>' + course.id + '</td>' +
+                    '<td>' + course.title + '</td>' +
+                    '<td>' + (course.instructor || 'N/A') + '</td>' +
+                    '<td>' + (course.price ? course.price + ' EGP' : 'Free') + '</td>' +
+                    '<td>' + (course.level || 'N/A') + '</td>' +
+                    '<td><span class="badge bg-' + (course.is_active ? 'success' : 'secondary') + '">' + (course.is_active ? 'Active' : 'Inactive') + '</span></td>' +
+                    '<td>' +
+                    '<button class="btn btn-sm btn-info btn-action me-1" onclick="viewCourseDetails(' + course.id + ')" title="View Details">' +
+                    '<i class="bi bi-eye"></i>' +
+                    '</button>' +
+                    '<button class="btn btn-sm btn-warning btn-action me-1" onclick="editCourse(' + course.id + ')" title="Edit">' +
+                    '<i class="bi bi-pencil"></i>' +
+                    '</button>' +
+                    '<button class="btn btn-sm btn-danger btn-action" onclick="deleteCourse(' + course.id + ')" title="Delete">' +
+                    '<i class="bi bi-trash"></i>' +
+                    '</button>' +
+                    '</td>' +
+                    '</tr>'
+                ).join('');
+                
+                document.getElementById('coursesTable').innerHTML = tableHtml;
+            } catch (error) {
+                console.error('Error loading courses:', error);
+                document.getElementById('coursesTable').innerHTML = '<tr><td colspan="7" class="text-center text-danger">Error loading courses</td></tr>';
+            }
+        }
+
+        async function loadEnrollments() {
+            try {
+                const enrollments = await apiCall('/api/admin/enrollments').catch(() => []);
+
+                const tableHtml = enrollments.map(enrollment => 
+                    '<tr>' +
+                    '<td>' + (enrollment.first_name + ' ' + enrollment.last_name) + '</td>' +
+                    '<td>' + enrollment.course_title + '</td>' +
+                    '<td>' + new Date(enrollment.enrolled_at).toLocaleDateString() + '</td>' +
+                    '<td><span class="badge bg-' + (enrollment.status === 'active' ? 'success' : 'secondary') + '">' + enrollment.status + '</span></td>' +
+                    '<td>' +
+                    '<button class="btn btn-sm btn-danger" onclick="revokeAccess(' + enrollment.user_id + ', ' + enrollment.course_id + ')">' +
+                    '<i class="bi bi-x-circle"></i> Revoke' +
+                    '</button>' +
+                    '</td>' +
+                    '</tr>'
+                ).join('');
+                document.getElementById("enrollmentsTable").innerHTML = tableHtml;
+            } catch (error) {
+                console.error('Error loading enrollments:', error);
+                document.getElementById('enrollmentsTable').innerHTML = '<tr><td colspan="5" class="text-center text-danger">Error loading enrollments</td></tr>';
+            }
+        }
+
+        // ========== END OF ADMIN PANEL FUNCTIONS ==========
+    </script>
+</body>
+</html>
