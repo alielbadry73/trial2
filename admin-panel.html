@@ -1591,23 +1591,7 @@
         }
         
                 
-                        const response = await fetch(`${getApiUrl()}/admin/grant-access`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${authToken}`
-                    },
-                    body: JSON.stringify({ 
-                        student_id: userId,
-                        user_id: userId,
-                        course_id: courseId
-                    })
-                });
-                
-                if (!response.ok) {
-                    throw new Error('Failed to grant access');
-                }
-                
+                                        
                 showToast('Course access granted successfully!', 'success');
                 
                 // Refresh the modal data
@@ -1619,40 +1603,7 @@
             }
         }
         
-        async function revokeAccess(userId, courseId) {
-            if (!confirm('Are you sure you want to revoke access to this course?')) {
-                return;
-            }
-            
-            try {
-                console.log('Revoking access for user:', userId, 'course:', courseId);
                 
-                const response = await fetch(`${getApiUrl()}/admin/revoke-access`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${authToken}`
-                    },
-                    body: JSON.stringify({ userId, courseId })
-                });
-                
-                const data = await response.json();
-                
-                if (!response.ok) {
-                    throw new Error(data.error || 'Failed to revoke access');
-                }
-                
-                showToast('Course access revoked successfully!', 'success');
-                
-                // Refresh the modal data
-                loadStudentEnrollments(userId);
-                
-            } catch (error) {
-                console.error('Error revoking access:', error);
-                showToast('Error revoking access: ' + error.message, 'error');
-            }
-        }
-        
         function copyPassword() {
             if (currentStudentPassword) {
                 navigator.clipboard.writeText(currentStudentPassword);
