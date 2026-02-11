@@ -7,7 +7,7 @@ primary_region = 'iad'
   auto_rollback = true
 
 [build]
-  builder = 'heroku/buildpacks:20'
+  builder = 'fly/nodejs'
 
 [env]
   DB_PATH = '/data/database.sqlite'
