@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IG Nation Admin Panel</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>IG Nation Admin Panel v2.0</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <style>
@@ -1084,9 +1087,13 @@
         }
 
         function redirectToAdminLogin() {
-            localStorage.removeItem('adminLoggedIn');
-            localStorage.removeItem('adminEmail');
-            localStorage.removeItem('adminToken');
+            try {
+                localStorage.removeItem('adminLoggedIn');
+                localStorage.removeItem('adminEmail');
+                localStorage.removeItem('adminToken');
+            } catch (error) {
+                console.warn('localStorage access blocked:', error);
+            }
             authToken = null;
             window.location.replace('admin-login.html');
         }
@@ -1100,7 +1107,7 @@
             toastBody.textContent = message;
             
             // Set type-specific styling
-            toast.className = `toast ${type === 'error' ? 'bg-danger text-white' : type === 'success' ? 'bg-success text-white' : 'bg-info text-white'}`;
+            toast.className = 'toast ' + (type === 'error' ? 'bg-danger text-white' : type === 'success' ? 'bg-success text-white' : 'bg-info text-white');
             
             // Show toast
             const bsToast = new bootstrap.Toast(toast);
@@ -1121,7 +1128,13 @@
         document.addEventListener('DOMContentLoaded', function() {
             var qa = document.getElementById('quick-actions-section');
             if (qa) qa.remove();
-            const savedToken = localStorage.getItem('adminToken');
+            let savedToken;
+            try {
+                savedToken = localStorage.getItem('adminToken');
+            } catch (error) {
+                console.warn('localStorage access blocked:', error);
+                savedToken = null;
+            }
             if (!savedToken) {
                 redirectToAdminLogin();
                 return;
@@ -1145,7 +1158,7 @@
                 // Use API_CONFIG if available, otherwise use Railway URL
                 const apiUrl = (window.API_CONFIG && window.API_CONFIG.apiURL) || 'https://elbadry-production.up.railway.app/api';
                 
-                const response = await fetch(`${apiUrl}/login`, {
+                const response = await fetch(apiUrl + '/login', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -1157,7 +1170,11 @@
                 
                 if (response.ok) {
                     authToken = data.token;
-                    localStorage.setItem('adminToken', authToken);
+                    try {
+                        localStorage.setItem('adminToken', authToken);
+                    } catch (error) {
+                        console.warn('localStorage access blocked:', error);
+                    }
                     
                     // Hide login modal and show main content
                     const modal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
@@ -1177,7 +1194,11 @@
 
         function logout() {
             authToken = null;
-            localStorage.removeItem('adminToken');
+            try {
+                localStorage.removeItem('adminToken');
+            } catch (error) {
+                console.warn('localStorage access blocked:', error);
+            }
             document.getElementById('mainContent').style.display = 'block';
             loadDashboard();
         }
@@ -1185,7 +1206,7 @@
         async function apiCall(endpoint, options = {}) {
             // Build full URL when a relative path is provided
             const baseUrl = 'https://my-project-gphv.onrender.com';
-            const url = endpoint.startsWith('http') ? endpoint : `${baseUrl}${endpoint.startsWith('/') ? '' : '/'}${endpoint}`;
+            const url = endpoint.startsWith('http') ? endpoint : baseUrl + (endpoint.startsWith('/') ? '' : '/') + endpoint;
 
             // Merge headers: preserve any custom headers, but always include Content-Type and Authorization when available
             const headers = Object.assign({}, {
@@ -1193,7 +1214,7 @@
             }, options.headers || {});
 
             if (authToken) {
-                headers['Authorization'] = `Bearer ${authToken}`;
+                headers['Authorization'] = 'Bearer ' + authToken;
             }
 
             console.log('API Call:', url, 'Token:', authToken ? 'Present' : 'Missing');
@@ -1209,7 +1230,7 @@
                     // ignore JSON parse error
                 }
                 console.error('API Error:', response.status, errorData);
-                throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
+                throw new Error(errorData.error || 'HTTP ' + response.status + ': ' + response.statusText);
             }
 
             const contentType = response.headers.get('content-type') || '';
@@ -1239,7 +1260,7 @@
                 clickedElement.classList.add('active');
             } else {
                 // Find the nav link for this section and make it active
-                const navLink = document.querySelector(`[onclick*="showSection('${sectionName}')"]`);
+                const navLink = document.querySelector('[onclick*="showSection(\'' + sectionName + '\')"]');
                 if (navLink) {
                     navLink.classList.add('active');
                 }
@@ -1337,13 +1358,13 @@
                 const recentActivity = [
                     ...enrollments.slice(0, 3).map(e => ({
                         type: 'enrollment',
-                        text: `${e.first_name} ${e.last_name} enrolled in ${e.course_title}`,
+                        text: e.first_name + ' ' + e.last_name + ' enrolled in ' + e.course_title,
                         date: e.enrolled_at
                     })),
                     ...orders.slice(0, 3).map(o => {
                         // Get customer name from joined user data
                         const customerName = o.first_name && o.last_name 
-                            ? `${o.first_name} ${o.last_name}` 
+                            ? e.first_name + ' ' + e.last_name 
                             : (o.customer_name || 'A student');
                         
                         // Parse courses to get course names
@@ -1361,7 +1382,7 @@
                         
                         return {
                             type: 'order',
-                            text: `${customerName} placed an order for ${courseNames} (${o.total_amount} EGP)`,
+                            text: customerName + ' placed an order for ' + courseNames + ' (' + o.total_amount + ' EGP)',
                             date: o.created_at
                         };
                     })
@@ -1370,14 +1391,14 @@
                 if (recentActivity.length === 0) {
                     document.getElementById('recentActivity').innerHTML = '<p class="text-muted">No recent activity yet. Students will appear here when they register and enroll in courses.</p>';
                 } else {
-                    const activityHtml = recentActivity.map(activity => `
-                        <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
-                            <div>
-                                <strong>${activity.text}</strong>
-                            </div>
-                            <small class="text-muted">${new Date(activity.date).toLocaleString()}</small>
-                        </div>
-                    `).join('');
+                    const activityHtml = recentActivity.map(activity => 
+                        '<div class="d-flex justify-content-between align-items-center py-2 border-bottom">' +
+                        '<div>' +
+                        '<strong>' + activity.text + '</strong>' +
+                        '</div>' +
+                        '<small class="text-muted">' + new Date(activity.date).toLocaleString() + '</small>' +
+                        '</div>'
+                    ).join('');
                     document.getElementById('recentActivity').innerHTML = activityHtml;
                 }
             } catch (error) {
@@ -1388,8 +1409,8 @@
         async function loadStudents() {
             try {
                 console.log('Loading students from database...');
-                const response = await fetch(`${getApiUrl()}/admin/students`, {
-                    headers: { 'Authorization': `Bearer ${authToken}` }
+                const response = await fetch(getApiUrl() + '/admin/students', {
+                    headers: { 'Authorization': 'Bearer ' + authToken }
                 });
                 
                 if (response.status === 401) {
@@ -1418,21 +1439,27 @@
                 return;
             }
 
-            tableBody.innerHTML = students.map(student => `
-                <tr>
-                    <td>${student.id}</td>
-                    <td>${student.first_name} ${student.last_name}</td>
-                    <td>${student.email}</td>
-                    <td>${student.phone || 'N/A'}</td>
-                    <td>${student.parent_phone || 'N/A'}</td>
-                    <td>${new Date(student.created_at).toLocaleDateString()}</td>
-                    <td>
-                        <button class="btn btn-sm btn-outline-primary" onclick="viewStudentDetails(${student.id})">
-                            <i class="bi bi-eye"></i> View
-                        </button>
-                    </td>
-                </tr>
-            `).join('');
+            tableBody.innerHTML = students.map(student => 
+                    '<tr>' +
+                    '<td>' + student.id + '</td>' +
+                    '<td>' + student.first_name + ' ' + student.last_name + '</td>' +
+                    '<td>' + student.email + '</td>' +
+                    '<td>' + (student.phone || 'N/A') + '</td>' +
+                    '<td>' + (student.parent_phone || 'N/A') + '</td>' +
+                    '<td>' + new Date(student.created_at).toLocaleDateString() + '</td>' +
+                    '<td>' +
+                    '<button class="btn btn-sm btn-info btn-action me-1" onclick="viewStudentDetails(' + student.id + ')" title="View Details">' +
+                    '<i class="bi bi-eye"></i>' +
+                    '</button>' +
+                    '<button class="btn btn-sm btn-warning btn-action me-1" onclick="editStudent(' + student.id + ')" title="Edit">' +
+                    '<i class="bi bi-pencil"></i>' +
+                    '</button>' +
+                    '<button class="btn btn-sm btn-danger btn-action" onclick="removeStudent(' + student.id + ', \'' + (student.first_name + ' ' + student.last_name) + '\')" title="Remove">' +
+                    '<i class="bi bi-trash"></i>' +
+                    '</button>' +
+                    '</td>' +
+                    '</tr>'
+                ).join('');
         }
 
         let currentStudentPassword = '';
@@ -1440,8 +1467,8 @@
         async function viewStudentDetails(studentId) {
             try {
                 // Fetch student details from database
-                const response = await fetch(`${getApiUrl()}/admin/students`, {
-                    headers: { 'Authorization': `Bearer ${authToken}` }
+                const response = await fetch(getApiUrl() + '/admin/students', {
+                    headers: { 'Authorization': 'Bearer ' + authToken }
                 });
                 
                 const students = await response.json();
@@ -1505,8 +1532,8 @@
                 
         async function loadStudentEnrollments(studentId) {
             try {
-                const response = await fetch(`${getApiUrl()}/admin/enrollments`, {
-                    headers: { 'Authorization': `Bearer ${authToken}` }
+                const response = await fetch(getApiUrl() + '/admin/enrollments', {
+                    headers: { 'Authorization': 'Bearer ' + authToken }
                 });
                 
                 if (!response.ok) {
@@ -1527,26 +1554,40 @@
                     return;
                 }
                 
-                tbody.innerHTML = studentEnrollments.map(enrollment => `
-                    <tr>
-                        <td>${enrollment.course_title}</td>
-                        <td>${enrollment.instructor || 'N/A'}</td>
-                        <td>${enrollment.price ? enrollment.price + ' EGP' : 'N/A'}</td>
-                        <td>${new Date(enrollment.enrolled_at).toLocaleDateString()}</td>
-                        <td><span class="badge bg-${enrollment.status === 'active' ? 'success' : 'secondary'}">${enrollment.status}</span></td>
-                        <td>
-                            <button class="btn btn-sm btn-danger" onclick="revokeAccess(${enrollment.user_id}, ${enrollment.course_id})">
-                                <i class="bi bi-x-circle"></i> Revoke
-                            </button>
-                        </td>
-                    </tr>
-                `).join('');
+                tbody.innerHTML = studentEnrollments.map(enrollment => 
+                    '<tr>' +
+                    '<td>' + (enrollment.course_title || '') + '</td>' +
+                    '<td>' + (enrollment.instructor || 'N/A') + '</td>' +
+                    '<td>' + (enrollment.price ? enrollment.price + ' EGP' : 'N/A') + '</td>' +
+                    '<td>' + new Date(enrollment.enrolled_at).toLocaleDateString() + '</td>' +
+                    '<td><span class="badge bg-' + (enrollment.status === 'active' ? 'success' : 'secondary') + '">' + enrollment.status + '</span></td>' +
+                    '<td>' +
+                    '<button class="btn btn-sm btn-danger" onclick="revokeAccess(' + enrollment.user_id + ', ' + enrollment.course_id + ')">' +
+                    '<i class="bi bi-x-circle"></i> Revoke' +
+                    '</button>' +
+                    '</td>' +
+                    '</tr>'
+                ).join('');
             } catch (error) {
                 console.error('Error loading enrollments:', error);
                 document.getElementById('studentEnrollments').innerHTML = '<tr><td colspan="6" class="text-center text-danger">Error loading enrollments</td></tr>';
             }
         }
         
+        async function revokeAccess(userId, courseId) {
+            try {
+                const response = await apiCall(`/api/admin/revoke-access`, {
+                    method: 'POST',
+                    body: JSON.stringify({ user_id: userId, course_id: courseId })
+                });
+                
+                if (response.success) {
+                    showToast('Access revoked successfully', 'success');
+                    loadStudentEnrollments(currentStudentId);
+                } else {
+                    showToast('Error revoking access', 'error');
+                }
+            } catch (error) {
                 console.error('Error granting access:', error);
                 showToast('Error granting access: ' + error.message, 'error');
             }
@@ -1574,66 +1615,65 @@
                 }
 
                 // Create modal HTML
-                const modalHtml = `
-                    <div class="modal fade" id="editStudentModal" tabindex="-1">
-                        <div class="modal-dialog modal-lg">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Edit Student: ${student.first_name} ${student.last_name}</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <form id="editStudentForm">
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="mb-3">
-                                                    <label for="editFirstName" class="form-label">First Name</label>
-                                                    <input type="text" class="form-control" id="editFirstName" value="${student.first_name}" required>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="mb-3">
-                                                    <label for="editLastName" class="form-label">Last Name</label>
-                                                    <input type="text" class="form-control" id="editLastName" value="${student.last_name}" required>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="editEmail" class="form-label">Email</label>
-                                            <input type="email" class="form-control" id="editEmail" value="${student.email}" required>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="editPhone" class="form-label">Phone Number</label>
-                                            <input type="tel" class="form-control" id="editPhone" value="${student.phone || ''}">
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="editRole" class="form-label">Role</label>
-                                            <select class="form-select" id="editRole" required>
-                                                <option value="student" ${student.role === 'student' ? 'selected' : ''}>Student</option>
-                                                <option value="teacher" ${student.role === 'teacher' ? 'selected' : ''}>Teacher</option>
-                                                <option value="admin" ${student.role === 'admin' ? 'selected' : ''}>Admin</option>
-                                            </select>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="editStatus" class="form-label">Status</label>
-                                            <select class="form-select" id="editStatus" required>
-                                                <option value="1" ${student.is_active ? 'selected' : ''}>Active</option>
-                                                <option value="0" ${!student.is_active ? 'selected' : ''}>Inactive</option>
-                                            </select>
-                                        </div>
-                                        <div class="alert alert-info">
-                                            <strong>Note:</strong> Student ID: ${student.id} | Created: ${new Date(student.created_at).toLocaleDateString()}
-                                        </div>
-                                    </form>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                    <button type="button" class="btn btn-primary" onclick="saveStudentChanges(${studentId})">Save Changes</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
+                const modalHtml = 
+                    '<div class="modal fade" id="editStudentModal" tabindex="-1">' +
+                    '<div class="modal-dialog modal-lg">' +
+                    '<div class="modal-content">' +
+                    '<div class="modal-header">' +
+                    '<h5 class="modal-title">Edit Student: ' + student.first_name + ' ' + student.last_name + '</h5>' +
+                    '<button type="button" class="btn-close" data-bs-dismiss="modal"></button>' +
+                    '</div>' +
+                    '<div class="modal-body">' +
+                    '<form id="editStudentForm">' +
+                    '<div class="row">' +
+                    '<div class="col-md-6">' +
+                    '<div class="mb-3">' +
+                    '<label for="editFirstName" class="form-label">First Name</label>' +
+                    '<input type="text" class="form-control" id="editFirstName" value="' + student.first_name + '" required>' +
+                    '</div>' +
+                    '</div>' +
+                    '<div class="col-md-6">' +
+                    '<div class="mb-3">' +
+                    '<label for="editLastName" class="form-label">Last Name</label>' +
+                    '<input type="text" class="form-control" id="editLastName" value="' + student.last_name + '" required>' +
+                    '</div>' +
+                    '</div>' +
+                    '</div>' +
+                    '<div class="mb-3">' +
+                    '<label for="editEmail" class="form-label">Email</label>' +
+                    '<input type="email" class="form-control" id="editEmail" value="' + student.email + '" required>' +
+                    '</div>' +
+                    '<div class="mb-3">' +
+                    '<label for="editPhone" class="form-label">Phone Number</label>' +
+                    '<input type="tel" class="form-control" id="editPhone" value="' + (student.phone || '') + '">' +
+                    '</div>' +
+                    '<div class="mb-3">' +
+                    '<label for="editRole" class="form-label">Role</label>' +
+                    '<select class="form-select" id="editRole" required>' +
+                    '<option value="student" ' + (student.role === 'student' ? 'selected' : '') + '>Student</option>' +
+                    '<option value="teacher" ' + (student.role === 'teacher' ? 'selected' : '') + '>Teacher</option>' +
+                    '<option value="admin" ' + (student.role === 'admin' ? 'selected' : '') + '>Admin</option>' +
+                    '</select>' +
+                    '</div>' +
+                    '<div class="mb-3">' +
+                    '<label for="editStatus" class="form-label">Status</label>' +
+                    '<select class="form-select" id="editStatus" required>' +
+                    '<option value="1" ' + (student.is_active ? 'selected' : '') + '>Active</option>' +
+                    '<option value="0" ' + (!student.is_active ? 'selected' : '') + '>Inactive</option>' +
+                    '</select>' +
+                    '</div>' +
+                    '<div class="alert alert-info">' +
+                    '<strong>Note:</strong> Student ID: ' + student.id + ' | Created: ' + new Date(student.created_at).toLocaleDateString() +
+                    '</div>' +
+                    '</form>' +
+                    '</div>' +
+                    '<div class="modal-footer">' +
+                    '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>' +
+                    '<button type="button" class="btn btn-primary" onclick="saveStudentChanges(' + studentId + ')">Save Changes</button>' +
+                    '</div>' +
+                    '</div>' +
+                    '</div>' +
+                    '</div>';
 
                 // Remove existing modal if any
                 const existingModal = document.getElementById('editStudentModal');
@@ -1665,11 +1705,11 @@
                     is_active: document.getElementById('editStatus').value === '1'
                 };
 
-                const response = await fetch(`${getApiUrl()}/admin/update-student`, {
+                const response = await fetch(getApiUrl() + '/admin/update-student', {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${authToken}`
+                        'Authorization': 'Bearer ' + authToken
                     },
                     body: JSON.stringify({ 
                         studentId: studentId,
@@ -1702,14 +1742,14 @@
 
         async function removeStudent(studentId, studentName) {
             // Show confirmation dialog
-            const confirmed = confirm(`Are you sure you want to remove student "${studentName}"?\n\nThis action cannot be undone and will:\n- Delete the student's account\n- Remove all their progress data\n- Cancel any active enrollments\n\nType "DELETE" to confirm:`);
+            const confirmed = confirm('Are you sure you want to remove student "' + studentName + '"?\n\nThis action cannot be undone and will:\n- Delete the student\'s account\n- Remove all their progress data\n- Cancel any active enrollments\n\nType "DELETE" to confirm:');
             
             if (!confirmed) {
                 return;
             }
             
             // Additional confirmation with typing requirement
-            const userInput = prompt(`To confirm deletion of student "${studentName}", please type "DELETE" (case sensitive):`);
+            const userInput = prompt('To confirm deletion of student "' + studentName + '", please type "DELETE" (case sensitive):');
             
             if (userInput !== "DELETE") {
                 showToast('Student removal cancelled. You must type "DELETE" to confirm.', 'warning');
@@ -1717,14 +1757,14 @@
             }
             
             try {
-                console.log(`Removing student ${studentId} (${studentName})...`);
+                console.log('Removing student ' + studentId + ' (' + studentName + ')...');
                 console.log('Auth token:', authToken ? 'Present' : 'Missing');
                 
-                const response = await fetch(`${getApiUrl()}/admin/remove-student`, {
+                const response = await fetch(getApiUrl() + '/admin/remove-student', {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${authToken}`
+                        'Authorization': 'Bearer ' + authToken
                     },
                     body: JSON.stringify({ studentId })
                 });
@@ -1737,7 +1777,7 @@
                 if (!contentType || !contentType.includes('application/json')) {
                     const text = await response.text();
                     console.error('Non-JSON response:', text);
-                    throw new Error(`Server returned non-JSON response: ${text.substring(0, 100)}...`);
+                    throw new Error('Server returned non-JSON response: ' + text.substring(0, 100) + '...');
                 }
 
                 if (!response.ok) {
@@ -1748,7 +1788,7 @@
                 const result = await response.json();
                 
                 // Show success message
-                showToast(`Student "${studentName}" has been successfully removed!`, 'success');
+                showToast('Student "' + studentName + '" has been successfully removed!', 'success');
                 
                 // Refresh students table
                 loadStudents();
@@ -1765,7 +1805,7 @@
         async function viewOrderDetails(orderId) {
             try {
                 // Fetch detailed order information
-                const order = await apiCall(`/api/admin/orders/${orderId}`);
+                const order = await apiCall('/api/admin/orders/' + orderId);
                 
                 if (!order) {
                     alert('Order not found!');
@@ -1773,70 +1813,69 @@
                 }
 
                 // Create modal HTML
-                const modalHtml = `
-                    <div class="modal fade" id="orderDetailsModal" tabindex="-1">
-                        <div class="modal-dialog modal-lg">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Order #${order.id} Details</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="row mb-3">
-                                        <div class="col-md-6">
-                                            <h6>Student Information:</h6>
-                                            <p><strong>Name:</strong> ${order.first_name} ${order.last_name}</p>
-                                            <p><strong>User ID:</strong> ${order.user_id}</p>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <h6>Order Information:</h6>
-                                            <p><strong>Date:</strong> ${new Date(order.created_at).toLocaleString()}</p>
-                                            <p><strong>Status:</strong> <span class="badge ${order.status === 'completed' ? 'bg-success' : 'bg-warning'}">${order.status || 'pending'}</span></p>
-                                            <p><strong>Payment Method:</strong> ${order.payment_method}</p>
-                                        </div>
-                                    </div>
-                                    <hr>
-                                    <div class="mb-3">
-                                        <h6>Courses Purchased:</h6>
-                                        <div id="orderCoursesList">
-                                            ${order.items && order.items.length > 0 ? 
-                                                order.items.map(item => 
-                                                    `<div class="alert alert-info mb-2">
-                                                        <div class="d-flex justify-content-between align-items-center">
-                                                            <div>
-                                                                <i class="bi bi-book me-2"></i>
-                                                                <strong>${item.title || 'Unknown Course'}</strong>
-                                                                ${item.instructor ? `<br><small class="text-muted">Instructor: ${item.instructor}</small>` : ''}
-                                                            </div>
-                                                            <div class="text-end">
-                                                                <span class="badge bg-primary">Qty: ${item.quantity || 1}</span>
-                                                                <br><strong>${item.price} EGP</strong>
-                                                            </div>
-                                                        </div>
-                                                    </div>`
-                                                ).join('') : 
-                                                '<div class="alert alert-warning">No courses found</div>'
-                                            }
-                                        </div>
-                                    </div>
-                                    <hr>
-                                    <div>
-                                        <h5>Total Amount: ${order.total_amount} EGP</h5>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    ${order.status !== 'completed' ? 
-                                        `<button type="button" class="btn btn-success" onclick="approveOrder(${order.id})">
-                                            <i class="bi bi-check-circle"></i> Approve & Grant Access
-                                        </button>` : 
-                                        '<span class="badge bg-success">Order Already Approved</span>'
-                                    }
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
+                const modalHtml = 
+                    '<div class="modal fade" id="orderDetailsModal" tabindex="-1">' +
+                    '<div class="modal-dialog modal-lg">' +
+                    '<div class="modal-content">' +
+                    '<div class="modal-header">' +
+                    '<h5 class="modal-title">Order #' + order.id + ' Details</h5>' +
+                    '<button type="button" class="btn-close" data-bs-dismiss="modal"></button>' +
+                    '</div>' +
+                    '<div class="modal-body">' +
+                    '<div class="row mb-3">' +
+                    '<div class="col-md-6">' +
+                    '<h6>Student Information:</h6>' +
+                    '<p><strong>Name:</strong> ' + order.first_name + ' ' + order.last_name + '</p>' +
+                    '<p><strong>User ID:</strong> ' + order.user_id + '</p>' +
+                    '</div>' +
+                    '<div class="col-md-6">' +
+                    '<h6>Order Information:</h6>' +
+                    '<p><strong>Date:</strong> ' + new Date(order.created_at).toLocaleString() + '</p>' +
+                    '<p><strong>Status:</strong> <span class="badge ' + (order.status === 'completed' ? 'bg-success' : 'bg-warning') + '">' + (order.status || 'pending') + '</span></p>' +
+                    '<p><strong>Payment Method:</strong> ' + (order.payment_method || 'N/A') + '</p>' +
+                    '</div>' +
+                    '</div>' +
+                    '<hr>' +
+                    '<div class="mb-3">' +
+                    '<h6>Courses Purchased:</h6>' +
+                    '<div id="orderCoursesList">' +
+                    (order.items && order.items.length > 0 ? 
+                        order.items.map(item => 
+                            '<div class="alert alert-info mb-2">' +
+                            '<div class="d-flex justify-content-between align-items-center">' +
+                            '<div>' +
+                            '<i class="bi bi-book me-2"></i>' +
+                            '<strong>' + (item.title || 'Unknown Course') + '</strong>' +
+                            (item.instructor ? '<br><small class="text-muted">Instructor: ' + item.instructor + '</small>' : '') +
+                            '</div>' +
+                            '<div class="text-end">' +
+                            '<span class="badge bg-primary">Qty: ' + (item.quantity || 1) + '</span>' +
+                            '<br><strong>' + item.price + ' EGP</strong>' +
+                            '</div>' +
+                            '</div>' +
+                            '</div>'
+                        ).join('') : 
+                        '<div class="alert alert-warning">No courses found</div>'
+                    ) +
+                    '</div>' +
+                    '</div>' +
+                    '<hr>' +
+                    '<div>' +
+                    '<h5>Total Amount: ' + order.total_amount + ' EGP</h5>' +
+                    '</div>' +
+                    '</div>' +
+                    '<div class="modal-footer">' +
+                    '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>' +
+                    (order.status !== 'completed' ? 
+                    '<button type="button" class="btn btn-success" onclick="approveOrder(' + order.id + ')">' +
+                    '<i class="bi bi-check-circle"></i> Approve & Grant Access' +
+                    '</button>' : 
+                    '<span class="badge bg-success">Order Already Approved</span>'
+                    ) +
+                    '</div>' +
+                    '</div>' +
+                    '</div>' +
+                    '</div>';
 
                 // Remove existing modal if any
                 const existingModal = document.getElementById('orderDetailsModal');
@@ -1892,26 +1931,31 @@
             try {
                 const courses = await apiCall('/api/courses');
                 
-                const tableHtml = courses.map(course => `
-                    <tr>
-                        <td>${course.id}</td>
-                        <td>${course.title}</td>
-                        <td>${course.instructor}</td>
-                        <td>${course.price} EGP</td>
-                        <td>${course.level}</td>
-                        <td>
-                            <span class="badge ${course.is_active ? 'bg-success' : 'bg-danger'}">${course.is_active ? 'Active' : 'Inactive'}</span>
-                        </td>
-                        <td>
-                            <button class="btn btn-sm btn-outline-primary">
-                                <i class="bi bi-pencil"></i> Edit
-                            </button>
-                        </td>
-                    </tr>
-                `).join('');
-
+                const tableHtml = courses.map(course => 
+                    '<tr>' +
+                    '<td>' + course.id + '</td>' +
+                    '<td>' + course.title + '</td>' +
+                    '<td>' + (course.instructor || 'N/A') + '</td>' +
+                    '<td>' + (course.price ? course.price + ' EGP' : 'Free') + '</td>' +
+                    '<td>' + (course.level || 'N/A') + '</td>' +
+                    '<td><span class="badge bg-' + (course.is_active ? 'success' : 'secondary') + '">' + (course.is_active ? 'Active' : 'Inactive') + '</span></td>' +
+                    '<td>' +
+                    '<button class="btn btn-sm btn-info btn-action me-1" onclick="viewCourseDetails(' + course.id + ')" title="View Details">' +
+                    '<i class="bi bi-eye"></i>' +
+                    '</button>' +
+                    '<button class="btn btn-sm btn-warning btn-action me-1" onclick="editCourse(' + course.id + ')" title="Edit">' +
+                    '<i class="bi bi-pencil"></i>' +
+                    '</button>' +
+                    '<button class="btn btn-sm btn-danger btn-action" onclick="deleteCourse(' + course.id + ')" title="Delete">' +
+                    '<i class="bi bi-trash"></i>' +
+                    '</button>' +
+                    '</td>' +
+                    '</tr>'
+                ).join('');
+                
                 document.getElementById('coursesTable').innerHTML = tableHtml;
             } catch (error) {
+                console.error('Error loading courses:', error);
                 document.getElementById('coursesTable').innerHTML = '<tr><td colspan="7" class="text-center text-danger">Error loading courses</td></tr>';
             }
         }
@@ -1920,2288 +1964,27 @@
             try {
                 const enrollments = await apiCall('/api/admin/enrollments').catch(() => []);
 
-                const tableHtml = enrollments.map(enrollment => {
-                    const status = enrollment.status || (enrollment.is_active ? 'active' : 'inactive');
-                    const userId = enrollment.user_id || enrollment.student_id || enrollment.studentId || enrollment.userId;
-                    return `
-                    <tr>
-                        <td>${enrollment.first_name || enrollment.fname || ''} ${enrollment.last_name || enrollment.lname || ''}</td>
-                        <td>${enrollment.course_title || enrollment.title || 'N/A'}</td>
-                        <td>${enrollment.enrolled_at ? new Date(enrollment.enrolled_at).toLocaleDateString() : (enrollment.created_at ? new Date(enrollment.created_at).toLocaleDateString() : 'N/A')}</td>
-                        <td>
-                            <span class="badge ${status === 'active' ? 'bg-success' : 'bg-danger'}">${status}</span>
-                        </td>
-                        <td>
-                            <button class="btn btn-sm btn-outline-primary me-2" onclick="viewStudentDetails(${userId})">
-                                <i class="bi bi-eye"></i> View
-                            </button>
-                            <button class="btn btn-sm btn-danger" onclick="deleteEnrollment(${enrollment.id})">
-                                <i class="bi bi-trash"></i> Delete
-                            </button>
-                        </td>
-                    </tr>`;
-                }).join('');
-
-                document.getElementById('enrollmentsTable').innerHTML = tableHtml || `
-                    <tr>
-                        <td colspan="5" class="text-center text-muted">
-                            <i class="bi bi-info-circle me-2"></i>
-                            No enrollments yet. Students will appear here when they are granted course access.
-                        </td>
-                    </tr>
-                `;
-            } catch (error) {
-                document.getElementById('enrollmentsTable').innerHTML = '<tr><td colspan="5" class="text-center text-danger">Error loading enrollments</td></tr>';
-            }
-        }
-
-    async function deleteEnrollment(enrollmentId) {
-            if (!confirm('Are you sure you want to permanently delete this enrollment?')) {
-                return;
-            }
-
-            try {
-                const response = await fetch(`${getApiUrl()}/admin/delete-enrollment`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${authToken}`
-                    },
-                    body: JSON.stringify({ enrollmentId })
-                });
-
-                const data = await response.json();
-
-                if (!response.ok) {
-                    throw new Error(data.error || 'Failed to delete enrollment');
-                }
-
-                showToast('Enrollment deleted successfully!', 'success');
-                loadEnrollments();
-            } catch (error) {
-                console.error('Error deleting enrollment:', error);
-                showToast('Error deleting enrollment: ' + error.message, 'error');
-            }
-        }
-
-    async function loadOrders() {
-            try {
-                const response = await apiCall('/api/admin/orders');
-                const orders = response.orders || response;
-                
-                const tableHtml = orders.map(order => {
-                    const statusBadge = order.status === 'approved' ? 'bg-success' : order.status === 'pending' ? 'bg-warning' : 'bg-secondary';
-                    const statusText = order.status || 'pending';
-                    
-                    // Parse courses to show details with enhanced formatting
-                    let coursesInfo = 'N/A';
-                    let coursesList = [];
-                    
-                    console.log(`Parsing courses for order #${order.id}:`, order.courses, typeof order.courses);
-                    
-                    try {
-                        // First check if courses exist
-                        if (!order.courses || order.courses === '' || order.courses === 'null' || order.courses === 'undefined') {
-                            console.log(`Order #${order.id}: No courses data found`);
-                            coursesInfo = '<span class="badge bg-secondary">No courses</span>';
-                        } else {
-                            // Try to parse as JSON
-                            let courses = order.courses;
-                            
-                            // If it's a string, try to parse it
-                            if (typeof courses === 'string') {
-                                try {
-                                    courses = JSON.parse(courses);
-                                    console.log(`Order #${order.id}: Parsed courses as JSON:`, courses);
-                                } catch (parseErr) {
-                                    // If JSON parse fails, treat it as a plain string course name
-                                    console.log(`Order #${order.id}: Treating as plain string:`, courses);
-                                    coursesInfo = `<span class="badge bg-primary">${courses}</span>`;
-                                    coursesList = [courses];
-                                    
-                                    // Skip further processing since we already have the display
-                                    courses = null;
-                                }
-                            }
-                            
-                            // Now process the parsed courses
-                            if (courses !== null) {
-                                if (Array.isArray(courses)) {
-                                    console.log(`Order #${order.id}: Processing array of courses:`, courses);
-                                    
-                                    coursesList = courses.map(c => {
-                                        // Handle different course formats
-                                        if (typeof c === 'string') {
-                                            return c; // Direct string like "IGCSE English Language"
-                                        } else if (typeof c === 'object' && c !== null) {
-                                            return c.title || c.name || c.courseId || c.id || JSON.stringify(c);
-                                        }
-                                        return String(c);
-                                    }).filter(c => c && c !== 'Unknown Course' && c !== '');
-                                    
-                                    console.log(`Order #${order.id}: Extracted course names:`, coursesList);
-                                    
-                                    // Create formatted display
-                                    if (coursesList.length > 0) {
-                                        coursesInfo = coursesList.map((course, idx) => 
-                                            `<span class="badge bg-primary me-1 mb-1">${course}</span>`
-                                        ).join('');
-                                    } else {
-                                        console.warn(`Order #${order.id}: Empty courses array!`);
-                                        coursesInfo = '<span class="badge bg-warning text-dark"><i class="bi bi-exclamation-triangle"></i> No courses saved</span>';
-                                    }
-                                } else if (typeof courses === 'object' && courses !== null) {
-                                    // Single course object
-                                    console.log(`Order #${order.id}: Processing single course object:`, courses);
-                                    const courseName = courses.title || courses.name || courses.id || JSON.stringify(courses);
-                                    coursesInfo = `<span class="badge bg-primary">${courseName}</span>`;
-                                    coursesList = [courseName];
-                                }
-                            }
-                        }
-                    } catch (e) {
-                        console.error(`Error parsing courses for order #${order.id}:`, e);
-                        console.log(`Raw courses data for order #${order.id}:`, order.courses);
-                        // If all parsing fails, show raw data in a safe way
-                        if (order.courses) {
-                            const rawDisplay = String(order.courses).substring(0, 100);
-                            coursesInfo = `<span class="badge bg-warning text-dark">${rawDisplay}</span>`;
-                        } else {
-                            coursesInfo = '<span class="badge bg-secondary">No data</span>';
-                        }
-                    }
-                    
-                    return `
-                        <tr>
-                            <td><strong>#${order.id}</strong></td>
-                            <td>
-                                <div><strong>${order.customer_name || order.first_name + ' ' + order.last_name || 'N/A'}</strong></div>
-                                <small class="text-muted"><i class="bi bi-envelope"></i> ${order.customer_email || order.email || 'N/A'}</small>
-                                <br>
-                                <small class="text-muted"><i class="bi bi-telephone"></i> ${order.customer_phone || order.phone || 'N/A'}</small>
-                            </td>
-                            <td>
-                                <div>${coursesInfo}</div>
-                                ${coursesList.length > 0 ? `<small class="text-muted">${coursesList.length} course${coursesList.length > 1 ? 's' : ''}</small>` : ''}
-                            </td>
-                            <td><strong>${parseFloat(order.total_amount).toFixed(2)} EGP</strong></td>
-                            <td>
-                                <span class="badge bg-info">${order.payment_method || 'N/A'}</span>
-                            </td>
-                            <td>
-                                <span class="badge ${statusBadge}">${statusText}</span>
-                            </td>
-                            <td><small>${new Date(order.created_at).toLocaleDateString()}</small></td>
-                            <td>
-                                ${order.status === 'pending' ? `
-                                    <button class="btn btn-sm btn-success me-1" onclick="grantCourseAccess(${order.id})" title="Approve and grant access">
-                                        <i class="bi bi-check-circle"></i> Grant Access
-                                    </button>
-                                ` : `
-                                    <span class="text-success"><i class="bi bi-check-circle-fill"></i> Approved</span>
-                                `}
-                                <button class="btn btn-sm btn-outline-danger" onclick="deleteOrder(${order.id})" title="Delete order">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                                <button class="btn btn-sm btn-outline-info" onclick="viewOrderDetails(${order.id})" title="View details">
-                                    <i class="bi bi-eye"></i>
-                                </button>
-                            </td>
-                        </tr>
-                    `;
-                }).join('');
-
-                document.getElementById('ordersTable').innerHTML = tableHtml || `
-                    <tr>
-                        <td colspan="8" class="text-center text-muted">
-                            <i class="bi bi-info-circle me-2"></i>
-                            No orders yet. Orders will appear here when students purchase courses.
-                        </td>
-                    </tr>
-                `;
-            } catch (error) {
-                document.getElementById('ordersTable').innerHTML = '<tr><td colspan="8" class="text-center text-danger">Error loading orders</td></tr>';
-            }
-        }
-
-        async function grantCourseAccess(orderId) {
-            if (!confirm('Grant access to the student for all courses in this order? The student will be able to access their courses immediately.')) {
-                return;
-            }
-
-            try {
-                showToast('Processing order...', 'info');
-                
-                const response = await fetch(`${getApiUrl()}/admin/approve-order`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${authToken}`
-                    },
-                    body: JSON.stringify({ order_id: orderId })
-                });
-
-                const data = await response.json();
-
-                if (!response.ok) {
-                    throw new Error(data.error || 'Failed to approve order');
-                }
-
-                showToast(`Order approved! ${data.enrollmentsCreated || 0} enrollment(s) created.`, 'success');
-                
-                // Reload orders to show updated status
-                await loadOrders();
-                
-            } catch (error) {
-                console.error('Error approving order:', error);
-                showToast('Error approving order: ' + error.message, 'error');
-            }
-        }
-
-        async function viewOrderDetails(orderId) {
-            try {
-                const response = await apiCall('/api/admin/orders');
-                const orders = response.orders || response;
-                const order = orders.find(o => o.id === orderId);
-                
-                if (!order) {
-                    showToast('Order not found', 'error');
-                    return;
-                }
-                
-                // Parse courses
-                let coursesHtml = 'N/A';
-                try {
-                    let courses = typeof order.courses === 'string' ? JSON.parse(order.courses) : order.courses;
-                    if (Array.isArray(courses)) {
-                        coursesHtml = courses.map(c => {
-                            const courseName = typeof c === 'string' ? c : (c.title || c.name || 'Unknown');
-                            return `<li class="list-group-item"><i class="bi bi-book"></i> ${courseName}</li>`;
-                        }).join('');
-                    } else if (typeof courses === 'string') {
-                        coursesHtml = `<li class="list-group-item"><i class="bi bi-book"></i> ${courses}</li>`;
-                    }
-                } catch (e) {
-                    coursesHtml = `<li class="list-group-item text-muted">${order.courses}</li>`;
-                }
-                
-                // Create modal
-                const modalHtml = `
-                    <div class="modal fade" id="orderDetailsModal" tabindex="-1">
-                        <div class="modal-dialog modal-lg">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title"><i class="bi bi-receipt"></i> Order Details #${order.id}</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <h6>Customer Information</h6>
-                                            <ul class="list-group mb-3">
-                                                <li class="list-group-item"><strong>Name:</strong> ${order.customer_name || 'N/A'}</li>
-                                                <li class="list-group-item"><strong>Email:</strong> ${order.customer_email || 'N/A'}</li>
-                                                <li class="list-group-item"><strong>Phone:</strong> ${order.customer_phone || 'N/A'}</li>
-                                            </ul>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <h6>Order Information</h6>
-                                            <ul class="list-group mb-3">
-                                                <li class="list-group-item"><strong>Order ID:</strong> #${order.id}</li>
-                                                <li class="list-group-item"><strong>Total Amount:</strong> ${parseFloat(order.total_amount).toFixed(2)} EGP</li>
-                                                <li class="list-group-item"><strong>Payment Method:</strong> ${order.payment_method || 'N/A'}</li>
-                                                <li class="list-group-item"><strong>Status:</strong> <span class="badge ${order.status === 'approved' ? 'bg-success' : 'bg-warning'}">${order.status || 'pending'}</span></li>
-                                                <li class="list-group-item"><strong>Created:</strong> ${new Date(order.created_at).toLocaleString()}</li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-12">
-                                            <h6>Purchased Courses</h6>
-                                            <ul class="list-group">
-                                                ${coursesHtml}
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    ${order.status === 'pending' ? `
-                                        <button type="button" class="btn btn-success" onclick="grantCourseAccess(${order.id}); bootstrap.Modal.getInstance(document.getElementById('orderDetailsModal')).hide();">
-                                            <i class="bi bi-check-circle"></i> Grant Access
-                                        </button>
-                                    ` : ''}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                
-                // Remove existing modal if any
-                const existingModal = document.getElementById('orderDetailsModal');
-                if (existingModal) existingModal.remove();
-                
-                // Add modal to page
-                document.body.insertAdjacentHTML('beforeend', modalHtml);
-                
-                // Show modal
-                const modal = new bootstrap.Modal(document.getElementById('orderDetailsModal'));
-                modal.show();
-                
-            } catch (error) {
-                console.error('Error viewing order details:', error);
-                showToast('Error loading order details: ' + error.message, 'error');
-            }
-        }
-
-        async function deleteOrder(orderId) {
-            if (!confirm('Are you sure you want to permanently delete this order and all related items?')) {
-                return;
-            }
-
-            try {
-                console.log('ðŸ—‘ï¸ Deleting order:', orderId);
-                const response = await fetch(`${getApiUrl()}/admin/delete-order`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${authToken}`
-                    },
-                    body: JSON.stringify({ order_id: orderId })
-                });
-
-                const data = await response.json();
-
-                if (!response.ok) {
-                    throw new Error(data.error || 'Failed to delete order');
-                }
-
-                showToast('Order deleted successfully!', 'success');
-                loadOrders();
-            } catch (error) {
-                console.error('Error deleting order:', error);
-                showToast('Error deleting order: ' + error.message, 'error');
-            }
-        }
-
-    async function searchStudents() {
-            const searchTerm = document.getElementById('studentSearch').value.toLowerCase();
-            
-            try {
-                const response = await fetch(`${getApiUrl()}/admin/students`, {
-                    headers: { 'Authorization': `Bearer ${authToken}` }
-                });
-                const students = await response.json();
-                
-                const filteredStudents = students.filter(student => 
-                    student.first_name.toLowerCase().includes(searchTerm) || 
-                    student.last_name.toLowerCase().includes(searchTerm) ||
-                    student.email.toLowerCase().includes(searchTerm)
-                );
-                
-                displayStudents(filteredStudents);
-            } catch (error) {
-                console.error('Error searching students:', error);
-            }
-        }
-
-        // Authentication Functions
-    async function adminLogin() {
-            const email = document.getElementById('adminEmail').value;
-            const password = document.getElementById('adminPassword').value;
-            const errorDiv = document.getElementById('loginError');
-            
-            try {
-                // Call backend API to login and get JWT token
-                const response = await fetch(`${getApiUrl()}/login`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ email, password })
-                });
-                
-                const data = await response.json();
-                
-                if (response.ok && data.token) {
-                    // Store auth token
-                    authToken = data.token;
-                    localStorage.setItem('adminToken', data.token);
-                    localStorage.setItem('adminLoggedIn', 'true');
-                    localStorage.setItem('adminEmail', email);
-                    
-                    console.log('âœ… Admin logged in successfully');
-                    console.log('Token:', authToken.substring(0, 20) + '...');
-                    
-                    // Show success toast
-                    showToast('Login successful! Welcome to the admin panel.', 'success');
-                    
-                    const loginModal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
-                    if (loginModal) {
-                        loginModal.hide();
-                    }
-                    
-                    document.getElementById('mainContent').style.display = 'block';
-                    initializeAdminPanel();
-                } else {
-                    errorDiv.textContent = data.error || 'Invalid email or password';
-                    errorDiv.style.display = 'block';
-                    showToast('Login failed. Please check your credentials.', 'error');
-                }
-            } catch (error) {
-                console.error('Login error:', error);
-                errorDiv.textContent = 'Login failed. Please check your credentials.';
-                errorDiv.style.display = 'block';
-            }
-        }
-
-        function logout() {
-            localStorage.removeItem('adminLoggedIn');
-            localStorage.removeItem('adminEmail');
-            localStorage.removeItem('adminToken');
-            authToken = null;
-            window.location.replace('admin-login.html');
-        }
-
-        function checkAuth() {
-            const savedToken = localStorage.getItem('adminToken');
-            if (savedToken) {
-                authToken = savedToken;
-                testAdminToken(savedToken);
-            } else {
-                redirectToAdminLogin();
-            }
-        }
-
-        async function testAdminToken(token) {
-            try {
-                const response = await fetch(`${getApiUrl()}/admin/students`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    }
-                });
-                if (response.ok) {
-                    authToken = token;
-                    document.getElementById('mainContent').style.display = 'block';
-                    initializeAdminPanel();
-                } else {
-                    redirectToAdminLogin();
-                }
-            } catch (error) {
-                redirectToAdminLogin();
-            }
-        }
-
-        function initializeAdminPanel() {
-            loadDashboard();
-            showSection('dashboard');
-        }
-
-        // Data Management Functions
-        function getStudents() {
-            return JSON.parse(localStorage.getItem('adminStudents') || '[]');
-        }
-
-        function saveStudents(students) {
-            localStorage.setItem('adminStudents', JSON.stringify(students));
-        }
-
-        function getCourses() {
-            return JSON.parse(localStorage.getItem('adminCourses') || '[]');
-        }
-
-        function saveCourses(courses) {
-            localStorage.setItem('adminCourses', JSON.stringify(courses));
-        }
-
-        function getEnrollments() {
-            return JSON.parse(localStorage.getItem('adminEnrollments') || '[]');
-        }
-
-        function saveEnrollments(enrollments) {
-            localStorage.setItem('adminEnrollments', JSON.stringify(enrollments));
-        }
-
-        function getOrders() {
-            return JSON.parse(localStorage.getItem('adminOrders') || '[]');
-        }
-
-        function saveOrders(orders) {
-            localStorage.setItem('adminOrders', JSON.stringify(orders));
-        }
-
-        // Initialize sample data if none exists
-        function initializeSampleData() {
-            if (getStudents().length === 0) {
-                const sampleStudents = [
-                    { id: 1, name: 'John Smith', email: 'john@example.com', phone: '+44 7123 456789', joined: '2024-01-15', status: 'active' },
-                    { id: 2, name: 'Sarah Johnson', email: 'sarah@example.com', phone: '+44 7234 567890', joined: '2024-01-20', status: 'active' },
-                    { id: 3, name: 'Mike Brown', email: 'mike@example.com', phone: '+44 7345 678901', joined: '2024-02-01', status: 'active' },
-                    { id: 4, name: 'Emma Wilson', email: 'emma@example.com', phone: '+44 7456 789012', joined: '2024-02-10', status: 'inactive' }
-                ];
-                saveStudents(sampleStudents);
-            }
-
-            if (getCourses().length === 0) {
-                const sampleCourses = [
-                    { id: 1, name: 'Mathematics IGCSE', instructor: 'Dr. Smith', price: 299, students: 45, status: 'active' },
-                    { id: 2, name: 'Mathematics Advanced', instructor: 'Prof. Johnson', price: 399, students: 32, status: 'active' },
-                    { id: 3, name: 'Mathematics Foundation', instructor: 'Dr. Brown', price: 199, students: 28, status: 'active' }
-                ];
-                saveCourses(sampleCourses);
-            }
-
-            if (getEnrollments().length === 0) {
-                const sampleEnrollments = [
-                    { id: 1, studentId: 1, courseId: 1, enrolledDate: '2024-01-16', status: 'active' },
-                    { id: 2, studentId: 1, courseId: 2, enrolledDate: '2024-01-16', status: 'active' },
-                    { id: 3, studentId: 2, courseId: 1, enrolledDate: '2024-01-21', status: 'active' },
-                    { id: 4, studentId: 3, courseId: 3, enrolledDate: '2024-02-02', status: 'active' }
-                ];
-                saveEnrollments(sampleEnrollments);
-            }
-
-            if (getOrders().length === 0) {
-                const sampleOrders = [
-                    { id: 1, studentId: 1, courseId: 1, amount: 299, status: 'completed', created_at: '2024-01-15' },
-                    { id: 2, studentId: 1, courseId: 2, amount: 299, status: 'completed', created_at: '2024-01-15' },
-                    { id: 3, studentId: 2, courseId: 1, amount: 299, status: 'completed', created_at: '2024-01-20' },
-                    { id: 4, studentId: 3, courseId: 3, amount: 299, status: 'pending', created_at: '2024-02-01' }
-                ];
-                saveOrders(sampleOrders);
-            }
-        }
-
-        // Teacher Management Functions
-        let currentTeacherId = null;
-
-        async function loadTeachers() {
-            try {
-                const teachers = await apiCall('/api/admin/teachers').catch(() => []);
-                displayTeachers(teachers);
-                return;
-            } catch (error) {
-                console.error('Error loading teachers:', error);
-                document.getElementById('teachersTable').innerHTML = '<tr><td colspan="6" class="text-center text-danger">Error loading teachers</td></tr>';
-            }
-        }
-
-        function displayTeachers(teachers) {
-            const tableBody = document.getElementById('teachersTable');
-            if (teachers.length === 0) {
-                tableBody.innerHTML = '<tr><td colspan="6" class="text-center">No teachers found</td></tr>';
-                return;
-            }
-            
-            tableBody.innerHTML = teachers.map(teacher => `
-                <tr>
-                    <td>${teacher.name || teacher.full_name || `${teacher.first_name || ''} ${teacher.last_name || ''}`.trim() || teacher.email || 'N/A'}</td>
-                    <td>${teacher.email}</td>
-                    <td><span class="badge bg-primary">${teacher.subject || 'N/A'}</span></td>
-                    <td>${teacher.experience || 0} years</td>
-                    <td>
-                        <span class="badge bg-info">${teacher.assistants_count || 0} assistants</span>
-                    </td>
-                    <td>
-                        <button class="btn btn-sm btn-outline-primary me-1" onclick="viewTeacherDetails(${teacher.id})">
-                            <i class="bi bi-eye"></i> View
-                        </button>
-                        <button class="btn btn-sm btn-outline-danger" onclick="deleteTeacher(${teacher.id})">
-                            <i class="bi bi-trash"></i> Delete
-                        </button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        function showAddTeacherModal() {
-            const modal = new bootstrap.Modal(document.getElementById('addTeacherModal'));
-            modal.show();
-        }
-
-        async function addTeacher() {
-            const name = document.getElementById('teacherName').value;
-            const email = document.getElementById('teacherEmail').value;
-            const subject = document.getElementById('teacherSubject').value;
-            const experience = document.getElementById('teacherExperience').value;
-            const phone = document.getElementById('teacherPhone').value;
-
-            if (!name || !email || !subject || !experience) {
-                alert('Please fill in all required fields');
-                return;
-            }
-
-            try {
-                const response = await fetch(`${getApiUrl()}/admin/teachers`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${authToken}`
-                    },
-                    body: JSON.stringify({
-                        name,
-                        email,
-                        subject,
-                        experience: parseInt(experience),
-                        phone
-                    })
-                });
-
-                if (response.ok) {
-                    showToast('Teacher added successfully!', 'success');
-                    bootstrap.Modal.getInstance(document.getElementById('addTeacherModal')).hide();
-                    document.getElementById('addTeacherForm').reset();
-                    loadTeachers();
-                } else {
-                    const error = await response.json();
-                    showToast('Error adding teacher: ' + error.error, 'error');
-                }
-            } catch (error) {
-                console.error('Error adding teacher:', error);
-                showToast('Error adding teacher', 'error');
-            }
-        }
-
-        async function viewTeacherDetails(teacherId) {
-            currentTeacherId = teacherId;
-            try {
-                const teacher = await apiCall(`/api/admin/teachers/${teacherId}`).catch(() => null);
-                if (!teacher) throw new Error('Failed to load teacher details');
-                
-                // Populate teacher details
-                document.getElementById('teacherDetailName').textContent = teacher.name || teacher.full_name || `${teacher.first_name || ''} ${teacher.last_name || ''}`.trim() || teacher.email || 'N/A';
-                document.getElementById('teacherDetailEmail').textContent = teacher.email;
-                document.getElementById('teacherDetailSubject').textContent = teacher.subject || 'N/A';
-                document.getElementById('teacherDetailExperience').textContent = teacher.experience;
-                document.getElementById('teacherDetailPhone').textContent = teacher.phone || 'N/A';
-                
-                // Load assistants
-                loadTeacherAssistants(teacherId);
-                
-                const modal = new bootstrap.Modal(document.getElementById('teacherDetailsModal'));
-                modal.show();
-            } catch (error) {
-                console.error('Error loading teacher details:', error);
-                showToast('Error loading teacher details', 'error');
-            }
-        }
-
-        async function loadTeacherAssistants(teacherId) {
-            try {
-                const assistants = await apiCall(`/api/admin/teachers/${teacherId}/assistants`).catch(() => []);
-                const assistantsList = document.getElementById('assistantsList');
-                
-                if (assistants.length === 0) {
-                    assistantsList.innerHTML = '<p class="text-muted">No assistants assigned</p>';
-                    return;
-                }
-                
-                assistantsList.innerHTML = assistants.map(assistant => `
-                    <div class="d-flex justify-content-between align-items-center mb-2 p-2 border rounded">
-                        <div>
-                            <strong>${assistant.name}</strong><br>
-                            <small class="text-muted">${assistant.email} â€¢ ${assistant.role}</small>
-                        </div>
-                        <button class="btn btn-sm btn-outline-danger" onclick="removeAssistant(${assistant.id})">
-                            <i class="bi bi-trash"></i>
-                        </button>
-                    </div>
-                `).join('');
-            } catch (error) {
-                console.error('Error loading assistants:', error);
-                document.getElementById('assistantsList').innerHTML = '<p class="text-danger">Error loading assistants</p>';
-            }
-        }
-
-        function showAddAssistantModal() {
-            if (!currentTeacherId) {
-                alert('No teacher selected');
-                return;
-            }
-            const modal = new bootstrap.Modal(document.getElementById('addAssistantModal'));
-            modal.show();
-        }
-
-        async function addAssistant() {
-            const name = document.getElementById('assistantName').value;
-            const email = document.getElementById('assistantEmail').value;
-            const phone = document.getElementById('assistantPhone').value;
-            const role = document.getElementById('assistantRole').value;
-
-            if (!name || !email || !role) {
-                alert('Please fill in all required fields');
-                return;
-            }
-
-            try {
-                const response = await fetch(`${getApiUrl()}/admin/teachers/${currentTeacherId}/assistants`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${authToken}`
-                    },
-                    body: JSON.stringify({
-                        name,
-                        email,
-                        phone,
-                        role
-                    })
-                });
-
-                if (response.ok) {
-                    showToast('Assistant added successfully!', 'success');
-                    bootstrap.Modal.getInstance(document.getElementById('addAssistantModal')).hide();
-                    document.getElementById('addAssistantForm').reset();
-                    loadTeacherAssistants(currentTeacherId);
-                } else {
-                    const error = await response.json();
-                    showToast('Error adding assistant: ' + error.error, 'error');
-                }
-            } catch (error) {
-                console.error('Error adding assistant:', error);
-                showToast('Error adding assistant', 'error');
-            }
-        }
-
-        async function removeAssistant(assistantId) {
-            if (!confirm('Are you sure you want to remove this assistant?')) {
-                return;
-            }
-
-            try {
-                const response = await fetch(`${getApiUrl()}/admin/assistants/${assistantId}`, {
-                    method: 'DELETE',
-                    headers: { 'Authorization': `Bearer ${authToken}` }
-                });
-
-                if (response.ok) {
-                    showToast('Assistant removed successfully!', 'success');
-                    loadTeacherAssistants(currentTeacherId);
-                } else {
-                    const error = await response.json();
-                    showToast('Error removing assistant: ' + error.error, 'error');
-                }
-            } catch (error) {
-                console.error('Error removing assistant:', error);
-                showToast('Error removing assistant', 'error');
-            }
-        }
-
-        async function deleteTeacher(teacherId) {
-            if (!confirm('Are you sure you want to delete this teacher? This will also remove all their assistants.')) {
-                return;
-            }
-
-            try {
-                const response = await fetch(`${getApiUrl()}/admin/teachers/${teacherId}`, {
-                    method: 'DELETE',
-                    headers: { 'Authorization': `Bearer ${authToken}` }
-                });
-
-                if (response.ok) {
-                    showToast('Teacher deleted successfully!', 'success');
-                    bootstrap.Modal.getInstance(document.getElementById('teacherDetailsModal')).hide();
-                    loadTeachers();
-                } else {
-                    const error = await response.json();
-                    showToast('Error deleting teacher: ' + error.error, 'error');
-                }
-            } catch (error) {
-                console.error('Error deleting teacher:', error);
-                showToast('Error deleting teacher', 'error');
-            }
-        }
-
-        // Parent Management Functions
-        let currentParentId = null;
-        let allParents = [];
-        let filteredParents = [];
-
-        async function loadParents() {
-            try {
-                console.log('Loading parents from database...');
-                const response = await fetch(`${getApiUrl()}/admin/parents`, {
-                    headers: { 'Authorization': `Bearer ${authToken}` }
-                });
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                allParents = await response.json();
-                filteredParents = [...allParents];
-                displayParents(filteredParents);
-                
-                console.log(`Loaded ${allParents.length} parents`);
-            } catch (error) {
-                console.error('Error loading parents:', error);
-                document.getElementById('parentsTableBody').innerHTML = `
-                    <tr>
-                        <td colspan="9" class="text-center text-danger py-4">
-                            <i class="bi bi-exclamation-triangle fs-1"></i>
-                            <p class="mt-2">Error loading parents: ${error.message}</p>
-                        </td>
-                    </tr>
-                `;
-            }
-        }
-
-        function displayParents(parents) {
-            const tbody = document.getElementById('parentsTableBody');
-            
-            if (parents.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="9" class="text-center text-muted py-4">
-                            <i class="bi bi-people-fill fs-1"></i>
-                            <p class="mt-2">No parents found</p>
-                        </td>
-                    </tr>
-                `;
-                return;
-            }
-
-            tbody.innerHTML = parents.map(parent => `
-                <tr>
-                    <td>${parent.id}</td>
-                    <td>
-                        <div class="d-flex align-items-center">
-                            <div class="avatar-sm bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px; font-size: 14px;">
-                                ${parent.first_name ? parent.first_name.charAt(0).toUpperCase() : 'P'}
-                            </div>
-                            <div>
-                                <strong>${parent.first_name || ''} ${parent.last_name || ''}</strong>
-                            </div>
-                        </div>
-                    </td>
-                    <td>${parent.email || 'N/A'}</td>
-                    <td>${parent.phone || '—'}</td>
-                    <td>${parent.children_names || '—'}</td>
-                    <td>${parent.created_at ? new Date(parent.created_at).toLocaleDateString() : 'N/A'}</td>
-                    <td>${parent.last_login ? new Date(parent.last_login).toLocaleDateString() : 'Never'}</td>
-                    <td>
-                        <span class="badge ${parent.status === 'active' ? 'bg-success' : 'bg-secondary'}">
-                            ${parent.status || 'inactive'}
-                        </span>
-                    </td>
-                    <td>
-                        <div class="btn-group" role="group">
-                            <button class="btn btn-outline-primary btn-sm" onclick="viewParent(${parent.id})" title="View Details">
-                                <i class="bi bi-eye"></i>
-                            </button>
-                            <button class="btn btn-outline-warning btn-sm" onclick="editParent(${parent.id})" title="Edit">
-                                <i class="bi bi-pencil"></i>
-                            </button>
-                            <button class="btn btn-outline-danger btn-sm" onclick="deleteParent(${parent.id})" title="Delete">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        function filterParents() {
-            const searchTerm = document.getElementById('parentSearchInput').value.toLowerCase();
-            const statusFilter = document.getElementById('parentStatusFilter').value;
-            
-            filteredParents = allParents.filter(parent => {
-                const matchesSearch = !searchTerm || 
-                    (parent.first_name && parent.first_name.toLowerCase().includes(searchTerm)) ||
-                    (parent.last_name && parent.last_name.toLowerCase().includes(searchTerm)) ||
-                    (parent.email && parent.email.toLowerCase().includes(searchTerm)) ||
-                    (parent.phone && parent.phone.includes(searchTerm));
-                
-                const matchesStatus = !statusFilter || parent.status === statusFilter;
-                
-                return matchesSearch && matchesStatus;
-            });
-            
-            displayParents(filteredParents);
-        }
-
-        function sortParents() {
-            const sortBy = document.getElementById('parentSortBy').value;
-            
-            filteredParents.sort((a, b) => {
-                switch(sortBy) {
-                    case 'name':
-                        const nameA = `${a.first_name || ''} ${a.last_name || ''}`.toLowerCase();
-                        const nameB = `${b.first_name || ''} ${b.last_name || ''}`.toLowerCase();
-                        return nameA.localeCompare(nameB);
-                    case 'email':
-                        return (a.email || '').localeCompare(b.email || '');
-                    case 'created_at':
-                        return new Date(b.created_at || 0) - new Date(a.created_at || 0);
-                    case 'last_login':
-                        return new Date(b.last_login || 0) - new Date(a.last_login || 0);
-                    default:
-                        return 0;
-                }
-            });
-            
-            displayParents(filteredParents);
-        }
-
-        async function viewParent(parentId) {
-            try {
-                const response = await fetch(`${getApiUrl()}/admin/parents/${parentId}`, {
-                    headers: { 'Authorization': `Bearer ${authToken}` }
-                });
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                const parent = await response.json();
-                
-                // Create and show parent details modal
-                showParentDetailsModal(parent);
-                
-            } catch (error) {
-                console.error('Error loading parent details:', error);
-                alert('Error loading parent details: ' + error.message);
-            }
-        }
-
-        function showParentDetailsModal(parent) {
-            const modalHtml = `
-                <div class="modal fade" id="parentDetailsModal" tabindex="-1">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Parent Details</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <h6 class="text-primary">Personal Information</h6>
-                                        <p><strong>Name:</strong> ${parent.first_name || ''} ${parent.last_name || ''}</p>
-                                        <p><strong>Email:</strong> ${parent.email || 'N/A'}</p>
-                                        <p><strong>Phone:</strong> ${parent.phone || 'N/A'}</p>
-                                        <p><strong>Status:</strong> 
-                                            <span class="badge ${parent.status === 'active' ? 'bg-success' : 'bg-secondary'}">
-                                                ${parent.status || 'inactive'}
-                                            </span>
-                                        </p>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <h6 class="text-primary">Account Information</h6>
-                                        <p><strong>Registration Date:</strong> ${parent.created_at ? new Date(parent.created_at).toLocaleDateString() : 'N/A'}</p>
-                                        <p><strong>Last Login:</strong> ${parent.last_login ? new Date(parent.last_login).toLocaleDateString() : 'Never'}</p>
-                                        <p><strong>Children Count:</strong> ${parent.children_count || 0}</p>
-                                    </div>
-                                </div>
-                                
-                                ${parent.children && parent.children.length > 0 ? `
-                                    <hr>
-                                    <h6 class="text-primary">Children</h6>
-                                    <div class="table-responsive">
-                                        <table class="table table-sm">
-                                            <thead>
-                                                <tr>
-                                                    <th>Name</th>
-                                                    <th>Email</th>
-                                                    <th>Grade</th>
-                                                    <th>Status</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                ${parent.children.map(child => `
-                                                    <tr>
-                                                        <td>${child.first_name || ''} ${child.last_name || ''}</td>
-                                                        <td>${child.email || 'N/A'}</td>
-                                                        <td>${child.grade || 'N/A'}</td>
-                                                        <td>
-                                                            <span class="badge ${child.status === 'active' ? 'bg-success' : 'bg-secondary'}">
-                                                                ${child.status || 'inactive'}
-                                                            </span>
-                                                        </td>
-                                                    </tr>
-                                                `).join('')}
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                ` : ''}
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-primary" onclick="editParent(${parent.id})">Edit Parent</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            // Remove existing modal if any
-            const existingModal = document.getElementById('parentDetailsModal');
-            if (existingModal) {
-                existingModal.remove();
-            }
-            
-            document.body.insertAdjacentHTML('beforeend', modalHtml);
-            const modal = new bootstrap.Modal(document.getElementById('parentDetailsModal'));
-            modal.show();
-        }
-
-        async function editParent(parentId) {
-            // Close details modal if open
-            const detailsModal = document.getElementById('parentDetailsModal');
-            if (detailsModal) {
-                const modal = bootstrap.Modal.getInstance(detailsModal);
-                if (modal) modal.hide();
-            }
-            
-            // For now, just show an alert - you can implement edit functionality later
-            alert('Edit parent functionality will be implemented soon!');
-        }
-
-        async function deleteParent(parentId) {
-            if (!confirm('Are you sure you want to delete this parent? This action cannot be undone.')) {
-                return;
-            }
-            
-            try {
-                const response = await fetch(`${getApiUrl()}/admin/parents/${parentId}`, {
-                    method: 'DELETE',
-                    headers: { 'Authorization': `Bearer ${authToken}` }
-                });
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                alert('Parent deleted successfully!');
-                loadParents(); // Refresh the list
-                
-            } catch (error) {
-                console.error('Error deleting parent:', error);
-                alert('Error deleting parent: ' + error.message);
-            }
-        }
-
-        async function exportParents() {
-            try {
-                const response = await fetch(`${getApiUrl()}/admin/parents/export`, {
-                    headers: { 'Authorization': `Bearer ${authToken}` }
-                });
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                const blob = await response.blob();
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `parents_export_${new Date().toISOString().split('T')[0]}.csv`;
-                document.body.appendChild(a);
-                a.click();
-                window.URL.revokeObjectURL(url);
-                document.body.removeChild(a);
-                
-            } catch (error) {
-                console.error('Error exporting parents:', error);
-                alert('Error exporting parents: ' + error.message);
-            }
-        }
-
-        // Assistant Management Functions
-
-        // Course Analytics Functions
-        let courseAnalyticsData = {
-            courses: [],
-            students: [],
-            enrollments: [],
-            leaderboard: []
-        };
-
-        async function loadCourseAnalytics() {
-            try {
-                console.log('Loading course analytics...');
-                console.log('Auth token present:', !!authToken);
-                
-                // Load courses, students, and enrollments
-                const [courses, students, enrollments] = await Promise.all([
-                    apiCall('/api/courses').catch(err => {
-                        console.error('Error loading courses:', err);
-                        return [];
-                    }),
-                    apiCall('/api/admin/students').catch(err => {
-                        console.error('Error loading students:', err);
-                        return [];
-                    }),
-                    apiCall('/api/admin/enrollments').catch(err => {
-                        console.error('Error loading enrollments:', err);
-                        return [];
-                    })
-                ]);
-
-                console.log('Course analytics data loaded:', { 
-                    courses: courses.length, 
-                    students: students.length, 
-                    enrollments: enrollments.length 
-                });
-
-                courseAnalyticsData = { courses, students, enrollments };
-
-                // Populate course dropdown
-                populateCourseDropdown(courses);
-                
-                // Update overview stats
-                updateOverviewStats(courses, enrollments, students);
-                
-                // Display students per course
-                displayStudentsPerCourse(courses, enrollments, students);
-                
-                // Load leaderboard for selected course
-                const selectedCourseId = document.getElementById('courseSelect').value;
-                if (selectedCourseId) {
-                    await loadCourseLeaderboard(selectedCourseId);
-                }
-            } catch (error) {
-                console.error('Error loading course analytics:', error);
-                showToast('Error loading course analytics data: ' + error.message, 'error');
-            }
-        }
-
-        function populateCourseDropdown(courses) {
-            console.log('Populating course dropdown with courses:', courses);
-            const courseSelect = document.getElementById('courseSelect');
-            
-            if (!courseSelect) {
-                console.error('courseSelect element not found');
-                return;
-            }
-            
-            courseSelect.innerHTML = '<option value="">Select a course...</option>';
-            
-            courses.forEach(course => {
-                const option = document.createElement('option');
-                option.value = course.id;
-                option.textContent = `${course.title || course.name} (${course.subject || 'General'})`;
-                courseSelect.appendChild(option);
-                console.log('Added course option:', course.title || course.name);
-            });
-            
-            console.log('Course dropdown populated with', courses.length, 'courses');
-        }
-
-        function updateOverviewStats(courses, enrollments, students) {
-            console.log('Updating overview stats:', { courses: courses.length, enrollments: enrollments.length, students: students.length });
-            
-            try {
-                // Total courses
-                const totalCoursesEl = document.getElementById('analyticsTotalCourses');
-                if (totalCoursesEl) {
-                    totalCoursesEl.textContent = courses.length;
-                    console.log('Updated total courses:', courses.length);
-                } else {
-                    console.error('analyticsTotalCourses element not found');
-                }
-                
-                // Total enrollments
-                const totalEnrollmentsEl = document.getElementById('analyticsTotalEnrollments');
-                if (totalEnrollmentsEl) {
-                    totalEnrollmentsEl.textContent = enrollments.length;
-                    console.log('Updated total enrollments:', enrollments.length);
-                } else {
-                    console.error('analyticsTotalEnrollments element not found');
-                }
-                
-                // Top performer (student with highest points)
-                const topStudent = students.reduce((max, student) => 
-                    (student.points || 0) > (max.points || 0) ? student : max, 
-                    { first_name: 'N/A', last_name: '', points: 0 }
-                );
-                const topPerformerEl = document.getElementById('analyticsTopPerformer');
-                if (topPerformerEl) {
-                    const topPerformerName = topStudent.first_name && topStudent.last_name 
-                        ? `${topStudent.first_name} ${topStudent.last_name}` 
-                        : topStudent.first_name || 'N/A';
-                    topPerformerEl.textContent = topPerformerName;
-                    console.log('Updated top performer:', topPerformerName);
-                } else {
-                    console.error('analyticsTopPerformer element not found');
-                }
-                
-                // Average points
-                const totalPoints = students.reduce((sum, student) => sum + (student.points || 0), 0);
-                const avgPoints = students.length > 0 ? Math.round(totalPoints / students.length) : 0;
-                const avgPointsEl = document.getElementById('analyticsAvgPoints');
-                if (avgPointsEl) {
-                    avgPointsEl.textContent = avgPoints;
-                    console.log('Updated avg points:', avgPoints);
-                } else {
-                    console.error('analyticsAvgPoints element not found');
-                }
-            } catch (error) {
-                console.error('Error updating overview stats:', error);
-            }
-        }
-
-        function displayStudentsPerCourse(courses, enrollments, students) {
-            console.log('Displaying students per course');
-            const container = document.getElementById('studentsPerCourseCards');
-            
-            if (!container) {
-                console.error('studentsPerCourseCards element not found');
-                return;
-            }
-            
-            // Count students per course and track which students
-            const courseData = {};
-            
-            enrollments.forEach(enrollment => {
-                const courseId = enrollment.course_id;
-                if (!courseData[courseId]) {
-                    courseData[courseId] = {
-                        count: 0,
-                        students: []
-                    };
-                }
-                
-                // Find the student for this enrollment
-                const student = students.find(s => s.id === enrollment.student_id || s.id === enrollment.user_id);
-                if (student) {
-                    courseData[courseId].count++;
-                    courseData[courseId].students.push(student);
-                }
-            });
-            
-            // Calculate total enrollments for percentage
-            const totalEnrollments = enrollments.length || 1;
-            
-            // Create cards for each course
-            const cardsHtml = courses.map(course => {
-                const data = courseData[course.id] || { count: 0, students: [] };
-                const studentCount = data.count;
-                const percentage = Math.round((studentCount / totalEnrollments) * 100);
-                
-                // Determine color based on enrollment
-                let colorClass = 'info';
-                if (studentCount === 0) colorClass = 'secondary';
-                else if (studentCount < 5) colorClass = 'warning';
-                else if (studentCount < 10) colorClass = 'primary';
-                else colorClass = 'success';
-                
-                return `
-                    <div class="col-md-6 col-lg-4 mb-3">
-                        <div class="card h-100 border-${colorClass}" style="cursor: pointer;" onclick="showCourseStudents(${course.id}, '${(course.title || course.subject || 'Course').replace(/'/g, "\\'")}')">
-                            <div class="card-body">
-                                <h6 class="card-title text-${colorClass}">
-                                    <i class="bi bi-book me-2"></i>${course.title || course.subject || 'Course'}
-                                </h6>
-                                <div class="d-flex justify-content-between align-items-center mt-3">
-                                    <div>
-                                        <div class="h3 mb-0 text-${colorClass}">${studentCount}</div>
-                                        <small class="text-muted">Students</small>
-                                    </div>
-                                    <div class="text-end">
-                                        <div class="badge bg-${colorClass}">${percentage}%</div>
-                                        <small class="d-block text-muted">of enrollments</small>
-                                    </div>
-                                </div>
-                                <div class="progress mt-3" style="height: 8px;">
-                                    <div class="progress-bar bg-${colorClass}" role="progressbar" style="width: ${percentage}%" aria-valuenow="${percentage}" aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
-                                <div class="mt-2 d-flex justify-content-between align-items-center">
-                                    <small class="text-muted">
-                                        <i class="bi bi-person-check me-1"></i>Level: ${course.level || 'N/A'}
-                                    </small>
-                                    ${studentCount > 0 ? '<small class="text-primary"><i class="bi bi-eye me-1"></i>Click to view</small>' : ''}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-            
-            container.innerHTML = cardsHtml || '<div class="col-12 text-center text-muted"><p>No courses found</p></div>';
-        }
-        
-        function showCourseStudents(courseId, courseName) {
-            console.log('Showing students for course:', courseId, courseName);
-            
-            if (!courseAnalyticsData) {
-                showToast('Course data not loaded', 'error');
-                return;
-            }
-            
-            // Get enrollments for this course
-            const courseEnrollments = courseAnalyticsData.enrollments.filter(e => e.course_id === courseId);
-            
-            if (courseEnrollments.length === 0) {
-                showToast('No students enrolled in this course', 'info');
-                return;
-            }
-            
-            // Get student details
-            const enrolledStudents = courseEnrollments.map(enrollment => {
-                const student = courseAnalyticsData.students.find(s => 
-                    s.id === enrollment.student_id || s.id === enrollment.user_id
-                );
-                return {
-                    ...student,
-                    enrolledAt: enrollment.enrolled_at,
-                    points: student?.points || 0
-                };
-            }).filter(s => s.id); // Filter out null students
-            
-            // Sort by points descending
-            enrolledStudents.sort((a, b) => (b.points || 0) - (a.points || 0));
-            
-            // Create modal content
-            const studentsHtml = enrolledStudents.map((student, index) => `
-                <tr>
-                    <td>${index + 1}</td>
-                    <td>${student.first_name} ${student.last_name}</td>
-                    <td>${student.email}</td>
-                    <td><span class="badge bg-success">${student.points || 0} pts</span></td>
-                    <td>${new Date(student.enrolledAt).toLocaleDateString()}</td>
-                </tr>
-            `).join('');
-            
-            // Create and show modal
-            const modalHtml = `
-                <div class="modal fade" id="courseStudentsModal" tabindex="-1">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title"><i class="bi bi-people me-2"></i>${courseName} - Enrolled Students</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="table-responsive">
-                                    <table class="table table-hover">
-                                        <thead>
-                                            <tr>
-                                                <th>#</th>
-                                                <th>Name</th>
-                                                <th>Email</th>
-                                                <th>Points</th>
-                                                <th>Enrolled</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            ${studentsHtml}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            // Remove existing modal if any
-            const existingModal = document.getElementById('courseStudentsModal');
-            if (existingModal) {
-                existingModal.remove();
-            }
-            
-            // Add modal to page
-            document.body.insertAdjacentHTML('beforeend', modalHtml);
-            
-            // Show modal
-            const modal = new bootstrap.Modal(document.getElementById('courseStudentsModal'));
-            modal.show();
-            
-            // Cleanup on close
-            document.getElementById('courseStudentsModal').addEventListener('hidden.bs.modal', function() {
-                this.remove();
-            });
-        }
-
-        async function loadCourseLeaderboard(courseId) {
-            try {
-                if (!courseId) {
-                    // Clear the leaderboard if no course selected
-                    document.getElementById('leaderboardTable').innerHTML = '<tr><td colspan="6" class="text-center">Select a course to view leaderboard</td></tr>';
-                    document.getElementById('courseInfo').style.display = 'none';
-                    return;
-                }
-
-                // Get course info
-                const course = courseAnalyticsData.courses.find(c => c.id == courseId);
-                if (!course) {
-                    console.error('Course not found:', courseId);
-                    return;
-                }
-
-                // Show course info
-                document.getElementById('selectedCourseName').textContent = course.title || course.name;
-                document.getElementById('courseStudentCount').textContent = courseAnalyticsData.enrollments.filter(e => e.course_id == courseId).length;
-                document.getElementById('courseDuration').textContent = course.duration || 'N/A';
-                document.getElementById('courseLevel').textContent = course.level || 'N/A';
-                document.getElementById('courseInfo').style.display = 'block';
-
-                // Get students enrolled in this course
-                const courseEnrollments = courseAnalyticsData.enrollments.filter(e => e.course_id == courseId);
-                const enrolledStudentIds = courseEnrollments.map(e => e.student_id);
-                const enrolledStudents = courseAnalyticsData.students.filter(s => enrolledStudentIds.includes(s.id));
-
-                // Sort students by points (descending)
-                const leaderboard = enrolledStudents
-                    .map(student => ({
-                        ...student,
-                        progress: Math.min(100, Math.round((student.points || 0) / 10)), // Simple progress calculation
-                        lastActivity: student.last_login || 'Never'
-                    }))
-                    .sort((a, b) => (b.points || 0) - (a.points || 0));
-
-                courseAnalyticsData.leaderboard = leaderboard;
-                displayLeaderboard(leaderboard);
-                
-                // Update charts
-                updateCharts(course, leaderboard);
-            } catch (error) {
-                console.error('Error loading course leaderboard:', error);
-                showToast('Error loading course leaderboard', 'error');
-            }
-        }
-
-        function displayLeaderboard(leaderboard) {
-            const tbody = document.getElementById('leaderboardTable');
-            tbody.innerHTML = '';
-
-            if (leaderboard.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="text-center">No students enrolled in this course</td></tr>';
-                return;
-            }
-
-            leaderboard.forEach((student, index) => {
-                const row = document.createElement('tr');
-                const rank = index + 1;
-                const rankIcon = rank === 1 ? 'ðŸ¥‡' : rank === 2 ? 'ðŸ¥ˆ' : rank === 3 ? 'ðŸ¥‰' : `#${rank}`;
-                
-                row.innerHTML = `
-                    <td>
-                        <span class="badge ${rank <= 3 ? 'bg-warning' : 'bg-secondary'}">${rankIcon}</span>
-                    </td>
-                    <td>
-                        <div class="d-flex align-items-center">
-                            <div class="avatar-sm bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px;">
-                                ${(student.first_name || student.name || 'S').charAt(0).toUpperCase()}
-                            </div>
-                            <div>
-                                <div class="fw-bold">${student.first_name && student.last_name ? `${student.first_name} ${student.last_name}` : student.name || 'Unknown'}</div>
-                                <small class="text-muted">${student.email}</small>
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <span class="badge bg-success fs-6">${student.points || 0}</span>
-                    </td>
-                    <td>
-                        <div class="progress" style="height: 8px;">
-                            <div class="progress-bar" role="progressbar" style="width: ${student.progress}%"></div>
-                        </div>
-                        <small class="text-muted">${student.progress}%</small>
-                    </td>
-                    <td>
-                        <small class="text-muted">${student.lastActivity}</small>
-                    </td>
-                    <td>
-                        <button class="btn btn-sm btn-outline-primary" onclick="viewStudentDetailsFromAnalytics(${student.id})">
-                            <i class="bi bi-eye"></i>
-                        </button>
-                        <button class="btn btn-sm btn-outline-success" onclick="awardPoints(${student.id})">
-                            <i class="bi bi-plus-circle"></i>
-                        </button>
-                    </td>
-                `;
-                tbody.appendChild(row);
-            });
-        }
-
-        function updateCharts(course, leaderboard) {
-            // Course Performance Chart (simple bar chart)
-            const performanceCtx = document.getElementById('coursePerformanceChart').getContext('2d');
-            const performanceData = {
-                labels: ['Completed', 'In Progress', 'Not Started'],
-                datasets: [{
-                    label: 'Students',
-                    data: [
-                        leaderboard.filter(s => s.progress === 100).length,
-                        leaderboard.filter(s => s.progress > 0 && s.progress < 100).length,
-                        leaderboard.filter(s => s.progress === 0).length
-                    ],
-                    backgroundColor: ['#28a745', '#ffc107', '#dc3545']
-                }]
-            };
-
-            // Points Distribution Chart (simple pie chart)
-            const pointsCtx = document.getElementById('pointsDistributionChart').getContext('2d');
-            const pointsData = {
-                labels: ['0-25', '26-50', '51-75', '76-100'],
-                datasets: [{
-                    data: [
-                        leaderboard.filter(s => (s.points || 0) <= 25).length,
-                        leaderboard.filter(s => (s.points || 0) > 25 && (s.points || 0) <= 50).length,
-                        leaderboard.filter(s => (s.points || 0) > 50 && (s.points || 0) <= 75).length,
-                        leaderboard.filter(s => (s.points || 0) > 75).length
-                    ],
-                    backgroundColor: ['#dc3545', '#ffc107', '#17a2b8', '#28a745']
-                }]
-            };
-
-            // Simple chart rendering (you can replace with Chart.js for better charts)
-            renderSimpleChart(performanceCtx, performanceData, 'bar');
-            renderSimpleChart(pointsCtx, pointsData, 'pie');
-        }
-
-        function renderSimpleChart(ctx, data, type) {
-            // Simple chart rendering - in production, use Chart.js or similar
-            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-            ctx.fillStyle = '#f8f9fa';
-            ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-            
-            ctx.fillStyle = '#6c757d';
-            ctx.font = '14px Arial';
-            ctx.textAlign = 'center';
-            ctx.fillText('Chart visualization would go here', ctx.canvas.width/2, ctx.canvas.height/2);
-            ctx.fillText(`Data: ${data.datasets[0].data.join(', ')}`, ctx.canvas.width/2, ctx.canvas.height/2 + 20);
-        }
-
-        function refreshLeaderboard() {
-            const selectedCourseId = document.getElementById('courseSelect').value;
-            if (selectedCourseId) {
-                loadCourseLeaderboard(selectedCourseId);
-            } else {
-                alert('Please select a course first');
-            }
-        }
-
-        function exportLeaderboard() {
-            const selectedCourseId = document.getElementById('courseSelect').value;
-            if (!selectedCourseId) {
-                alert('Please select a course first');
-                return;
-            }
-
-            const course = courseAnalyticsData.courses.find(c => c.id == selectedCourseId);
-            const leaderboard = courseAnalyticsData.leaderboard;
-
-            // Create CSV content
-            let csv = 'Rank,Student Name,Email,Points,Progress,Last Activity\n';
-            leaderboard.forEach((student, index) => {
-                csv += `${index + 1},"${student.name}","${student.email}",${student.points || 0},${student.progress}%,"${student.lastActivity}"\n`;
-            });
-
-            // Download CSV
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `${course.name}_leaderboard.csv`;
-            a.click();
-            window.URL.revokeObjectURL(url);
-        }
-
-        function viewStudentDetailsFromAnalytics(studentId) {
-            const student = courseAnalyticsData.students.find(s => s.id == studentId);
-            if (student) {
-                const studentName = student.first_name && student.last_name 
-                    ? `${student.first_name} ${student.last_name}` 
-                    : student.name || 'Unknown';
-                alert(`Student Details:\nName: ${studentName}\nEmail: ${student.email}\nPoints: ${student.points || 0}\nLast Login: ${student.last_login || 'Never'}`);
-            }
-        }
-
-        async function awardPoints(studentId) {
-            const points = prompt('Enter points to award:');
-            if (points && !isNaN(points) && points > 0) {
-                try {
-                    const response = await fetch(`${getApiUrl()}/admin/update-student-points`, {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${authToken}`
-                        },
-                        body: JSON.stringify({
-                            studentId: studentId,
-                            points: parseInt(points),
-                            action: 'add'
-                        })
-                    });
-
-                    if (response.ok) {
-                        const result = await response.json();
-                        const student = courseAnalyticsData.students.find(s => s.id == studentId);
-                        if (student) {
-                            student.points = result.newPoints;
-                            showToast(`Awarded ${points} points to ${student.name}. New total: ${result.newPoints}`, 'success');
-                            refreshLeaderboard();
-                        }
-                    } else {
-                        const error = await response.json();
-                        showToast(`Error: ${error.error}`, 'error');
-                    }
-                } catch (error) {
-                    console.error('Error awarding points:', error);
-                    showToast('Error awarding points', 'error');
-                }
-            }
-        }
-
-        // Auto-refresh functionality
-        let autoRefreshInterval = null;
-        
-        function startAutoRefresh() {
-            if (autoRefreshInterval) clearInterval(autoRefreshInterval);
-            autoRefreshInterval = setInterval(() => {
-                const activeSection = document.querySelector('.nav-link.active');
-                if (activeSection) {
-                    const section = activeSection.getAttribute('onclick').match(/'([^']+)'/)[1];
-                    switch(section) {
-                        case 'dashboard':
-                            loadDashboard();
-                            break;
-                        case 'students':
-                            loadStudents();
-                            break;
-                        case 'orders':
-                            loadOrders();
-                            break;
-                        case 'enrollments':
-                            loadEnrollments();
-                            break;
-                        case 'teachers':
-                            loadTeachers();
-                            break;
-                    }
-                }
-            }, 30000); // Refresh every 30 seconds
-        }
-        
-        function stopAutoRefresh() {
-            if (autoRefreshInterval) {
-                clearInterval(autoRefreshInterval);
-                autoRefreshInterval = null;
-            }
-        }
-        
-        // Export functionality
-        function exportStudents() {
-            try {
-                const table = document.getElementById('studentsTable');
-                const rows = Array.from(table.querySelectorAll('tr'));
-                const csvContent = rows.map(row => {
-                    const cells = Array.from(row.querySelectorAll('td, th'));
-                    return cells.map(cell => `"${cell.textContent.trim()}"`).join(',');
-                }).join('\n');
-                
-                const blob = new Blob([csvContent], { type: 'text/csv' });
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'students.csv';
-                a.click();
-                window.URL.revokeObjectURL(url);
-                
-                showToast('Students data exported successfully!', 'success');
-            } catch (error) {
-                showToast('Error exporting data: ' + error.message, 'error');
-            }
-        }
-        
-        function exportOrders() {
-            try {
-                const table = document.getElementById('ordersTable');
-                const rows = Array.from(table.querySelectorAll('tr'));
-                const csvContent = rows.map(row => {
-                    const cells = Array.from(row.querySelectorAll('td, th'));
-                    return cells.map(cell => `"${cell.textContent.trim()}"`).join(',');
-                }).join('\n');
-                
-                const blob = new Blob([csvContent], { type: 'text/csv' });
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'orders.csv';
-                a.click();
-                window.URL.revokeObjectURL(url);
-                
-                showToast('Orders data exported successfully!', 'success');
-            } catch (error) {
-                showToast('Error exporting data: ' + error.message, 'error');
-            }
-        }
-        
-        // Initialize on page load
-        // Show Add Course Modal
-        function showAddCourseModal() {
-            const modalHtml = `
-                <div class="modal fade show" id="addCourseModal" style="display: block; background: rgba(0,0,0,0.5);" tabindex="-1">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header bg-success text-white">
-                                <h5 class="modal-title">Create New Course</h5>
-                                <button type="button" class="btn-close btn-close-white" onclick="closeAddCourseModal()"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="alert alert-info">
-                                    <strong>ðŸ“Œ Note:</strong> This will create a course in the database, a student dashboard page, and a content management page.
-                                </div>
-                                <form id="addCourseForm">
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label"><strong>Course Title</strong> <span class="text-danger">*</span></label>
-                                            <input type="text" class="form-control" id="courseTitle" placeholder="e.g., Chemistry IGCSE" required>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label"><strong>Short Name</strong> <span class="text-danger">*</span></label>
-                                            <input type="text" class="form-control" id="courseShortName" placeholder="e.g., chemistry" required>
-                                            <small class="text-muted">Used for file names (lowercase, no spaces)</small>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label"><strong>Instructor Name</strong></label>
-                                            <input type="text" class="form-control" id="courseInstructor" placeholder="e.g., Dr. Smith">
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label"><strong>Price (EGP)</strong> <span class="text-danger">*</span></label>
-                                            <input type="number" class="form-control" id="coursePrice" placeholder="299" required>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label"><strong>Level</strong> <span class="text-danger">*</span></label>
-                                            <select class="form-select" id="courseLevel" required>
-                                                <option value="">Select level...</option>
-                                                <option value="IGCSE">IGCSE</option>
-                                                <option value="A-Level">A-Level</option>
-                                                <option value="IB">IB</option>
-                                                <option value="SAT">SAT</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label"><strong>Icon</strong></label>
-                                            <select class="form-select" id="courseIcon">
-                                                <option value="material-symbols:science">ðŸ§ª Science</option>
-                                                <option value="material-symbols:calculate">ðŸ”¢ Mathematics</option>
-                                                <option value="material-symbols:book">ðŸ“š Book</option>
-                                                <option value="material-symbols:language">ðŸŒ Language</option>
-                                                <option value="material-symbols:biotech">ðŸ§¬ Biology</option>
-                                                <option value="material-symbols:public">ðŸŒ Geography</option>
-                                                <option value="material-symbols:history-edu">ðŸ“œ History</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label"><strong>Description</strong></label>
-                                        <textarea class="form-control" id="courseDescription" rows="3" placeholder="Brief description of the course"></textarea>
-                                    </div>
-                                </form>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" onclick="closeAddCourseModal()">Cancel</button>
-                                <button type="button" class="btn btn-success" onclick="createCourse()">
-                                    <i class="bi bi-check-circle me-1"></i>Create Course
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            document.body.insertAdjacentHTML('beforeend', modalHtml);
-        }
-
-        function closeAddCourseModal() {
-            const modal = document.getElementById('addCourseModal');
-            if (modal) modal.remove();
-        }
-
-        async function createCourse() {
-            const title = document.getElementById('courseTitle').value.trim();
-            const shortName = document.getElementById('courseShortName').value.trim().toLowerCase();
-            const instructor = document.getElementById('courseInstructor').value.trim();
-            const price = document.getElementById('coursePrice').value;
-            const level = document.getElementById('courseLevel').value;
-            const icon = document.getElementById('courseIcon').value;
-            const description = document.getElementById('courseDescription').value.trim();
-
-            if (!title || !shortName || !price || !level) {
-                alert('Please fill in all required fields');
-                return;
-            }
-
-            // Validate short name (lowercase, no spaces, alphanumeric)
-            if (!/^[a-z0-9]+$/.test(shortName)) {
-                alert('Short name must be lowercase alphanumeric only (no spaces or special characters)');
-                return;
-            }
-
-            try {
-                // Show loading state
-                const btn = event.target;
-                const originalText = btn.innerHTML;
-                btn.disabled = true;
-                btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Creating...';
-
-                // 1. Add course to database
-                const response = await fetch(`${getApiUrl()}/courses`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        title,
-                        instructor,
-                        price: parseFloat(price),
-                        level,
-                        description,
-                        icon,
-                        is_active: true
-                    })
-                });
-
-                if (!response.ok) throw new Error('Failed to create course in database');
-
-                // 2. Create dashboard page
-                const dashboardResponse = await fetch('/api/admin/create-course-pages', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        courseName: title,
-                        shortName,
-                        icon
-                    })
-                });
-
-                if (!dashboardResponse.ok) throw new Error('Failed to create course pages');
-
-                // Success!
-                alert(`âœ… Course "${title}" created successfully!\n\nðŸ“„ Dashboard: ${shortName}-dashboard.html\nðŸ“ Content Manager: ${shortName}-content-manager.html`);
-                
-                closeAddCourseModal();
-                loadCourses(); // Refresh course list
-                loadDashboard(); // Refresh dashboard
-
-            } catch (error) {
-                console.error('Error creating course:', error);
-                alert('Error creating course: ' + error.message);
-                btn.disabled = false;
-                btn.innerHTML = originalText;
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            checkAuth();
-
-            // Add keyboard shortcuts
-            document.addEventListener('keydown', function(e) {
-                if (e.ctrlKey || e.metaKey) {
-                    switch(e.key) {
-                        case 'r':
-                            e.preventDefault();
-                            const activeSection = document.querySelector('.nav-link.active');
-                            if (activeSection) {
-                                const section = activeSection.getAttribute('onclick').match(/'([^']+)'/)[1];
-                                switch(section) {
-                                    case 'dashboard':
-                                        loadDashboard();
-                                        break;
-                                    case 'students':
-                                        loadStudents();
-                                        break;
-                                    case 'orders':
-                                        loadOrders();
-                                        break;
-                                    case 'enrollments':
-                                        loadEnrollments();
-                                        break;
-                                    case 'teachers':
-                                        loadTeachers();
-                                        break;
-                                }
-                            }
-                            break;
-                        case 'e':
-                            e.preventDefault();
-                            const activeSection2 = document.querySelector('.nav-link.active');
-                            if (activeSection2) {
-                                const section2 = activeSection2.getAttribute('onclick').match(/'([^']+)'/)[1];
-                                if (section2 === 'students') {
-                                    exportStudents();
-                                } else if (section2 === 'orders') {
-                                    exportOrders();
-                                }
-                            }
-                            break;
-                    }
-                }
-            });
-        });
-
-        // ========== QUESTIONS MANAGEMENT FUNCTIONS ==========
-
-        let currentQuestionCourse = '';
-
-        function showAddQuestionModal() {
-            if (!currentQuestionCourse) {
-                alert('Please select a course first');
-                return;
-            }
-
-            const modalHTML = `
-                <div class="modal fade" id="addQuestionModal" tabindex="-1">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header bg-primary text-white">
-                                <h5 class="modal-title">
-                                    <i class="bi bi-plus-circle me-2"></i>
-                                    Add New Question - ${currentQuestionCourse.charAt(0).toUpperCase() + currentQuestionCourse.slice(1)}
-                                </h5>
-                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                            </div>
-                            <div class="modal-body">
-                                <form id="addQuestionForm">
-                                    <!-- Question Type -->
-                                    <div class="mb-3">
-                                        <label class="form-label fw-bold">Question Type:</label>
-                                        <div class="btn-group w-100" role="group">
-                                            <input type="radio" class="btn-check" name="questionType" id="typeText" value="text" checked onchange="toggleQuestionInput()">
-                                            <label class="btn btn-outline-primary" for="typeText">
-                                                <i class="bi bi-file-text me-2"></i>Text Question
-                                            </label>
-                                            <input type="radio" class="btn-check" name="questionType" id="typeImage" value="image" onchange="toggleQuestionInput()">
-                                            <label class="btn btn-outline-primary" for="typeImage">
-                                                <i class="bi bi-image me-2"></i>Image Question
-                                            </label>
-                                        </div>
-                                    </div>
-
-                                    <!-- Text Question Input -->
-                                    <div class="mb-3" id="textQuestionDiv">
-                                        <label for="questionText" class="form-label fw-bold">Question Text:</label>
-                                        <textarea class="form-control" id="questionText" rows="4" placeholder="Enter your question here..."></textarea>
-                                    </div>
-
-                                    <!-- Image Question Input -->
-                                    <div class="mb-3" id="imageQuestionDiv" style="display: none;">
-                                        <label for="questionImage" class="form-label fw-bold">Upload Question Image:</label>
-                                        <input type="file" class="form-control" id="questionImage" accept="image/*" onchange="previewQuestionImage(event)">
-                                        <div id="imagePreviewContainer" class="mt-3" style="display: none;">
-                                            <p class="text-muted">Preview:</p>
-                                            <img id="imagePreview" src="" alt="Preview" style="max-width: 100%; max-height: 300px; border: 2px solid #ddd; border-radius: 8px;">
-                                        </div>
-                                    </div>
-
-                                    <!-- Question Category -->
-                                    <div class="mb-3">
-                                        <label for="questionCategory" class="form-label fw-bold">Category/Topic:</label>
-                                        <input type="text" class="form-control" id="questionCategory" placeholder="e.g., Algebra, Mechanics, Grammar">
-                                    </div>
-
-                                    <!-- Difficulty Level -->
-                                    <div class="mb-3">
-                                        <label for="questionDifficulty" class="form-label fw-bold">Difficulty:</label>
-                                        <select class="form-select" id="questionDifficulty">
-                                            <option value="easy">Easy</option>
-                                            <option value="medium" selected>Medium</option>
-                                            <option value="hard">Hard</option>
-                                        </select>
-                                    </div>
-
-                                    <!-- Answer Type -->
-                                    <div class="mb-3">
-                                        <label class="form-label fw-bold">Answer Type:</label>
-                                        <select class="form-select" id="answerType" onchange="toggleAnswerInput()">
-                                            <option value="mcq">Multiple Choice (MCQ)</option>
-                                            <option value="text">Text Answer</option>
-                                        </select>
-                                    </div>
-
-                                    <!-- MCQ Options -->
-                                    <div id="mcqOptionsDiv">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-bold">Options:</label>
-                                            <input type="text" class="form-control mb-2" id="optionA" placeholder="Option A">
-                                            <input type="text" class="form-control mb-2" id="optionB" placeholder="Option B">
-                                            <input type="text" class="form-control mb-2" id="optionC" placeholder="Option C">
-                                            <input type="text" class="form-control mb-2" id="optionD" placeholder="Option D">
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="correctOption" class="form-label fw-bold">Correct Answer:</label>
-                                            <select class="form-select" id="correctOption">
-                                                <option value="A">Option A</option>
-                                                <option value="B">Option B</option>
-                                                <option value="C">Option C</option>
-                                                <option value="D">Option D</option>
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <!-- Text Answer -->
-                                    <div id="textAnswerDiv" style="display: none;">
-                                        <div class="mb-3">
-                                            <label for="textAnswer" class="form-label fw-bold">Correct Answer:</label>
-                                            <textarea class="form-control" id="textAnswer" rows="2" placeholder="Enter the correct answer"></textarea>
-                                        </div>
-                                    </div>
-
-                                    <!-- Explanation -->
-                                    <div class="mb-3">
-                                        <label for="questionExplanation" class="form-label fw-bold">Explanation (Optional):</label>
-                                        <textarea class="form-control" id="questionExplanation" rows="3" placeholder="Explain the correct answer"></textarea>
-                                    </div>
-
-                                    <!-- Points -->
-                                    <div class="mb-3">
-                                        <label for="questionPoints" class="form-label fw-bold">Points:</label>
-                                        <input type="number" class="form-control" id="questionPoints" value="10" min="1" max="100">
-                                    </div>
-                                </form>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                <button type="button" class="btn btn-primary" onclick="saveQuestion()">
-                                    <i class="bi bi-save me-2"></i>Save Question
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            // Remove existing modal if any
-            const existingModal = document.getElementById('addQuestionModal');
-            if (existingModal) {
-                existingModal.remove();
-            }
-
-            // Add modal to body
-            document.body.insertAdjacentHTML('beforeend', modalHTML);
-
-            // Show modal
-            const modal = new bootstrap.Modal(document.getElementById('addQuestionModal'));
-            modal.show();
-        }
-
-        function toggleQuestionInput() {
-            const questionType = document.querySelector('input[name="questionType"]:checked').value;
-            const textDiv = document.getElementById('textQuestionDiv');
-            const imageDiv = document.getElementById('imageQuestionDiv');
-
-            if (questionType === 'text') {
-                textDiv.style.display = 'block';
-                imageDiv.style.display = 'none';
-            } else {
-                textDiv.style.display = 'none';
-                imageDiv.style.display = 'block';
-            }
-        }
-
-        function toggleAnswerInput() {
-            const answerType = document.getElementById('answerType').value;
-            const mcqDiv = document.getElementById('mcqOptionsDiv');
-            const textDiv = document.getElementById('textAnswerDiv');
-
-            if (answerType === 'mcq') {
-                mcqDiv.style.display = 'block';
-                textDiv.style.display = 'none';
-            } else {
-                mcqDiv.style.display = 'none';
-                textDiv.style.display = 'block';
-            }
-        }
-
-        function previewQuestionImage(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('imagePreview').src = e.target.result;
-                    document.getElementById('imagePreviewContainer').style.display = 'block';
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        function saveQuestion() {
-            const questionType = document.querySelector('input[name="questionType"]:checked').value;
-            let questionContent = '';
-
-            if (questionType === 'text') {
-                questionContent = document.getElementById('questionText').value.trim();
-                if (!questionContent) {
-                    alert('Please enter the question text');
-                    return;
-                }
-            } else {
-                const imageFile = document.getElementById('questionImage').files[0];
-                if (!imageFile) {
-                    alert('Please upload a question image');
-                    return;
-                }
-                // Convert image to base64
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    questionContent = e.target.result;
-                    saveQuestionData(questionType, questionContent);
-                };
-                reader.readAsDataURL(imageFile);
-                return; // Exit here, will continue in reader.onload
-            }
-
-            saveQuestionData(questionType, questionContent);
-        }
-
-        function saveQuestionData(questionType, questionContent) {
-            const answerType = document.getElementById('answerType').value;
-            const category = document.getElementById('questionCategory').value.trim();
-            const difficulty = document.getElementById('questionDifficulty').value;
-            const points = document.getElementById('questionPoints').value;
-            const explanation = document.getElementById('questionExplanation').value.trim();
-
-            let answer = {};
-            if (answerType === 'mcq') {
-                answer = {
-                    type: 'mcq',
-                    options: {
-                        A: document.getElementById('optionA').value.trim(),
-                        B: document.getElementById('optionB').value.trim(),
-                        C: document.getElementById('optionC').value.trim(),
-                        D: document.getElementById('optionD').value.trim()
-                    },
-                    correct: document.getElementById('correctOption').value
-                };
-
-                if (!answer.options.A || !answer.options.B || !answer.options.C || !answer.options.D) {
-                    alert('Please fill in all MCQ options');
-                    return;
-                }
-            } else {
-                const textAnswer = document.getElementById('textAnswer').value.trim();
-                if (!textAnswer) {
-                    alert('Please enter the correct answer');
-                    return;
-                }
-                answer = {
-                    type: 'text',
-                    correct: textAnswer
-                };
-            }
-
-            const question = {
-                id: Date.now(),
-                type: questionType,
-                content: questionContent,
-                category: category || 'General',
-                difficulty: difficulty,
-                answer: answer,
-                explanation: explanation,
-                points: parseInt(points),
-                createdAt: new Date().toISOString()
-            };
-
-            // Save to localStorage
-            const storageKey = `${currentQuestionCourse}Questions`;
-            const questions = JSON.parse(localStorage.getItem(storageKey) || '[]');
-            questions.push(question);
-            localStorage.setItem(storageKey, JSON.stringify(questions));
-
-            // Close modal
-            const modal = bootstrap.Modal.getInstance(document.getElementById('addQuestionModal'));
-            modal.hide();
-
-            // Reload questions
-            loadQuestions(currentQuestionCourse);
-
-            alert('Question added successfully!');
-        }
-
-        function loadQuestions(course) {
-            if (!course) {
-                document.getElementById('questionsListContainer').innerHTML = '<p class="text-muted text-center">Please select a course to view questions</p>';
-                return;
-            }
-
-            currentQuestionCourse = course;
-            const storageKey = `${course}Questions`;
-            const questions = JSON.parse(localStorage.getItem(storageKey) || '[]');
-
-            if (questions.length === 0) {
-                document.getElementById('questionsListContainer').innerHTML = '<p class="text-muted text-center">No questions added yet. Click "Add New Question" to create one.</p>';
-                return;
-            }
-
-            let html = '<div class="accordion" id="questionsAccordion">';
-            questions.forEach((q, index) => {
-                const questionPreview = q.type === 'text' 
-                    ? q.content.substring(0, 100) + (q.content.length > 100 ? '...' : '')
-                    : '<i class="bi bi-image me-2"></i>Image Question';
-
-                html += `
-                    <div class="accordion-item">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button ${index > 0 ? 'collapsed' : ''}" type="button" data-bs-toggle="collapse" data-bs-target="#question${q.id}">
-                                <span class="badge bg-${q.difficulty === 'easy' ? 'success' : q.difficulty === 'medium' ? 'warning' : 'danger'} me-2">${q.difficulty}</span>
-                                <span class="badge bg-info me-2">${q.category}</span>
-                                ${questionPreview}
-                            </button>
-                        </h2>
-                        <div id="question${q.id}" class="accordion-collapse collapse ${index === 0 ? 'show' : ''}" data-bs-parent="#questionsAccordion">
-                            <div class="accordion-body">
-                                <div class="mb-3">
-                                    <strong>Question:</strong><br>
-                                    ${q.type === 'text' ? q.content : `<img src="${q.content}" alt="Question" style="max-width: 100%; max-height: 400px; border: 2px solid #ddd; border-radius: 8px;">`}
-                                </div>
-                                <div class="mb-3">
-                                    <strong>Answer Type:</strong> ${q.answer.type === 'mcq' ? 'Multiple Choice' : 'Text Answer'}<br>
-                                    ${q.answer.type === 'mcq' ? `
-                                        <strong>Options:</strong><br>
-                                        A) ${q.answer.options.A}<br>
-                                        B) ${q.answer.options.B}<br>
-                                        C) ${q.answer.options.C}<br>
-                                        D) ${q.answer.options.D}<br>
-                                        <strong class="text-success">Correct: ${q.answer.correct}</strong>
-                                    ` : `<strong class="text-success">Correct Answer: ${q.answer.correct}</strong>`}
-                                </div>
-                                ${q.explanation ? `<div class="mb-3"><strong>Explanation:</strong> ${q.explanation}</div>` : ''}
-                                <div class="mb-3">
-                                    <span class="badge bg-primary">Points: ${q.points}</span>
-                                    <span class="badge bg-secondary ms-2">Created: ${new Date(q.createdAt).toLocaleDateString()}</span>
-                                </div>
-                                <button class="btn btn-danger btn-sm" onclick="deleteQuestion('${course}', ${q.id})">
-                                    <i class="bi bi-trash me-2"></i>Delete
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
-            html += '</div>';
-
-            document.getElementById('questionsListContainer').innerHTML = html;
-        }
-
-        function deleteQuestion(course, questionId) {
-            if (!confirm('Are you sure you want to delete this question?')) {
-                return;
-            }
-
-            const storageKey = `${course}Questions`;
-            let questions = JSON.parse(localStorage.getItem(storageKey) || '[]');
-            questions = questions.filter(q => q.id !== questionId);
-            localStorage.setItem(storageKey, JSON.stringify(questions));
-
-            loadQuestions(course);
-            alert('Question deleted successfully!');
-        }
-
-        // ========== END QUESTIONS MANAGEMENT FUNCTIONS ==========
-    </script>
+                const tableHtml = enrollments.map(enrollment => 
+                    '<tr>' +
+                    '<td>' + (enrollment.first_name + ' ' + enrollment.last_name) + '</td>' +
+                    '<td>' + enrollment.course_title + '</td>' +
+                    '<td>' + new Date(enrollment.enrolled_at).toLocaleDateString() + '</td>' +
+                    '<td><span class="badge bg-' + (enrollment.status === 'active' ? 'success' : 'secondary') + '">' + enrollment.status + '</span></td>' +
+                    '<td>' +
+                    '<button class="btn btn-sm btn-danger" onclick="revokeAccess(' + enrollment.user_id + ', ' + enrollment.course_id + ')">' +
+                    '<i class="bi bi-x-circle"></i> Revoke' +
+                    '</button>' +
+                    '</td>' +
+                    '</tr>'
+                ).join('');
+                document.getElementById(" enrollmentsTable\).innerHTML = tableHtml;
+ } catch (error) {
+ console.error(\Error loading enrollments:\, error);
+ document.getElementById(\enrollmentsTable\).innerHTML = \<tr><td colspan=\\\5\\\ class=\\\text-center text-danger\\\>Error loading enrollments</td></tr>\;
+ }
+ }
+
+ // ========== END OF ADMIN PANEL FUNCTIONS ==========
+ </script>
 </body>
 </html>
-
