@@ -2172,6 +2172,13 @@
         // IMMEDIATE FUNCTION DEFINITIONS - Define all functions before any HTML can call them
         console.log('🚀 FORCE LOADING - DEFINING ALL FUNCTIONS IMMEDIATELY');
         
+        // Check login state function
+        function checkLoginState() {
+            const token = localStorage.getItem('authToken');
+            const user = JSON.parse(localStorage.getItem('currentUser') || 'null');
+            return { isLoggedIn: !!token, user };
+        }
+
         // Toast notification function
         function showToast(message, type = 'info') {
             const toastContainer = document.getElementById('toastContainer');
