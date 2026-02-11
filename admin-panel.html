@@ -1140,7 +1140,6 @@
                 return;
             }
             authToken = savedToken;
-            testAdminToken(savedToken);
             setInterval(() => {
                 if (document.getElementById('students-section') && document.getElementById('students-section').style.display !== 'none') {
                     loadStudents();
@@ -1239,6 +1238,61 @@
             }
 
             return await response.text();
+        }
+
+        // Missing functions - adding them
+        async function loadTeachers() {
+            try {
+                const teachers = await apiCall('/api/admin/teachers').catch(() => []);
+                const tableHtml = teachers.map(teacher => 
+                    '<tr>' +
+                    '<td>' + teacher.id + '</td>' +
+                    '<td>' + teacher.first_name + ' ' + teacher.last_name + '</td>' +
+                    '<td>' + teacher.email + '</td>' +
+                    '<td>' + (teacher.subject || 'N/A') + '</td>' +
+                    '<td><span class="badge bg-' + (teacher.is_active ? 'success' : 'secondary') + '">' + (teacher.is_active ? 'Active' : 'Inactive') + '</span></td>' +
+                    '<td>' +
+                    '<button class="btn btn-sm btn-info btn-action me-1" onclick="editTeacher(' + teacher.id + ')" title="Edit">' +
+                    '<i class="bi bi-pencil"></i>' +
+                    '</button>' +
+                    '<button class="btn btn-sm btn-danger btn-action" onclick="deleteTeacher(' + teacher.id + ')" title="Delete">' +
+                    '<i class="bi bi-trash"></i>' +
+                    '</button>' +
+                    '</td>' +
+                    '</tr>'
+                ).join('');
+                
+                document.getElementById('teachersTable').innerHTML = tableHtml || '<tr><td colspan="6" class="text-center text-muted">No teachers found</td></tr>';
+            } catch (error) {
+                console.error('Error loading teachers:', error);
+                document.getElementById('teachersTable').innerHTML = '<tr><td colspan="6" class="text-center text-danger">Error loading teachers</td></tr>';
+            }
+        }
+
+        async function loadParents() {
+            try {
+                const parents = await apiCall('/api/admin/parents').catch(() => []);
+                const tableHtml = parents.map(parent => 
+                    '<tr>' +
+                    '<td>' + parent.id + '</td>' +
+                    '<td>' + parent.first_name + ' ' + parent.last_name + '</td>' +
+                    '<td>' + parent.email + '</td>' +
+                    '<td>' + (parent.phone || 'N/A') + '</td>' +
+                    '<td>' + (parent.children_count || '0') + ' children</td>' +
+                    '<td><span class="badge bg-' + (parent.is_active ? 'success' : 'secondary') + '">' + (parent.is_active ? 'Active' : 'Inactive') + '</span></td>' +
+                    '<td>' +
+                    '<button class="btn btn-sm btn-info btn-action me-1" onclick="viewParent(' + parent.id + ')" title="View Details">' +
+                    '<i class="bi bi-eye"></i>' +
+                    '</button>' +
+                    '</td>' +
+                    '</tr>'
+                ).join('');
+                
+                document.getElementById('parentsTable').innerHTML = tableHtml || '<tr><td colspan="6" class="text-center text-muted">No parents found</td></tr>';
+            } catch (error) {
+                console.error('Error loading parents:', error);
+                document.getElementById('parentsTable').innerHTML = '<tr><td colspan="6" class="text-center text-danger">Error loading parents</td></tr>';
+            }
         }
 
         function showSection(sectionName, clickedElement = null) {
