@@ -4,7 +4,7 @@
   "description": "IG Nation Learning Platform - Complete Educational Website",
   "main": "start-backend.js",
   "scripts": {
-    "start": "node start-backend.js",
+    "start": "cd backend && node server.js",
     "backend": "cd backend && node server.js",
     "install-deps": "cd backend && npm install",
     "dev": "cd backend && nodemon server.js"

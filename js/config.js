@@ -2,12 +2,12 @@
 // This file determines which backend URL to use based on the environment
 
 // Backend URLs
-const LOCAL_BACKEND_URL = 'http://localhost:3000';
-const PRODUCTION_BACKEND_URL = 'https://my-project-gphv.onrender.com'; // Your live Render backend
+const LOCAL_BACKEND_URL = 'http://localhost:8080';
+const PRODUCTION_BACKEND_URL = 'https://ig-nation-backend.fly.dev'; // Your Fly.io backend
 
 // Environment detection
 // Set to 'production' for live deployment, 'development' for local testing
-const ENVIRONMENT = 'production'; // Force production mode to test Render backend
+const ENVIRONMENT = 'production'; // Force production mode to test Fly.io backend
 
 // Export the appropriate base URL
 const API_BASE_URL = ENVIRONMENT === 'production' 

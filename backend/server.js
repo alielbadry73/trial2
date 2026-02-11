@@ -15,7 +15,7 @@ const axios = require('axios');
 
 const app = express();
 app.set('trust proxy', true);
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 const JWT_SECRET = process.env.JWT_SECRET || 'change-this-secret-for-prod';
 
 // Configure multer for file uploads
@@ -2704,11 +2704,12 @@ db.get("SELECT * FROM users WHERE email = 'admin@ignation.com'", (err, admin) =>
 
 // Start server function
 function startServer() {
-    const PORT = process.env.PORT || 3000;
+    const PORT = process.env.PORT || 8080;
     app.listen(PORT, () => {
         console.log(`🚀 IG Nation Backend Server running at http://localhost:${PORT}/`);
         console.log(`📁 Serving static files from: ${publicDir}`);
-        console.log(`🗄️  Database: ${dbPath}`);
+        console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
+        console.log(`🗄️ Database path: ${process.env.DB_PATH || './database.sqlite'}`);
     });
 }
 

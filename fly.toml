@@ -1,0 +1,43 @@
+# Fly.io Configuration for IG Nation Backend
+
+app = "ig-nation-backend"
+primary_region = "iad"
+
+[build]
+  builder = "heroku/buildpacks:20"
+
+[env]
+  PORT = "8080"
+  NODE_ENV = "production"
+  JWT_SECRET = "your-super-secret-jwt-key-change-this-in-production"
+  JWT_EXPIRES_IN = "7d"
+  DB_PATH = "/data/database.sqlite"
+  FRONTEND_URL = "https://ig-nation-backend.fly.dev"
+
+[http_service]
+  internal_port = 8080
+  protocol = "tcp"
+  
+  [[http_service.checks]]
+    interval = 15000
+    timeout = 5000
+    grace_period = "5s"
+    method = "GET"
+    path = "/health"
+
+[[http_service.checks]]
+  interval = 30000
+  timeout = 5000
+  grace_period = "5s"
+  method = "GET"
+  path = "/"
+
+[[mounts]]
+  source = "ig_nation_data"
+  destination = "/data"
+
+[deploy]
+  strategy = "rolling"
+
+[experimental]
+  auto_rollback = true
