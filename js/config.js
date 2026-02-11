@@ -3,7 +3,7 @@
 
 // Backend URLs
 const LOCAL_BACKEND_URL = 'http://localhost:8080';
-const PRODUCTION_BACKEND_URL = 'https://ig-nation-backend.fly.dev'; // Your Fly.io backend
+const PRODUCTION_BACKEND_URL = 'https://ig-nation-app.fly.dev'; // Your Fly.io backend
 
 // Environment detection
 // Set to 'production' for live deployment, 'development' for local testing

@@ -2,7 +2,7 @@
 // This file determines which backend URL to use based on the environment
 
 // Fly.io deployment URL - Your live Fly.io backend
-const RAILWAY_BACKEND_URL = 'https://ig-nation-backend.fly.dev';
+const RAILWAY_BACKEND_URL = 'https://ig-nation-app.fly.dev';
 
 // Local development URL
 const LOCAL_BACKEND_URL = 'http://localhost:8080';
