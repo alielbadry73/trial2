@@ -1,18 +1,11 @@
 # Fly.io Configuration for IG Nation Backend
 
-app = 'ig-nation-backend'
+app = 'ig-nation-app'
 primary_region = 'iad'
 
 [env]
-  DB_PATH = '/data/database.sqlite'
-  FRONTEND_URL = 'https://ig-nation-backend.fly.dev'
-  JWT_EXPIRES_IN = '7d'
   NODE_ENV = 'production'
   PORT = '8080'
-
-[[mounts]]
-  source = 'ig_nation_data'
-  destination = '/data'
 
 [http_service]
   internal_port = 8080
@@ -23,10 +16,3 @@ primary_region = 'iad'
     grace_period = '5s'
     method = 'GET'
     path = '/health'
-
-  [[http_service.checks]]
-    interval = '30s'
-    timeout = '5s'
-    grace_period = '5s'
-    method = 'GET'
-    path = '/'
