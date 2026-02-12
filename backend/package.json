@@ -6,7 +6,6 @@
   "main": "backend/server.js",
   "scripts": {
   "dev": "npx nodemon backend/server.js",
-  "build": "vite build",
   "postinstall": "cd client && npm install && npm run build",
   "start": "node backend/server.js"
 }
