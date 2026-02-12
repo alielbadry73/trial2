@@ -40,7 +40,6 @@ const upload = multer({
         const allowedTypes = /jpeg|jpg|png|gif/;
         const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
         const mimetype = allowedTypes.test(file.mimetype);
-
         if (mimetype && extname) {
             return cb(null, true);
         } else {
@@ -49,12 +48,10 @@ const upload = multer({
     }
 });
 
-// Middleware - Dynamic CORS configuration for production
+// Middleware - Dynamic CORS configuration
 const corsOrigins = process.env.CORS_ORIGINS 
     ? process.env.CORS_ORIGINS.split(',').map(origin => origin.trim())
     : ['http://localhost:3000', 'https://localhost:3000', 'https://my-project12345.netlify.app'];
-
-console.log('🌐 CORS Origins:', corsOrigins);
 
 app.use(cors({
     origin: corsOrigins,
@@ -62,66 +59,20 @@ app.use(cors({
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+// 1. Serve user uploads
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Serve static files with root priority (root files override public files)
-const publicDir = path.join(__dirname, 'public');
-app.use(express.static(path.join(__dirname, '..')));
-app.use(express.static(publicDir));
-
-// Static file serving moved after API routes to prevent interference
-
-// Serve root index.html with highest priority
-app.get('/', (req, res) => {
-    // Force cache invalidation
-    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
-    res.setHeader('Pragma', 'no-cache');
-    res.setHeader('Expires', '0');
-    
-    // PRIORITY 1: Serve root index.html first
-    const rootFilePath = path.join(__dirname, '..', 'index.html');
-    if (require('fs').existsSync(rootFilePath)) {
-        console.log('🎯 Serving root index.html (highest priority)');
-        return res.sendFile(rootFilePath);
-    }
-    
-    // PRIORITY 2: Fallback to public/index.html
-    const publicFilePath = path.join(publicDir, 'index.html');
-    if (require('fs').existsSync(publicFilePath)) {
-        console.log('📁 Serving public/index.html (fallback)');
-        return res.sendFile(publicFilePath);
-    }
-    
-    // PRIORITY 3: Error if neither exists
-    return res.status(404).json({ error: 'index.html not found' });
-});
-// Health endpoint for readiness checks
-app.get('/health', (req, res) => {
-    // Quick DB check
-    db.get("SELECT 1 AS ok", (err, row) => {
-        if (err) return res.status(500).json({ status: 'fail', error: err.message });
-        return res.json({ status: 'ok', db: !!row });
-    });
-});
-
-// Deny access to sensitive filenames if someone tries to request them directly
-app.use((req, res, next) => {
-    const forbidden = ['database.sqlite', 'server.js', '.env'];
-    const requested = req.path.toLowerCase();
-    for (const f of forbidden) {
-        if (requested.includes(f)) {
-            return res.status(404).send('Not Found');
-        }
-    }
-    next();
-});
+// 2. Serve static assets (JS, CSS, Images) from the dist folder
+// This handles the main production build files
+app.use(express.static(path.join(__dirname, '../dist')));
 
 // Database connection
 console.log('🔌 Connecting to database...');
 const dbPath = process.env.DB_PATH || './database.sqlite';
-console.log('📁 Database path:', dbPath);
 const db = new sqlite3.Database(dbPath, (err) => {
     if (err) {
         console.error('❌ Database connection failed:', err);
@@ -131,9 +82,9 @@ const db = new sqlite3.Database(dbPath, (err) => {
     }
 });
 
-// Initialize database tables if they don't exist
+// Initialize database tables
 db.serialize(() => {
-    // Create users table if it doesn't exist
+    // Create users table
     db.run(`CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         email TEXT UNIQUE NOT NULL,
@@ -154,7 +105,7 @@ db.serialize(() => {
         FOREIGN KEY (student_id) REFERENCES users(id)
     )`);
 
-    // Create courses table if it doesn't exist (used by GET/POST /api/courses and admin panel)
+    // Create courses table
     db.run(`CREATE TABLE IF NOT EXISTS courses (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         title TEXT NOT NULL,
@@ -167,81 +118,29 @@ db.serialize(() => {
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )`);
 
-    // Ensure users table has a username column. Use PRAGMA to check first.
+    // Schema Migration: Ensure users table has all required columns
     db.all(`PRAGMA table_info('users')`, (err, cols) => {
         if (err) {
             console.error('Error checking users table schema:', err);
         } else {
-            const hasUsername = cols && cols.some(c => c.name === 'username');
-            const hasPhoneCountry = cols && cols.some(c => c.name === 'phone_country');
-            const hasParentPhoneCountry = cols && cols.some(c => c.name === 'parent_phone_country');
-
-            if (!hasUsername) {
-                db.run(`ALTER TABLE users ADD COLUMN username TEXT`, (aErr) => {
-                    if (aErr && !aErr.message.includes('duplicate column name')) {
-                        console.error('Error adding username column:', aErr);
-                    }
-                    // After ALTER completes (or fails with duplicate), try to populate username
-                    db.run(`UPDATE users SET username = email WHERE username IS NULL`, (uErr) => {
-                        if (uErr) console.error('Error updating users usernames after ALTER:', uErr);
+            const columnNames = cols.map(c => c.name);
+            const requiredCols = ['username', 'phone_country', 'parent_phone_country', 'parent_phone', 'parent_id', 'student_id'];
+            
+            requiredCols.forEach(col => {
+                if (!columnNames.includes(col)) {
+                    const type = col.includes('_id') ? 'INTEGER' : 'TEXT';
+                    db.run(`ALTER TABLE users ADD COLUMN ${col} ${type}`, (aErr) => {
+                        if (aErr) console.error(`Error adding ${col} to users:`, aErr);
                     });
-                });
-            } else {
-                // still ensure null usernames get filled
-                db.run(`UPDATE users SET username = email WHERE username IS NULL`, (uErr) => {
-                    if (uErr) console.error('Error updating users usernames:', uErr);
-                });
-            }
+                }
+            });
 
-            if (!hasPhoneCountry) {
-                db.run(`ALTER TABLE users ADD COLUMN phone_country TEXT`, (aErr) => {
-                    if (aErr && !aErr.message.includes('duplicate column name')) {
-                        console.error('Error adding phone_country column:', aErr);
-                    }
-                });
-            }
-
-            if (!hasParentPhoneCountry) {
-                db.run(`ALTER TABLE users ADD COLUMN parent_phone_country TEXT`, (aErr) => {
-                    if (aErr && !aErr.message.includes('duplicate column name')) {
-                        console.error('Error adding parent_phone_country column:', aErr);
-                    }
-                });
-            }
-
-            // Also check for parent_phone column
-            const hasParentPhone = cols && cols.some(c => c.name === 'parent_phone');
-            if (!hasParentPhone) {
-                db.run(`ALTER TABLE users ADD COLUMN parent_phone TEXT`, (aErr) => {
-                    if (aErr && !aErr.message.includes('duplicate column name')) {
-                        console.error('Error adding parent_phone column:', aErr);
-                    }
-                });
-            }
-
-            // Check for parent_id column
-            const hasParentId = cols && cols.some(c => c.name === 'parent_id');
-            if (!hasParentId) {
-                db.run(`ALTER TABLE users ADD COLUMN parent_id INTEGER`, (aErr) => {
-                    if (aErr && !aErr.message.includes('duplicate column name')) {
-                        console.error('Error adding parent_id column:', aErr);
-                    }
-                });
-            }
-
-            // Check for student_id column
-            const hasStudentId = cols && cols.some(c => c.name === 'student_id');
-            if (!hasStudentId) {
-                db.run(`ALTER TABLE users ADD COLUMN student_id INTEGER`, (aErr) => {
-                    if (aErr && !aErr.message.includes('duplicate column name')) {
-                        console.error('Error adding student_id column:', aErr);
-                    }
-                });
-            }
+            // Populate username if null
+            db.run(`UPDATE users SET username = email WHERE username IS NULL`);
         }
     });
 
-    // Create teachers table with proper schema matching users table
+    // Create teachers table
     db.run(`CREATE TABLE IF NOT EXISTS teachers (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         username TEXT UNIQUE,
@@ -256,47 +155,20 @@ db.serialize(() => {
         experience TEXT,
         role TEXT DEFAULT 'teacher',
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    )`, (err) => {
-        if (err) {
-            console.error('Error creating teachers table:', err);
-        } else {
-            console.log('✅ Teachers table ready');
-
-            // Add missing columns if table already exists
-            db.all(`PRAGMA table_info('teachers')`, (pragmaErr, cols) => {
-                if (pragmaErr) return;
-                const columnNames = cols.map(c => c.name);
-
-                if (!columnNames.includes('first_name')) {
-                    db.run(`ALTER TABLE teachers ADD COLUMN first_name TEXT`, (e) => {
-                        if (e && !e.message.includes('duplicate')) console.error('Error adding first_name:', e);
-                    });
-                }
-                if (!columnNames.includes('last_name')) {
-                    db.run(`ALTER TABLE teachers ADD COLUMN last_name TEXT`, (e) => {
-                        if (e && !e.message.includes('duplicate')) console.error('Error adding last_name:', e);
-                    });
-                }
-                if (!columnNames.includes('phone')) {
-                    db.run(`ALTER TABLE teachers ADD COLUMN phone TEXT`, (e) => {
-                        if (e && !e.message.includes('duplicate')) console.error('Error adding phone:', e);
-                    });
-                }
-                if (!columnNames.includes('phone_country')) {
-                    db.run(`ALTER TABLE teachers ADD COLUMN phone_country TEXT`, (e) => {
-                        if (e && !e.message.includes('duplicate')) console.error('Error adding phone_country:', e);
-                    });
-                }
-                if (!columnNames.includes('role')) {
-                    db.run(`ALTER TABLE teachers ADD COLUMN role TEXT DEFAULT 'teacher'`, (e) => {
-                        if (e && !e.message.includes('duplicate')) console.error('Error adding role:', e);
-                    });
+    )`, () => {
+        // Migration for teachers
+        db.all(`PRAGMA table_info('teachers')`, (err, cols) => {
+            if (err) return;
+            const names = cols.map(c => c.name);
+            ['first_name', 'last_name', 'phone', 'phone_country', 'role'].forEach(col => {
+                if (!names.includes(col)) {
+                    db.run(`ALTER TABLE teachers ADD COLUMN ${col} TEXT`);
                 }
             });
-        }
+        });
     });
 
-    // Lectures table - ensure exists
+    // Lectures, Password Resets, Assignments, Exams, Quizzes tables
     db.run(`CREATE TABLE IF NOT EXISTS lectures (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         teacher_id INTEGER NOT NULL,
@@ -313,7 +185,6 @@ db.serialize(() => {
         FOREIGN KEY (teacher_id) REFERENCES teachers (id)
     )`);
 
-    // Password resets table for forgot-password flow
     db.run(`CREATE TABLE IF NOT EXISTS password_resets (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         email TEXT NOT NULL,
@@ -323,7 +194,6 @@ db.serialize(() => {
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )`);
 
-    // Assignments table
     db.run(`CREATE TABLE IF NOT EXISTS assignments (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         title TEXT NOT NULL,
@@ -334,11 +204,9 @@ db.serialize(() => {
         difficulty TEXT DEFAULT 'medium',
         due_date DATETIME,
         is_active INTEGER DEFAULT 1,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (teacher_id) REFERENCES users(id)
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )`);
 
-    // Exams table
     db.run(`CREATE TABLE IF NOT EXISTS exams (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         title TEXT NOT NULL,
@@ -348,11 +216,9 @@ db.serialize(() => {
         points INTEGER DEFAULT 20,
         duration INTEGER DEFAULT 60,
         is_active INTEGER DEFAULT 1,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (teacher_id) REFERENCES users(id)
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )`);
 
-    // Quizzes table
     db.run(`CREATE TABLE IF NOT EXISTS quizzes (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         title TEXT NOT NULL,
@@ -362,27 +228,8 @@ db.serialize(() => {
         points INTEGER DEFAULT 5,
         duration INTEGER DEFAULT 30,
         is_active INTEGER DEFAULT 1,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (teacher_id) REFERENCES users(id)
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )`);
-
-    // Submissions table - drop and recreate to fix schema issues
-    db.run(`DROP TABLE IF EXISTS submissions`, (err) => {
-        if (err) console.error('Error dropping submissions table:', err);
-        
-        db.run(`CREATE TABLE submissions (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            assignment_id INTEGER,
-            student_id INTEGER,
-            content TEXT,
-            submitted_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            grade TEXT,
-            feedback TEXT
-        )`, (err) => {
-            if (err) console.error('Error creating submissions table:', err);
-            else console.log('✅ Submissions table created successfully');
-        });
-    });
 
     // Orders table
     db.run(`CREATE TABLE IF NOT EXISTS orders (
@@ -397,25 +244,38 @@ db.serialize(() => {
         FOREIGN KEY (user_id) REFERENCES users(id)
     )`);
 
-    // Add sample data for testing
-    db.run(`INSERT OR IGNORE INTO assignments (id, title, description, teacher_id, subject, points, difficulty, due_date, is_active) VALUES 
-        (1, 'Algebra Fundamentals', 'Complete algebraic equations and solve for variables', 1, 'mathematics', 15, 'easy', datetime('now', '+7 days'), 1),
-        (2, 'Calculus Derivatives', 'Find derivatives of polynomial and trigonometric functions', 1, 'mathematics', 25, 'hard', datetime('now', '+10 days'), 1),
-        (3, 'Geometry Proofs', 'Prove geometric theorems using logical reasoning', 1, 'mathematics', 20, 'medium', datetime('now', '+5 days'), 1)
-    `);
+    // Enrollments table
+    db.run(`CREATE TABLE IF NOT EXISTS enrollments (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        student_id INTEGER,
+        user_id INTEGER,    -- Ensure this column exists
+        course_id INTEGER,
+        enrolled_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        status TEXT DEFAULT 'active',
+        FOREIGN KEY (student_id) REFERENCES users(id),
+        FOREIGN KEY (course_id) REFERENCES courses(id)
+    )`);
 
-    db.run(`INSERT OR IGNORE INTO exams (id, title, description, teacher_id, subject, points, duration, is_active) VALUES 
-        (1, 'Midterm Mathematics Exam', 'Comprehensive exam covering algebra, geometry, and calculus', 1, 'mathematics', 100, 120, 1),
-        (2, 'Final Mathematics Exam', 'End-of-year comprehensive mathematics examination', 1, 'mathematics', 150, 180, 1)
-    `);
+    // Submissions table - Recreate to ensure correct schema
+    db.run(`DROP TABLE IF EXISTS submissions`, () => {
+        db.run(`CREATE TABLE submissions (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            assignment_id INTEGER,
+            student_id INTEGER,
+            content TEXT,
+            submitted_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            grade TEXT,
+            feedback TEXT
+        )`);
+    });
 
-    db.run(`INSERT OR IGNORE INTO quizzes (id, title, description, teacher_id, subject, points, duration, is_active) VALUES 
-        (1, 'Algebra Quiz', 'Quick quiz on basic algebraic concepts', 1, 'mathematics', 10, 30, 1),
-        (2, 'Geometry Quiz', 'Quiz on geometric shapes and properties', 1, 'mathematics', 10, 25, 1),
-        (3, 'Calculus Quiz', 'Quiz on limits and derivatives', 1, 'mathematics', 15, 45, 1)
-    `);
+    // Sample Data
+    db.run(`INSERT OR IGNORE INTO assignments (id, title, description, subject, points) VALUES 
+        (1, 'Algebra Fundamentals', 'Basic equations', 'mathematics', 15),
+        (2, 'Calculus Derivatives', 'Trigonometric functions', 'mathematics', 25)`);
 });
 
+// ... [The rest of your API routes go here] ... 
 // Helper utilities
 function getClientIp(req) {
     const headerIp = req.headers['cf-connecting-ip']
@@ -1886,6 +1746,35 @@ db.run(`CREATE TABLE IF NOT EXISTS enrollments (
 // First, check if orders table exists and has the right schema
 db.all(`PRAGMA table_info('orders')`, (err, cols) => {
     if (err) {
+        // If table doesn't exist, create it first
+        if (err.message && err.message.includes('no such table')) {
+            console.log('Creating orders table...');
+            db.run(`CREATE TABLE IF NOT EXISTS orders (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                order_id TEXT UNIQUE,
+                user_id INTEGER NOT NULL,
+                customer_name TEXT,
+                customer_email TEXT,
+                customer_phone TEXT,
+                courses TEXT NOT NULL,
+                total_amount REAL NOT NULL,
+                payment_method TEXT,
+                payment_screenshot TEXT,
+                status TEXT DEFAULT 'pending',
+                approved_by INTEGER,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                approved_at DATETIME,
+                FOREIGN KEY (user_id) REFERENCES users(id),
+                FOREIGN KEY (approved_by) REFERENCES users(id)
+            )`, (createErr) => {
+                if (createErr) {
+                    console.error('Error creating orders table:', createErr);
+                } else {
+                    console.log('✅ Orders table created successfully with new schema');
+                }
+            });
+            return;
+        }
         console.error('Error checking orders table:', err);
         return;
     }
@@ -1904,6 +1793,19 @@ db.all(`PRAGMA table_info('orders')`, (err, cols) => {
             }
         });
     }
+
+    // Check and add missing columns for order approval
+    const requiredOrderCols = ['approved_by', 'approved_at', 'customer_name', 'customer_email', 'customer_phone', 'payment_method', 'payment_screenshot'];
+    
+    requiredOrderCols.forEach(col => {
+        if (!existingColumns.includes(col)) {
+            const type = col.includes('_by') || col.includes('_at') ? 'INTEGER' : 'TEXT';
+            db.run(`ALTER TABLE orders ADD COLUMN ${col} ${type}`, (aErr) => {
+                if (aErr) console.error(`Error adding ${col} to orders:`, aErr);
+                else console.log(`✅ Added ${col} column to orders table`);
+            });
+        }
+    });
 
     // If table doesn't exist or has wrong schema, recreate it
     if (!existingColumns.includes('customer_name') || !existingColumns.includes('customer_email')) {
@@ -2708,41 +2610,6 @@ db.get("SELECT * FROM users WHERE email = 'admin@ignation.com'", (err, admin) =>
     }
 });
 
-// Start server function
-function startServer() {
-    const PORT = process.env.PORT || 8080;
-    app.listen(PORT, () => {
-        console.log(`🚀 IG Nation Backend Server running at http://localhost:${PORT}/`);
-        console.log(`📁 Serving static files from: ${publicDir}`);
-        console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
-        console.log(`🗄️ Database path: ${process.env.DB_PATH || './database.sqlite'}`);
-    });
-}
-
-// Ensure migrations finish before starting the server.
-// We'll run the migrations inside db.serialize above; to detect completion,
-// attach a final no-op run that invokes startServer in its callback.
-db.serialize(() => {
-    // final callback to start server after queued migration statements
-    db.run(`SELECT 1`, (err) => {
-        if (err) console.error('Error finalizing migrations:', err);
-        startServer();
-    });
-});
-
-// Graceful shutdown
-process.on('SIGINT', () => {
-    console.log('\n🛑 Shutting down server...');
-    db.close((err) => {
-        if (err) {
-            console.error('Error closing database:', err);
-        } else {
-            console.log('✅ Database connection closed');
-        }
-        process.exit(0);
-    });
-});
-
 // Additional Admin API Endpoints
 
 // GET /api/admin/student/:id/parent
@@ -3484,13 +3351,15 @@ function generateZoomJWT() {
     return jwt.sign(payload, ZOOM_API_SECRET);
 }
 
+// --- ZOOM CORE LOGIC ---
+
 // Function to create a real Zoom meeting
 async function createZoomMeeting(meetingData) {
     try {
         const token = generateZoomJWT();
 
         // If using demo credentials, return a simulated response
-        if (ZOOM_API_KEY === 'demo-zoom-api-key') {
+        if (process.env.ZOOM_API_KEY === 'demo-zoom-api-key') {
             console.log('Using demo Zoom API - returning simulated meeting');
             return {
                 success: true,
@@ -3500,54 +3369,27 @@ async function createZoomMeeting(meetingData) {
                     join_url: `https://zoom.us/j/${Math.floor(Math.random() * 9000000000) + 1000000000}`,
                     start_url: `https://zoom.us/s/${Math.floor(Math.random() * 9000000000) + 1000000000}`,
                     password: Math.random().toString(36).substring(2, 8).toUpperCase(),
-                    settings: {
-                        host_video: true,
-                        participant_video: true,
-                        join_before_host: false,
-                        mute_upon_entry: false,
-                        waiting_room: false
-                    }
+                    settings: { host_video: true, participant_video: true, join_before_host: false, mute_upon_entry: false, waiting_room: false }
                 }
             };
         }
 
-        // Zoom API call disabled to save credits
+        // Real Zoom API call (Currently commented out as per your previous version)
         /*
         const response = await axios.post('https://api.zoom.us/v2/users/me/meetings', {
             topic: meetingData.topic,
-            type: 2, // Scheduled meeting
+            type: 2,
             start_time: meetingData.startTime || new Date().toISOString(),
             duration: parseInt(meetingData.duration) || 60,
             timezone: 'UTC',
-            agenda: meetingData.description || '',
-            settings: {
-                host_video: true,
-                participant_video: true,
-                join_before_host: false,
-                mute_upon_entry: false,
-                waiting_room: false,
-                auto_recording: meetingData.recordSession ? 'cloud' : 'none',
-                enforce_login: false,
-                enforce_login_domains: '',
-                alternative_hosts: '',
-                global_dial_in_countries: ['US'],
-                registrants_confirmation_email: false,
-                registrants_email_notification: false
-            }
+            settings: { host_video: true, participant_video: true }
         }, {
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            }
+            headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
         });
-
-        return {
-            success: true,
-            meeting: response.data
-        };
+        return { success: true, meeting: response.data };
         */
 
-        // For now, return simulated response
+        // Fallback simulated response
         return {
             success: true,
             meeting: {
@@ -3555,132 +3397,64 @@ async function createZoomMeeting(meetingData) {
                 topic: meetingData.topic,
                 join_url: `https://zoom.us/j/${Math.floor(Math.random() * 9000000000) + 1000000000}`,
                 start_url: `https://zoom.us/s/${Math.floor(Math.random() * 9000000000) + 1000000000}`,
-                password: Math.random().toString(36).substring(2, 8).toUpperCase(),
-                settings: {
-                    host_video: true,
-                    participant_video: true,
-                    join_before_host: false,
-                    mute_upon_entry: false,
-                    waiting_room: false
-                }
+                password: "DEMO_PASSWORD"
             }
         };
 
     } catch (error) {
         console.error('Error creating Zoom meeting:', error);
-        return {
-            success: false,
-            error: error.message || 'Failed to create Zoom meeting'
-        };
+        return { success: false, error: error.message };
     }
 }
 
-// Test endpoint to verify API connectivity
+// --- ZOOM API ENDPOINTS ---
+
 app.get('/api/zoom/test', (req, res) => {
-    res.json({
-        success: true,
-        message: 'Zoom API endpoint is working',
-        timestamp: new Date().toISOString()
-    });
+    res.json({ success: true, message: 'Zoom API endpoint is working', timestamp: new Date().toISOString() });
 });
 
-// API endpoint to create a Zoom meeting
 app.post('/api/zoom/create-meeting', authenticateJWT, (req, res) => {
-    console.log('Received request to create Zoom meeting:', req.body);
     const { title, topic, description, duration, maxParticipants, recordSession, subject } = req.body;
+    if (!title || !topic) return res.status(400).json({ success: false, error: 'Title and topic are required' });
 
-    if (!title || !topic) {
-        return res.status(400).json({
-            success: false,
-            error: 'Title and topic are required'
-        });
-    }
-
-    const meetingData = {
-        topic: title,
-        description: description || '',
-        duration: duration || 60,
-        maxParticipants: maxParticipants || 100,
-        recordSession: recordSession || false,
-        startTime: new Date().toISOString()
-    };
-
-    createZoomMeeting(meetingData)
-        .then(result => {
-            console.log('Zoom meeting creation result:', result);
-            if (result.success) {
-                // Store the meeting in database or localStorage equivalent
-                const meetingRecord = {
-                    id: Date.now(),
-                    title: title,
-                    topic: topic,
-                    description: description,
-                    duration: parseInt(duration),
-                    maxParticipants: parseInt(maxParticipants),
-                    recordSession: recordSession,
-                    meetingId: result.meeting.id,
-                    meetingPassword: result.meeting.password,
-                    meetingUrl: result.meeting.join_url,
-                    startUrl: result.meeting.start_url,
-                    subject: subject,
-                    status: 'live',
-                    startTime: new Date().toISOString(),
-                    participants: 0,
-                    messages: 0,
-                    instructor: 'Current Teacher',
-                    createdBy: req.user.id
-                };
-
-                res.json({
-                    success: true,
-                    message: 'Zoom meeting created successfully',
-                    meeting: meetingRecord,
-                    zoomMeeting: result.meeting
-                });
-            } else {
-                res.status(500).json({
-                    success: false,
-                    error: result.error
-                });
-            }
-        })
-        .catch(error => {
-            console.error('Error in create-meeting endpoint:', error);
-            res.status(500).json({
-                success: false,
-                error: 'Internal server error'
+    createZoomMeeting({ topic: title, duration: duration || 60 }).then(result => {
+        if (result.success) {
+            res.json({
+                success: true,
+                message: 'Zoom meeting created successfully',
+                meeting: { ...result.meeting, title, topic, subject, status: 'live' }
             });
-        });
-});
-
-// API endpoint to get meeting details
-app.get('/api/zoom/meeting/:meetingId', authenticateJWT, (req, res) => {
-    const { meetingId } = req.params;
-
-    // In a real implementation, you would fetch from database
-    // For now, return a placeholder response
-    res.json({
-        success: true,
-        meeting: {
-            id: meetingId,
-            status: 'live',
-            join_url: `https://zoom.us/j/${meetingId}`,
-            start_url: `https://zoom.us/s/${meetingId}`
+        } else {
+            res.status(500).json({ success: false, error: result.error });
         }
     });
 });
 
-// API endpoint to end a meeting
-app.post('/api/zoom/end-meeting/:meetingId', authenticateJWT, (req, res) => {
-    const { meetingId } = req.params;
-
-    // In a real implementation, you would update the meeting status in database
-    // and potentially call Zoom API to end the meeting
-
+app.get('/api/zoom/meeting/:meetingId', authenticateJWT, (req, res) => {
     res.json({
         success: true,
-        message: 'Meeting ended successfully'
+        meeting: { id: req.params.meetingId, status: 'live', join_url: `https://zoom.us/j/${req.params.meetingId}` }
     });
 });
 
-// Repository root static files already served above with priority
+app.post('/api/zoom/end-meeting/:meetingId', authenticateJWT, (req, res) => {
+    res.json({ success: true, message: 'Meeting ended successfully' });
+});
+
+// --- STEP 4: Wildcard Catch-all for frontend routes ---
+// This must be the LAST route in the file.
+app.get('*', (req, res) => {
+    const indexPath = path.join(__dirname, '../dist/index.html');
+    
+    if (fs.existsSync(indexPath)) {
+        res.sendFile(indexPath);
+    } else {
+        res.status(404).send('Frontend build (dist/index.html) not found. Run "npm run build" in your frontend folder.');
+    }
+});
+
+// --- STEP 5: Start the server ---
+app.listen(PORT, () => {
+    console.log(`🚀 Server running on port ${PORT}`);
+    console.log(`📂 Static files: ${path.join(__dirname, '../dist')}`);
+});
