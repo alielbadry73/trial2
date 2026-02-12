@@ -1,6 +1,15 @@
 // Load environment variables from .env file
 require('dotenv').config();
 
+// Validate required environment variables
+const requiredEnvVars = [];
+if (!process.env.JWT_SECRET) {
+    console.warn('⚠️  JWT_SECRET not set in environment variables, using fallback');
+}
+if (!process.env.DB_PATH) {
+    console.warn('⚠️  DB_PATH not set in environment variables, using default');
+}
+
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
@@ -16,9 +25,9 @@ const axios = require('axios');
 const app = express();
 app.set('trust proxy', true);
 const PORT = process.env.PORT || 8080;
-const JWT_SECRET = process.env.JWT_SECRET || 'change-this-secret-for-prod';
+const JWT_SECRET = process.env.JWT_SECRET || 'ahmedtamerrashed';
 
-// Configure multer for file uploads
+// --------------------- Multer for file uploads ---------------------
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         const uploadDir = path.join(__dirname, 'uploads');
@@ -28,7 +37,7 @@ const storage = multer.diskStorage({
         cb(null, uploadDir);
     },
     filename: function (req, file, cb) {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
         cb(null, 'avatar-' + uniqueSuffix + path.extname(file.originalname));
     }
 });
@@ -48,10 +57,11 @@ const upload = multer({
     }
 });
 
-// Middleware - Dynamic CORS configuration
-const corsOrigins = process.env.CORS_ORIGINS 
+// --------------------- Middleware ---------------------
+// Dynamic CORS
+const corsOrigins = process.env.CORS_ORIGINS
     ? process.env.CORS_ORIGINS.split(',').map(origin => origin.trim())
-    : ['http://localhost:3000', 'https://localhost:3000', 'https://my-project12345.netlify.app'];
+    : ['http://localhost:3000', 'https://localhost:3000'];
 
 app.use(cors({
     origin: corsOrigins,
@@ -60,17 +70,19 @@ app.use(cors({
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
+// Parse JSON and URL-encoded bodies
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// 1. Serve user uploads
+// --------------------- Serve uploads ---------------------
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// 2. Serve static assets (JS, CSS, Images) from the dist folder
-// This handles the main production build files
-app.use(express.static(path.join(__dirname, '../dist')));
+// --------------------- Serve React frontend ---------------------
+// Make sure React build is in root folder -> "build/"
+const buildPath = path.join(__dirname, '../build');
+app.use(express.static(buildPath));
 
-// Database connection
+// --------------------- Database ---------------------
 console.log('🔌 Connecting to database...');
 const dbPath = process.env.DB_PATH || './database.sqlite';
 const db = new sqlite3.Database(dbPath, (err) => {
@@ -82,9 +94,8 @@ const db = new sqlite3.Database(dbPath, (err) => {
     }
 });
 
-// Initialize database tables
+// --------------------- Initialize tables ---------------------
 db.serialize(() => {
-    // Create users table
     db.run(`CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         email TEXT UNIQUE NOT NULL,
@@ -1309,11 +1320,7 @@ function authenticateJWT(req, res, next) {
 
     if (!token) return res.status(401).json({ success: false, error: 'Unauthorized' });
 
-    // Allow demo token for Zoom API endpoints
-    if (token === 'demo-token') {
-        req.user = { id: 'demo-user', role: 'teacher', username: 'demo-teacher' };
-        return next();
-    }
+    // Demo token removed for security - use proper authentication
 
     jwt.verify(token, JWT_SECRET, (err, decoded) => {
         if (err) return res.status(401).json({ success: false, error: 'Invalid token' });
@@ -2062,12 +2069,12 @@ app.put('/api/admin/update-student', authenticateJWT, requireAdmin, (req, res) =
         }
         if (updates.length === 0) return res.status(400).json({ success: false, error: 'No valid fields to update' });
 
-        finalSql = `UPDATE students SET ${updates.join(', ')} WHERE id = ?`;
+        finalSql = `UPDATE users SET ${updates.join(', ')} WHERE id = ?`;
         finalParams.push(id);
 
         db.run(finalSql, finalParams, function (err) {
             if (err) {
-                if (err.message && err.message.includes('no such table')) return res.status(500).json({ success: false, error: 'Students table missing' });
+                if (err.message && err.message.includes('no such table')) return res.status(500).json({ success: false, error: 'Users table missing' });
                 console.error('DB error updating student:', err);
                 return res.status(500).json({ success: false, error: 'Database error' });
             }
@@ -2597,14 +2604,14 @@ app.get('/api/parent/dashboard', authenticateJWT, (req, res) => {
 db.get("SELECT * FROM users WHERE email = 'admin@ignation.com'", (err, admin) => {
     if (!err && !admin) {
         const bcrypt = require('bcryptjs');
-        const hashedPassword = bcrypt.hashSync('admin123', 12);
+        const hashedPassword = bcrypt.hashSync('SecureAdminPass2024!', 12);
         
         db.run(`INSERT INTO users (email, password, first_name, last_name, role, created_at) 
                 VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP)`,
             ['admin@ignation.com', hashedPassword, 'Admin', 'User', 'admin'],
             (err) => {
                 if (!err) {
-                    console.log('✅ Default admin account created: admin@ignation.com / admin123');
+                    console.log('✅ Default admin account created: admin@ignation.com / SecureAdminPass2024!');
                 }
             });
     }
@@ -2655,26 +2662,18 @@ app.post('/api/admin/delete-order', authenticateJWT, requireAdmin, (req, res) =>
         return res.status(400).json({ success: false, error: 'order_id is required' });
     }
 
-    // First delete order items
-    db.run('DELETE FROM order_items WHERE order_id = ?', [order_id], (err) => {
+    // Delete order directly (order_items table doesn't exist)
+    db.run('DELETE FROM orders WHERE id = ?', [order_id], function (err) {
         if (err) {
-            console.error('Error deleting order items:', err);
+            console.error('Error deleting order:', err);
             return res.status(500).json({ success: false, error: 'Database error' });
         }
 
-        // Then delete the order
-        db.run('DELETE FROM orders WHERE id = ?', [order_id], function (err) {
-            if (err) {
-                console.error('Error deleting order:', err);
-                return res.status(500).json({ success: false, error: 'Database error' });
-            }
+        if (this.changes === 0) {
+            return res.status(404).json({ success: false, error: 'Order not found' });
+        }
 
-            if (this.changes === 0) {
-                return res.status(404).json({ success: false, error: 'Order not found' });
-            }
-
-            res.json({ success: true, message: 'Order deleted successfully' });
-        });
+        res.json({ success: true, message: 'Order deleted successfully' });
     });
 });
 
@@ -3295,19 +3294,67 @@ app.put('/api/admin/assistants/:id', authenticateJWT, requireAdmin, (req, res) =
         return res.status(400).json({ success: false, error: 'Assistant ID is required' });
     }
 
-    // Build dynamic update query
+    // Build dynamic update query with validation
     const updates = [];
     const values = [];
 
-    if (name !== undefined) { updates.push('name = ?'); values.push(name); }
-    if (email !== undefined) { updates.push('email = ?'); values.push(email); }
-    if (phone !== undefined) { updates.push('phone = ?'); values.push(phone); }
-    if (subject !== undefined) { updates.push('subject = ?'); values.push(subject); }
-    if (availability !== undefined) { updates.push('availability = ?'); values.push(availability); }
-    if (status !== undefined) { updates.push('status = ?'); values.push(status); }
-    if (qualifications !== undefined) { updates.push('qualifications = ?'); values.push(qualifications); }
-    if (specializations !== undefined) { updates.push('specializations = ?'); values.push(specializations); }
-    if (roleDescription !== undefined) { updates.push('roleDescription = ?'); values.push(roleDescription); }
+    // Validate and sanitize inputs
+    if (name !== undefined) { 
+        if (typeof name !== 'string' || name.length > 255) {
+            return res.status(400).json({ success: false, error: 'Invalid name format' });
+        }
+        updates.push('name = ?'); values.push(name.trim()); 
+    }
+    if (email !== undefined) { 
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return res.status(400).json({ success: false, error: 'Invalid email format' });
+        }
+        updates.push('email = ?'); values.push(email.trim().toLowerCase()); 
+    }
+    if (phone !== undefined) { 
+        if (phone && typeof phone !== 'string') {
+            return res.status(400).json({ success: false, error: 'Invalid phone format' });
+        }
+        updates.push('phone = ?'); values.push(phone ? phone.trim() : null); 
+    }
+    if (subject !== undefined) { 
+        if (typeof subject !== 'string' || subject.length > 100) {
+            return res.status(400).json({ success: false, error: 'Invalid subject format' });
+        }
+        updates.push('subject = ?'); values.push(subject.trim()); 
+    }
+    if (availability !== undefined) { 
+        if (typeof availability !== 'string' || availability.length > 100) {
+            return res.status(400).json({ success: false, error: 'Invalid availability format' });
+        }
+        updates.push('availability = ?'); values.push(availability.trim()); 
+    }
+    if (status !== undefined) { 
+        const validStatuses = ['pending', 'active', 'inactive'];
+        if (!validStatuses.includes(status)) {
+            return res.status(400).json({ success: false, error: 'Invalid status value' });
+        }
+        updates.push('status = ?'); values.push(status); 
+    }
+    if (qualifications !== undefined) { 
+        if (qualifications && typeof qualifications !== 'string') {
+            return res.status(400).json({ success: false, error: 'Invalid qualifications format' });
+        }
+        updates.push('qualifications = ?'); values.push(qualifications ? qualifications.trim() : null); 
+    }
+    if (specializations !== undefined) { 
+        if (specializations && typeof specializations !== 'string') {
+            return res.status(400).json({ success: false, error: 'Invalid specializations format' });
+        }
+        updates.push('specializations = ?'); values.push(specializations ? specializations.trim() : null); 
+    }
+    if (roleDescription !== undefined) { 
+        if (roleDescription && typeof roleDescription !== 'string') {
+            return res.status(400).json({ success: false, error: 'Invalid role description format' });
+        }
+        updates.push('roleDescription = ?'); values.push(roleDescription ? roleDescription.trim() : null); 
+    }
 
     if (updates.length === 0) {
         return res.status(400).json({ success: false, error: 'No fields to update' });
@@ -3441,20 +3488,13 @@ app.post('/api/zoom/end-meeting/:meetingId', authenticateJWT, (req, res) => {
     res.json({ success: true, message: 'Meeting ended successfully' });
 });
 
-// --- STEP 4: Wildcard Catch-all for frontend routes ---
-// This must be the LAST route in the file.
+// Catch-all for React routes (must be LAST)
 app.get('*', (req, res) => {
-    const indexPath = path.join(__dirname, '../dist/index.html');
-    
-    if (fs.existsSync(indexPath)) {
-        res.sendFile(indexPath);
-    } else {
-        res.status(404).send('Frontend build (dist/index.html) not found. Run "npm run build" in your frontend folder.');
-    }
+    res.sendFile(path.join(buildPath, 'index.html'));
 });
 
 // --- STEP 5: Start the server ---
 app.listen(PORT, () => {
     console.log(`🚀 Server running on port ${PORT}`);
-    console.log(`📂 Static files: ${path.join(__dirname, '../dist')}`);
+    console.log(`📂 Static files: ${buildPath}`);
 });
